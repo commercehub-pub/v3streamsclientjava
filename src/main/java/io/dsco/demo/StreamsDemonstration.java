@@ -453,13 +453,3 @@ public class StreamsDemonstration
         }
     }
 }
-
-/*
- TODO: things i haven't been able to get working
-
- i can't find any doc on getting Unirest to show low level http request/response traffic. all i could find was a post saying
- that under the covers it uses apache http client, and so setting up logging for that should work. but ... i haven't been
- able to get that working. another pair of eyes might be nice, just in case we want to show that level of detail for some reason.
-
- an alternative would be to get some type of traffic logger going (what's the one you use?)
- */
