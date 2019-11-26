@@ -1,7 +1,5 @@
 package io.dsco.demo;
 
-//TODO: rename class to Demonstration
-//TODO: remove references to Kohls in variables and method names
 //TODO: make a sequence diagram of the fan out scenario
 
 import com.google.gson.Gson;
