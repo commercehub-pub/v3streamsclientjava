@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="88fe881d-f015-487e-837f-51befe0ea6fd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/BaseScenario.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/BasicStreamProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/BasicStreamProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryBasic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryBasic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryErrorRecovery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryErrorRecovery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryFanout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryFanout.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventorySync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventorySync.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/Invoice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/Invoice.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -67,8 +76,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -78,6 +87,7 @@
   <component name="ProjectId" id="1TqwPLyu2pT2W35nOdxCJff8LRl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -93,6 +103,12 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="test" />
     </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="console" />
+      <command value="vim" />
+    </option>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -201,7 +217,7 @@
       <updated>1574200908972</updated>
       <workItem from="1574200916470" duration="65041000" />
       <workItem from="1574695652182" duration="20685000" />
-      <workItem from="1574785745370" duration="23004000" />
+      <workItem from="1574785745370" duration="28883000" />
     </task>
     <servers />
   </component>

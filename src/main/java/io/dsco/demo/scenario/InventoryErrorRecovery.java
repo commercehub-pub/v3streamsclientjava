@@ -1,5 +1,7 @@
 package io.dsco.demo.scenario;
 
+import io.dsco.demo.scenario.base.BasicStreamProcessor;
+import io.dsco.demo.scenario.base.ItemInventoryMethods;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.StreamItemInventory;
 import org.apache.logging.log4j.LogManager;
@@ -10,12 +12,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class InventoryErrorRecovery
-extends BaseScenario
 {
     private static final String SCENARIO_NAME = "Error Recovery Inventory Stream Processing";
     private static final Logger logger = LogManager.getLogger(InventoryErrorRecovery.class);
 
     private final BasicStreamProcessor<StreamItemInventory> basicStreamProcessor;
+    private final ItemInventoryMethods itemInventoryMethods;
 
     //if the range of the stream values is too large to return in one query, it will need to repeat until the desired
     // end position is reached
@@ -23,9 +25,8 @@ extends BaseScenario
 
     public InventoryErrorRecovery(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey)
     {
-        super(streamV3Api, streamId, uniqueIdentifierKey, logger);
-
         basicStreamProcessor = new BasicStreamProcessor<>(logger, streamV3Api, streamId);
+        itemInventoryMethods = new ItemInventoryMethods(streamV3Api, streamId, uniqueIdentifierKey, logger);
     }
 
     public void begin(String startPosition, String endPosition)
@@ -50,7 +51,7 @@ extends BaseScenario
     private void processAllItemsInStream(String startPosition)
     throws ExecutionException, InterruptedException
     {
-        List<StreamItemInventory> items = getStreamEventsInRange(startPosition, desiredEndPosition);
+        List<StreamItemInventory> items = itemInventoryMethods.getItemInventoryEventsInRange(startPosition, desiredEndPosition);
 
         if (items.size() == 0) return; //all done
 

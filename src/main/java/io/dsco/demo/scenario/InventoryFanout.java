@@ -1,5 +1,8 @@
 package io.dsco.demo.scenario;
 
+import io.dsco.demo.scenario.base.BasicStreamProcessor;
+import io.dsco.demo.scenario.base.CommonStreamMethods;
+import io.dsco.demo.scenario.base.ItemInventoryMethods;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.StreamItemInventory;
@@ -22,12 +25,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * consumer to be processed.
  */
 public class InventoryFanout
-extends BaseScenario
+implements CommonStreamMethods
 {
     private static final Logger logger = LogManager.getLogger(InventoryFanout.class);
 
     private static final String SCENARIO_NAME = "Fan-out Inventory Stream Processing";
     private static final int QUEUE_SIZE = 50;
+
+    private final StreamV3Api streamV3Api;
+    private final String streamId;
 
     private List<BlockingQueue<StreamItemInventory>> queues;
     private List<Consumer> consumers;
@@ -36,12 +42,15 @@ extends BaseScenario
     private Lock listLock = new ReentrantLock();
 
     private final BasicStreamProcessor<StreamItemInventory> basicStreamProcessor;
+    private final ItemInventoryMethods itemInventoryMethods;
 
     public InventoryFanout(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey)
     {
-        super(streamV3Api, streamId, uniqueIdentifierKey, logger);
+        this.streamV3Api = streamV3Api;
+        this.streamId = streamId;
 
         basicStreamProcessor = new BasicStreamProcessor<>(logger, streamV3Api, streamId);
+        itemInventoryMethods = new ItemInventoryMethods(streamV3Api, streamId, uniqueIdentifierKey, logger);
     }
 
     public void begin(int numberOfConsumers)
@@ -65,7 +74,7 @@ extends BaseScenario
             }
 
             //get the initial stream position
-            String streamPosition = getStreamPosition();
+            String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
             logger.info("initial stream position: " + streamPosition);
             processAllItemsInStream(streamPosition);
 
@@ -85,7 +94,7 @@ extends BaseScenario
     private void processAllItemsInStream(String streamPosition)
     throws InterruptedException, ExecutionException
     {
-        List<StreamItemInventory> items = getStreamEventsFromPosition(streamPosition);
+        List<StreamItemInventory> items = itemInventoryMethods.getItemInventoryEventsFromPosition(streamPosition);
 
         if (items.size() == 0) {
             //now that the stream is drained, let each consumer know it can shut down when processing is finished
@@ -129,7 +138,7 @@ extends BaseScenario
                 // removed. this allows us to only call updateStreamPosition one time instead of many, if there were many
                 // items that have now been contiguously completed
                 //updateStreamPosition(updateStreamPositionToHere);
-                basicStreamProcessor.updateStreamPosition(updateStreamPositionToHere);
+                basicStreamProcessor.updateStreamPosition(streamV3Api, streamId, updateStreamPositionToHere, logger);
 
                 //logger.info(">>> " + numItemsRemoved + " were marked with only 1 call");
 

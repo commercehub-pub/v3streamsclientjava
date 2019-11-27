@@ -1,5 +1,6 @@
-package io.dsco.demo.scenario;
+package io.dsco.demo.scenario.base;
 
+import io.dsco.demo.scenario.base.CommonStreamMethods;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.StreamItem;
 import kong.unirest.HttpResponse;
@@ -14,7 +15,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
-class BasicStreamProcessor<T extends StreamItem>
+/**
+ * a class rather than an interface because it needed variables.
+ *
+ * Core functionality for consuming any type of a stream using the basic stream pattern.
+
+ */
+public class BasicStreamProcessor<T extends StreamItem>
+implements CommonStreamMethods
 {
     private static final long STREAM_UPDATE_INTERVAL = 5_000L;
 
@@ -24,14 +32,14 @@ class BasicStreamProcessor<T extends StreamItem>
 
     private long lastStreamPositionUpdate = 0L;
 
-    BasicStreamProcessor(@NotNull Logger logger, @NotNull StreamV3Api streamV3Api, @NotNull String streamId)
+    public BasicStreamProcessor(@NotNull Logger logger, @NotNull StreamV3Api streamV3Api, @NotNull String streamId)
     {
         this.logger = logger;
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
     }
 
-    void processAllItemsInStream(@NotNull String streamPosition, @NotNull Function<String, List<T>> streamRetriever)
+    public void processAllItemsInStream(@NotNull String streamPosition, @NotNull Function<String, List<T>> streamRetriever)
     {
         try {
             List<T> items = streamRetriever.apply(streamPosition);
@@ -44,7 +52,7 @@ class BasicStreamProcessor<T extends StreamItem>
 
                 //per the best practices suggestion, only update the stream position periodically.
                 if (System.currentTimeMillis() > lastStreamPositionUpdate + STREAM_UPDATE_INTERVAL) {
-                    updateStreamPosition(item.getId());
+                    updateStreamPosition(streamV3Api, streamId, item.getId(), logger);
                     lastStreamPositionUpdate = System.currentTimeMillis();
                 }
             }
@@ -57,7 +65,7 @@ class BasicStreamProcessor<T extends StreamItem>
         }
     }
 
-    void processItem(T item)
+    public void processItem(T item)
     throws InterruptedException
     {
         //this isn't actually going to do anything for the demo, other than wait a random amount of time from 25-100ms
@@ -65,24 +73,9 @@ class BasicStreamProcessor<T extends StreamItem>
 
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format(
-                    "completed processing of item {0} at position {1}",
-                    item.getKey(), item.getId() ));
+                    "completed processing of item {0} at position {1}, source: {2}",
+                    item.getKey(), item.getId(), item.getSource() ));
         }
     }
 
-    void updateStreamPosition(String streamPosition)
-    throws ExecutionException, InterruptedException
-    {
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.updateStreamPosition(streamId, streamPosition);
-
-        int httpStatus = future.get().getStatus();
-        if (httpStatus != 200) {
-            throw new IllegalStateException(MessageFormat.format(
-                    "unable to update stream {0} to position {1}. http response code: {2}: ",
-                    streamId, streamPosition, httpStatus));
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("stream position updated to: {0}", streamPosition));
-        }
-    }
 }

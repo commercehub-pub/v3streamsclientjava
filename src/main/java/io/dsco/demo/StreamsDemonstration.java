@@ -49,6 +49,9 @@ public class StreamsDemonstration
         Properties props = new Properties();
         try (InputStream is = StreamsDemonstration.class.getClassLoader().getResourceAsStream("dsco.properties")) {
             if (is == null) {
+                //TODO: create an empty properties file and inform the user to go fill it with values.
+                // this is because the properties file is not checked into source control and must be created
+                // manually (or copied from someone else who has it)
                 throw new IllegalStateException("unable to find dsco.properties");
             }
             props.load(is);

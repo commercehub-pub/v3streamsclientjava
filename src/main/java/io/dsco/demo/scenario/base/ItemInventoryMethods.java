@@ -1,4 +1,4 @@
-package io.dsco.demo.scenario;
+package io.dsco.demo.scenario.base;
 
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.ItemInventory;
@@ -15,14 +15,17 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-abstract class BaseScenario
+/**
+ * a class rather than an interface because we can't have private methods in interfaces (until java 9).
+ */
+public class ItemInventoryMethods
 {
     private final Logger logger;
-    private final StreamV3Api streamV3Api;
-    private final String streamId;
+    protected final StreamV3Api streamV3Api;
+    protected final String streamId;
     private final String uniqueIdentifierKey;
 
-    BaseScenario(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey, Logger logger)
+    public ItemInventoryMethods(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey, Logger logger)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
@@ -30,59 +33,8 @@ abstract class BaseScenario
         this.logger = logger;
     }
 
-    String createStreamSync()
-    throws ExecutionException, InterruptedException
-    {
-        if (logger.isDebugEnabled()) {
-            logger.debug("creating stream sync operation");
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.createStreamOperation(streamId, StreamV3Api.OperationType.sync);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for sync operation");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for sync operation: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when creating sync operation: " + httpStatus);
-        }
-
-        //return the operationUuid
-//logger.info(future.get().getBody());
-        return future.get().getBody().getObject().getString("operationUuid");
-    }
-
-    String getStreamPosition()
-    throws ExecutionException, InterruptedException
-    {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getting initial stream position");
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.listStream(streamId);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for stream position");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for stream position: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when checking stream position: " + httpStatus);
-        }
-
-        //pull out the stream position from the response
-//logger.info(future.get().getBody());
-        return future.get().getBody().getArray().getJSONObject(0).getString("position");
-    }
-
-    List<StreamItemInventory> getStreamEventsFromPosition(String position)
+    //this can't throw an exception because it's used in a lambda function call
+    public List<StreamItemInventory> getItemInventoryEventsFromPosition(String position)
     //throws ExecutionException, InterruptedException
     {
         try {
@@ -100,8 +52,8 @@ abstract class BaseScenario
         }
     }
 
-    List<StreamItemInventory> getStreamEventsInRange(String startPosition, String endPosition)
-    throws ExecutionException, InterruptedException
+    public List<StreamItemInventory> getItemInventoryEventsInRange(String startPosition, String endPosition)
+            throws ExecutionException, InterruptedException
     {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format(
@@ -114,9 +66,8 @@ abstract class BaseScenario
         return refactorParseStreamEvents(future);
     }
 
-
     private List<StreamItemInventory> refactorParseStreamEvents(CompletableFuture<HttpResponse<JsonNode>> future)
-    throws ExecutionException, InterruptedException
+            throws ExecutionException, InterruptedException
     {
         List<StreamItemInventory> items;
 
