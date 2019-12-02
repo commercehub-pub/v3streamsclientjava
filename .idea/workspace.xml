@@ -2,24 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="88fe881d-f015-487e-837f-51befe0ea6fd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/Util.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InvoiceBasic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InvoiceV3Api.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/ApiResponseMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceChangeLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/ResponseInvoiceChangeLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/ResponseInvoiceCreate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/InvoiceV3ApiUnirest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileChanges/last-build.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileContent/fileContent.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/gc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/InvoiceMethods.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/InvoiceMethods.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/Invoice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceForUpdate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceCharge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceCharge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceLineItemForUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceLineItemForUpdate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/StreamItemInvoice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/StreamItemInvoice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/ApiBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/ApiBuilder.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,6 +89,11 @@
   </component>
   <component name="ProjectId" id="1TqwPLyu2pT2W35nOdxCJff8LRl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -115,18 +117,6 @@
     <option name="myCommands">
       <command value="console" />
       <command value="vim" />
-    </option>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
     </option>
   </component>
   <component name="RunManager" selected="Application.StreamsDemonstration">
@@ -212,6 +202,18 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -225,7 +227,8 @@
       <workItem from="1574200916470" duration="65041000" />
       <workItem from="1574695652182" duration="20685000" />
       <workItem from="1574785745370" duration="35001000" />
-      <workItem from="1574880459869" duration="12266000" />
+      <workItem from="1574880459869" duration="13892000" />
+      <workItem from="1575303885171" duration="713000" />
     </task>
     <servers />
   </component>
@@ -244,5 +247,31 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2618" y="305" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1575304746432">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2618" y="305" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304746432" />
+    <state width="1878" height="219" key="GridCell.Tab.0.bottom" timestamp="1575304707313">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1878" height="219" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707313" />
+    <state width="1878" height="219" key="GridCell.Tab.0.center" timestamp="1575304707311">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1878" height="219" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707311" />
+    <state width="1878" height="219" key="GridCell.Tab.0.left" timestamp="1575304707311">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1878" height="219" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707311" />
+    <state width="1878" height="219" key="GridCell.Tab.0.right" timestamp="1575304707312">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1878" height="219" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707312" />
+    <state x="2506" y="355" key="com.intellij.ide.util.TipDialog" timestamp="1575303885115">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2506" y="355" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575303885115" />
   </component>
 </project>

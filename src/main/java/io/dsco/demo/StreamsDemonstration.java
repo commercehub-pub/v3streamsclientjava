@@ -19,8 +19,7 @@ import kong.unirest.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -47,12 +46,29 @@ public class StreamsDemonstration
         Properties props = new Properties();
         try (InputStream is = StreamsDemonstration.class.getClassLoader().getResourceAsStream("dsco.properties")) {
             if (is == null) {
-                //TODO: create an empty properties file and inform the user to go fill it with values.
-                // this is because the properties file is not checked into source control and must be created
-                // manually (or copied from someone else who has it)
-                throw new IllegalStateException("unable to find dsco.properties");
+                //if this project was just checked out from source, there will be no properties file.
+                // in that case, load the log4j2.xml file (which WILL exist) and use its directory location
+                // to know where to save a default properties file.
+                String resourcesPath = StreamsDemonstration.class.getClassLoader().getResource("log4j2.xml").getFile();
+                resourcesPath = resourcesPath.substring(0, resourcesPath.lastIndexOf(File.separator + "out"));
+                String outputPath = resourcesPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dsco.properties";
+                //logger.info("saving file: " + outputPath);
+
+                //create the properties, but with placeholder values that must be filled in
+                props.setProperty("base.v2.url", "xxxxxx");
+                props.setProperty("base.v3.url", "xxxxxx");
+                props.setProperty("supplier.token", "xxxxxx");
+                props.setProperty("retailer.token", "xxxxxx");
+
+                try (OutputStream os = new FileOutputStream(outputPath)) {
+                    props.store(os, null);
+                }
+
+                logger.info("No properties file found. A default properties file has been created in the resources directory. Please populate it with appropriate values before rerunning the application.");
+                System.exit(1);
             }
             props.load(is);
+
         } catch (IOException e) {
             logger.error("unable to load properties file", e);
             System.exit(1);
