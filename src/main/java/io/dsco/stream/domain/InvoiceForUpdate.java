@@ -1,8 +1,10 @@
 package io.dsco.stream.domain;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
-public class Invoice
+public class InvoiceForUpdate
 {
     private String invoiceId;
     private float totalAmount;
@@ -30,6 +32,17 @@ public class Invoice
     private Float subtotalExcludingLineItems;
     private String supplierOrderNumber;
     private InvoiceTerms terms;
+
+    public InvoiceForUpdate() {}
+
+    public InvoiceForUpdate(
+            @NotNull String invoiceId, float totalAmount, @NotNull List<InvoiceCharge> charges, @NotNull List<InvoiceLineItemForUpdate> lineItems)
+    {
+        this.invoiceId = invoiceId;
+        this.totalAmount = totalAmount;
+        this.charges = charges;
+        this.lineItems = lineItems;
+    }
 
     public String getInvoiceId()
     {

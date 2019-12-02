@@ -3,12 +3,10 @@ package io.dsco.demo;
 //TODO: make a sequence diagram of the fan out scenario
 
 import com.google.gson.Gson;
-import io.dsco.demo.scenario.InventoryBasic;
-import io.dsco.demo.scenario.InventoryFanout;
-import io.dsco.demo.scenario.InventoryErrorRecovery;
-import io.dsco.demo.scenario.InventorySync;
+import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.api.InventoryV3Api;
+import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.ItemWarehouse;
@@ -20,16 +18,15 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static io.dsco.demo.Util.getConsoleInput;
 
 public class StreamsDemonstration
 {
@@ -42,6 +39,7 @@ public class StreamsDemonstration
     private final StreamV3Api streamV3ApiSupplier;
     private final InventoryV2Api inventoryV2ApiSupplier;
     private final InventoryV3Api inventoryV3ApiSupplier;
+    private final InvoiceV3Api invoiceV3ApiSupplier;
 
     private StreamsDemonstration()
     {
@@ -69,6 +67,7 @@ public class StreamsDemonstration
         streamV3ApiSupplier = ApiBuilder.getStreamV3Api(supplierToken, baseV3Url);
         inventoryV2ApiSupplier = ApiBuilder.getInventoryV2Api(supplierToken, baseV2Url);
         inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierToken, baseV3Url);
+        invoiceV3ApiSupplier = ApiBuilder.getInvoiceV3Api(supplierToken, baseV3Url);
     }
 
     private boolean doesStreamExist(StreamV3Api streamApi, String streamId)
@@ -313,10 +312,26 @@ public class StreamsDemonstration
         }
     }
 
-    private void doInventoryStreamProcessing(String streamId, String updatedSince)
+    private void doInventoryStreamProcessing()
     throws Exception
     {
+        //arbitrary date to limit stream to a smaller subset for demo purposes
+        String updatedSince = "2019-08-15T18:26:00Z";
+
         String uniqueIdentifierKey = getConsoleInput("ItemInventory unique identifier (ex: sku, ean, gtin, isbn, mpn, upc, etc) > ");
+
+        String streamId = getConsoleInput("streamId > ");
+
+        //see if the stream has been created. if not, create it.
+        if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+            createInventoryStream(streamV3ApiRetailer, streamId, "demonstration stream");
+
+            //it can sometimes take a bit of time before the stream becomes available; wait for it
+            while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+                logger.info("stream not yet created. waiting a bit and checking again...");
+                Thread.sleep(500);
+            }
+        }
 
         String selection = getConsoleInput(
                 "Which scenario would you like to run?\n" +
@@ -352,7 +367,7 @@ public class StreamsDemonstration
         }
     }
 
-    private void doOtherStreamProcessing(String streamId)
+    private void doOtherStreamProcessing()
     throws Exception
     {
         String selection = getConsoleInput(
@@ -364,10 +379,26 @@ public class StreamsDemonstration
         );
         switch (selection)
         {
-            case "1":
-                //TODO: invoice stream
-                createInvoiceStream(streamV3ApiSupplier, streamId, "supplier invoice stream");
-                break;
+            case "1": {
+                String streamId = getConsoleInput("streamId > ");
+
+                //see if the stream has been created. if not, create it. note that is' the retailer creating the stream
+                if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+                    createInvoiceStream(streamV3ApiRetailer, streamId, "supplier invoice stream");
+
+                    //it can sometimes take a bit of time before the stream becomes available; wait for it
+                    while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+                        logger.info("stream not yet created. waiting a bit and checking again...");
+                        Thread.sleep(500);
+                    }
+                }
+
+                String invoiceId = getConsoleInput("invoiceId > ");
+
+                new InvoiceBasic(streamV3ApiRetailer, streamId, invoiceV3ApiSupplier).begin(invoiceId);
+
+            }
+            break;
 
             case "2":
                 //TODO: cancellation stream
@@ -389,18 +420,7 @@ public class StreamsDemonstration
     private void begin()
     throws Exception
     {
-        String streamId = getConsoleInput("streamId > ");
 
-        //see if the stream has been created. if not, create it.
-        if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-            createInventoryStream(streamV3ApiRetailer, streamId, "demonstration stream");
-
-            //it can sometimes take a bit of time before the stream becomes available; wait for it
-            while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                logger.info("stream not yet created. waiting a bit and checking again...");
-                Thread.sleep(500);
-            }
-        }
 
         //display the top level menu
         String selection = getConsoleInput(
@@ -412,13 +432,11 @@ public class StreamsDemonstration
         switch (selection)
         {
             case "1":
-                //arbitrary date to limit stream to a smaller subset for demo purposes
-                String updatedSince = "2019-08-15T18:26:00Z";
-                doInventoryStreamProcessing(streamId, updatedSince);
+                doInventoryStreamProcessing();
                 break;
 
             case "2":
-                doOtherStreamProcessing(streamId);
+                doOtherStreamProcessing();
                 break;
 
             case "3":
@@ -442,15 +460,4 @@ public class StreamsDemonstration
         }
     }
 
-    //utility method to read console input
-    private static @NotNull String getConsoleInput(@NotNull String prompt)
-    {
-        System.out.print(prompt);
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            return reader.readLine();
-        } catch (Exception e) {
-            return "";
-        }
-    }
 }

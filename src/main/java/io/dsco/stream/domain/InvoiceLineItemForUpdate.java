@@ -34,6 +34,22 @@ public class InvoiceLineItemForUpdate
     public String warehouseDscoId;
     public String warehouseRetailerCode;
 
+    public InvoiceLineItemForUpdate() {}
+
+    public InvoiceLineItemForUpdate(int quantity, String dscoItemId, String ean, String partnerSku, String sku, String upc)
+    {
+        if (dscoItemId == null && ean == null && partnerSku == null && sku == null && upc == null) {
+            throw new IllegalArgumentException("one of the unique id columns must be present");
+        }
+
+        this.quantity = quantity;
+        this.dscoItemId = dscoItemId;
+        this.ean = ean;
+        this.partnerSku = partnerSku;
+        this.sku = sku;
+        this.upc = upc;
+    }
+
     public int getQuantity()
     {
         return quantity;

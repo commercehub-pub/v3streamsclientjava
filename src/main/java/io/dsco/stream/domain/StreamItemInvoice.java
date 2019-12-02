@@ -3,9 +3,9 @@ package io.dsco.stream.domain;
 public class StreamItemInvoice
 extends StreamItem
 {
-    private Invoice invoice;
+    private InvoiceForUpdate invoice;
 
-    public StreamItemInvoice(String id, Source source, Invoice invoice)
+    public StreamItemInvoice(String id, Source source, InvoiceForUpdate invoice)
     {
         super(id, source);
         this.invoice = invoice;
@@ -17,7 +17,7 @@ extends StreamItem
         return invoice.getInvoiceId();
     }
 
-    public Invoice getInvoice()
+    public InvoiceForUpdate getInvoice()
     {
         return invoice;
     }
