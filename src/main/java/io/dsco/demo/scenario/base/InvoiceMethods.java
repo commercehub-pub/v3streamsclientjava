@@ -12,12 +12,14 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+//TODO: can probably be moved to an interface now for the invoice specific methods
 /**
  * needed to be a class rather than an interface so the getInvoiceEventsFromPosition can be passed to a lambda function
  */
@@ -57,7 +59,7 @@ public class InvoiceMethods
             throw new IllegalStateException("got invalid http response when adding invoices: " + httpStatus);
         }
 
-logger.info(future.get().getBody());
+//logger.info(future.get().getBody());
 
         return new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceCreate.class);
     }
@@ -68,14 +70,19 @@ logger.info(future.get().getBody());
     public InvoiceChangeLog getInvoiceChangeLog(InvoiceV3Api invoiceV3ApiSupplier, String requestId, String eventDate)
     throws ExecutionException, InterruptedException
     {
-        String endDate = Util.dateToIso8601(new Date());
+        //due to propagation delay issues, recommended best practice is to shift everything back by 10 seconds and begin searching from then
+        ZonedDateTime from = ZonedDateTime.parse(eventDate).minusSeconds(10L);
+        String fromDateMinus10Seconds = Util.dateToIso8601(Date.from(from.toInstant()));
+
+        String nowMinus10Seconds = Util.dateToIso8601(new Date(System.currentTimeMillis()-10_000L));
+
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format(
-                    "About to check status of added invoice, beginEnd: {0}, endDate: {1}", eventDate, endDate));
+                    "About to check status of added invoice, beginEnd: {0}, endDate: {1} (now={2})", fromDateMinus10Seconds, nowMinus10Seconds, Util.dateToIso8601(new Date())));
         }
 
         CompletableFuture<HttpResponse<JsonNode>> future =
-                invoiceV3ApiSupplier.getInvoiceChangeLog(eventDate, endDate, null, null);
+                invoiceV3ApiSupplier.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
 
         if (logger.isDebugEnabled()) {
             logger.debug("waiting for response for status check");
@@ -85,12 +92,12 @@ logger.info(future.get().getBody());
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("http response code for status check: {0}", httpStatus));
         }
-        if (httpStatus != 202) {
+        if (httpStatus != 200) {
             logger.error(future.get().getBody());
             throw new IllegalStateException("got invalid http response when checking status: " + httpStatus);
         }
 
-logger.info(future.get().getBody());
+//logger.info(future.get().getBody());
 
         //convert to java and look for the given requestId
         InvoiceChangeLog requestedResponseRecord = null;

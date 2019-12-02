@@ -16,7 +16,7 @@ public class InvoiceChangeLog
     //diff: coming soon...
     private String processId;
     private String requestId;
-    private String requestMethodDetail;
+    private InvoiceRequestMethodDetail requestMethodDetail;
     private List<ApiResponseMessage> results;
 
     public String getDateProcessed()
@@ -79,12 +79,12 @@ public class InvoiceChangeLog
         this.requestId = requestId;
     }
 
-    public String getRequestMethodDetail()
+    public InvoiceRequestMethodDetail getRequestMethodDetail()
     {
         return requestMethodDetail;
     }
 
-    public void setRequestMethodDetail(String requestMethodDetail)
+    public void setRequestMethodDetail(InvoiceRequestMethodDetail requestMethodDetail)
     {
         this.requestMethodDetail = requestMethodDetail;
     }

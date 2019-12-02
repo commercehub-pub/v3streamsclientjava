@@ -2,20 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="88fe881d-f015-487e-837f-51befe0ea6fd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileContent/fileContent.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/gc.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InvoiceBasic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InvoiceBasic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/InvoiceMethods.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/InvoiceMethods.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceChangeLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/domain/InvoiceChangeLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/ApiBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/ApiBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/BaseApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/BaseApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/InventoryV2ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InventoryV2ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/InventoryV3ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InventoryV3ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/InvoiceV3ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InvoiceV3ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/impl/StreamV3ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/StreamV3ApiUnirest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,13 +76,14 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="MERGE" />
   </component>
   <component name="ProjectId" id="1TqwPLyu2pT2W35nOdxCJff8LRl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -159,6 +157,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.dsco.demo.Test" />
+      <module name="v3stream.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.dsco.demo.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="test.Test" />
       <module name="v3stream.main" />
@@ -172,33 +183,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.Test2" />
-      <module name="v3stream.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Application.Test" />
-      <item itemvalue="Application.Test2" />
       <item itemvalue="Application.InventoryDemonstration" />
       <item itemvalue="Application.Scenario2" />
       <item itemvalue="Application.StreamsDemonstration" />
+      <item itemvalue="Application.Test (1)" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.StreamsDemonstration" />
+        <item itemvalue="Application.Test (1)" />
         <item itemvalue="Application.Test" />
         <item itemvalue="Application.InventoryDemonstration" />
         <item itemvalue="Application.Scenario2" />
-        <item itemvalue="Application.Test2" />
       </list>
     </recent_temporary>
   </component>
@@ -228,7 +226,7 @@
       <workItem from="1574695652182" duration="20685000" />
       <workItem from="1574785745370" duration="35001000" />
       <workItem from="1574880459869" duration="13892000" />
-      <workItem from="1575303885171" duration="713000" />
+      <workItem from="1575303885171" duration="10936000" />
     </task>
     <servers />
   </component>
@@ -249,29 +247,46 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
+    <state x="515" y="153" key="#com.intellij.ide.util.MemberChooser" timestamp="1575318313566">
+      <screen x="0" y="23" width="1280" height="697" />
+    </state>
+    <state x="515" y="153" key="#com.intellij.ide.util.MemberChooser/0.23.1280.697@0.23.1280.697" timestamp="1575318313566" />
+    <state x="2693" y="242" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309089317" />
     <state x="2618" y="305" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1575304746432">
       <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state x="2618" y="305" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304746432" />
-    <state width="1878" height="219" key="GridCell.Tab.0.bottom" timestamp="1575304707313">
-      <screen x="1920" y="23" width="1920" height="1057" />
+    <state width="1238" height="546" key="GridCell.Tab.0.bottom" timestamp="1575318516405">
+      <screen x="0" y="23" width="1280" height="697" />
     </state>
-    <state width="1878" height="219" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707313" />
-    <state width="1878" height="219" key="GridCell.Tab.0.center" timestamp="1575304707311">
-      <screen x="1920" y="23" width="1920" height="1057" />
+    <state width="1238" height="546" key="GridCell.Tab.0.bottom/0.23.1280.697@0.23.1280.697" timestamp="1575318516405" />
+    <state width="1878" height="219" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792366" />
+    <state width="1238" height="546" key="GridCell.Tab.0.center" timestamp="1575318516404">
+      <screen x="0" y="23" width="1280" height="697" />
     </state>
-    <state width="1878" height="219" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707311" />
-    <state width="1878" height="219" key="GridCell.Tab.0.left" timestamp="1575304707311">
-      <screen x="1920" y="23" width="1920" height="1057" />
+    <state width="1238" height="546" key="GridCell.Tab.0.center/0.23.1280.697@0.23.1280.697" timestamp="1575318516404" />
+    <state width="1878" height="219" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792365" />
+    <state width="1238" height="546" key="GridCell.Tab.0.left" timestamp="1575318516404">
+      <screen x="0" y="23" width="1280" height="697" />
     </state>
-    <state width="1878" height="219" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707311" />
-    <state width="1878" height="219" key="GridCell.Tab.0.right" timestamp="1575304707312">
-      <screen x="1920" y="23" width="1920" height="1057" />
+    <state width="1238" height="546" key="GridCell.Tab.0.left/0.23.1280.697@0.23.1280.697" timestamp="1575318516404" />
+    <state width="1878" height="219" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792364" />
+    <state width="1238" height="546" key="GridCell.Tab.0.right" timestamp="1575318516405">
+      <screen x="0" y="23" width="1280" height="697" />
     </state>
-    <state width="1878" height="219" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304707312" />
+    <state width="1238" height="546" key="GridCell.Tab.0.right/0.23.1280.697@0.23.1280.697" timestamp="1575318516405" />
+    <state width="1878" height="219" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792366" />
     <state x="2506" y="355" key="com.intellij.ide.util.TipDialog" timestamp="1575303885115">
       <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state x="2506" y="355" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575303885115" />
+    <state x="2669" y="475" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1575307534089">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2669" y="475" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575307534089" />
+    <state x="2545" y="258" key="search.everywhere.popup" timestamp="1575309631464">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2545" y="258" key="search.everywhere.popup/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309631464" />
   </component>
 </project>

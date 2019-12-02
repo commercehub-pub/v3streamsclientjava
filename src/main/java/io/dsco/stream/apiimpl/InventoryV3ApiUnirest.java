@@ -1,4 +1,4 @@
-package io.dsco.stream.impl;
+package io.dsco.stream.apiimpl;
 
 import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.domain.ItemInventory;

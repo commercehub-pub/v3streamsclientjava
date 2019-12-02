@@ -4,13 +4,16 @@ package io.dsco.demo;
 
 import com.google.gson.Gson;
 import io.dsco.demo.scenario.*;
+import io.dsco.demo.scenario.OrderBasic;
 import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.api.StreamV3Api;
+import io.dsco.stream.command.supplier.UpdateInventory;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.ItemWarehouse;
-import io.dsco.stream.impl.ApiBuilder;
+import io.dsco.stream.apiimpl.ApiBuilder;
+import io.dsco.stream.shared.GetInventoryItems;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -39,6 +42,8 @@ public class StreamsDemonstration
     private final InventoryV2Api inventoryV2ApiSupplier;
     private final InventoryV3Api inventoryV3ApiSupplier;
     private final InvoiceV3Api invoiceV3ApiSupplier;
+
+    private final UpdateInventory updateInventoryCmd;
 
     private StreamsDemonstration()
     {
@@ -84,6 +89,8 @@ public class StreamsDemonstration
         inventoryV2ApiSupplier = ApiBuilder.getInventoryV2Api(supplierToken, baseV2Url);
         inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierToken, baseV3Url);
         invoiceV3ApiSupplier = ApiBuilder.getInvoiceV3Api(supplierToken, baseV3Url);
+
+        updateInventoryCmd = new UpdateInventory(inventoryV2ApiSupplier, inventoryV3ApiSupplier);
     }
 
     private boolean doesStreamExist(StreamV3Api streamApi, String streamId)
@@ -122,13 +129,23 @@ public class StreamsDemonstration
     }
 
     private void createInvoiceStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-        throws ExecutionException, InterruptedException
+    throws ExecutionException, InterruptedException
     {
         Map<String, Object> query = new HashMap<>();
         query.put("queryType", StreamV3Api.ObjectType.invoice.toString());
         //add other query filter criteria as needed
 
         createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.invoice, query);
+    }
+
+    private void createOrderStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
+    throws ExecutionException, InterruptedException
+    {
+        Map<String, Object> query = new HashMap<>();
+        query.put("queryType", StreamV3Api.ObjectType.order.toString());
+        //add other query filter criteria as needed
+
+        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.order, query);
     }
 
     private void createStreamRefactor(
@@ -156,180 +173,8 @@ public class StreamsDemonstration
         }
     }
 
-    private List<ItemInventory> getInventoryItems(
-            InventoryV2Api inventoryApi, @SuppressWarnings("SameParameterValue") String pageIdentifier, String updatedSince)
-    throws ExecutionException, InterruptedException
-    {
-        List<ItemInventory> items;
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("about to query for inventory items");
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = inventoryApi.getAllInventory(pageIdentifier, updatedSince);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for inventory items");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for get items: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when retrieving items: " + httpStatus);
-        }
-
-        //don't bother with paging for the demo. just grab whatever came back in the first page.
-        JSONObject responseJson = future.get().getBody().getObject();
-        JSONArray itemInventoryJson = responseJson.getJSONArray("itemInventory");
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("# of inventory items returned from query: " + itemInventoryJson.length());
-        }
-
-        //convert the items from json to java for easy manipulation
-        items = new ArrayList<>(itemInventoryJson.length());
-        for (int i=0; i<itemInventoryJson.length(); i++) {
-            JSONObject itemJson = itemInventoryJson.getJSONObject(i);
-            String jsonStr = itemJson.toString();
-            items.add(new Gson().fromJson(jsonStr, ItemInventory.class));
-        }
-        return items;
-    }
-
-    private String updateInventorySmallBatch(InventoryV3Api inventoryApi, List<ItemInventory> items)
-    throws ExecutionException, InterruptedException
-    {
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("about to update {0} inventory items", items.size()));
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = inventoryApi.updateInventorySmallBatch(items);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for update");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for update items: {0}", httpStatus));
-        }
-        if (httpStatus != 202) {
-            throw new IllegalStateException("got invalid http response when updating items: " + httpStatus);
-        }
-
-        //since this is an asynchronous api, grab the "requestId" from the response. it will be needed to check
-        // the result of the operation at a later time.
-        JSONObject responseJson = future.get().getBody().getObject();
-        String requestId = responseJson.getString("requestId");
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("batch update async call requestId: " + requestId);
-        }
-
-        return requestId;
-    }
-
-    private boolean isUpdateComplete(InventoryV3Api inventoryApi, String requestId)
-    throws ExecutionException, InterruptedException
-    {
-        if (logger.isDebugEnabled()) {
-            logger.debug("about to check status of batch update request");
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = inventoryApi.getInventoryChangeLog(requestId);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for status check");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for status check: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when checking update status: " + httpStatus);
-        }
-
-        //in a real system you'd want to loop them and check the status of each item to make sure it was successful
-        JSONArray jsonList = future.get().getBody().getObject().getJSONArray("logs");
-
-        int numSuccess = 0;
-        int numPending = 0;
-        int numFails = 0;
-        for (int i=0; i<jsonList.length(); i++) {
-            JSONObject logItem = jsonList.getJSONObject(i);
-            String status = logItem.getString("status");
-            switch (status)
-            {
-                case "success": numSuccess++; break;
-                case "pending": numPending++; break;
-                default: numFails++;
-            }
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("total items updated: {0}, success: {1}, pending: {2}, fails: {3}", jsonList.length(), numSuccess, numPending, numFails));
-        }
-
-        if (numFails > 0) {
-            throw new IllegalStateException("failed on item updates");
-        }
-
-        return numPending == 0;
-    }
-
-    private void modifyDataToPopulateStream(String updatedSince)
-    throws ExecutionException, InterruptedException
-    {
-        //grab a list of recently updated inventory items
-        List<ItemInventory> itemInventoryList = getInventoryItems(inventoryV2ApiSupplier, null, updatedSince);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("updating warehouse quantities on items to cause items to populate into the stream...");
-        }
-
-        //for demo purposes, grab the quantity in the first warehouse for each item and increment by 1
-        int count = 0;
-        List<ItemInventory> changedItems = new ArrayList<>(ITEM_INVENTORY_UPDATE_LIMITER);
-        for (int i = itemInventoryList.size() - 1; i >= 0; i--) {
-            ItemInventory itemInventory = itemInventoryList.get(i);
-
-            //even though spec says all items must have a warehouse, occasionally there is one without; ignore those
-            if (itemInventory.getWarehouses() != null && itemInventory.getWarehouses().size() > 0) {
-                ItemWarehouse itemWarehouse = itemInventory.getWarehouses().get(0);
-                int newQuantity = itemWarehouse.getQuantity() == null ? 1 : itemWarehouse.getQuantity() + 1;
-                itemWarehouse.setQuantity(newQuantity);
-
-                //also increase the quantity available so the warehouse doesn't have more than are available to have
-                itemInventory.setQuantityAvailable(itemInventory.getQuantityAvailable() + 1);
-                changedItems.add(itemInventory);
-
-                //break out early based on the limit set for demo purposes
-                count++;
-                if (count > ITEM_INVENTORY_UPDATE_LIMITER) break;
-
-            } else {
-                //remove from the list; it doesn't have a warehouse. safe to do since we're looping backwards
-                itemInventoryList.remove(i);
-            }
-        }
-
-        //have the supplier update the items (which will cause them to show up in the retailer stream)
-        itemInventoryList = changedItems;
-        String requestId = updateInventorySmallBatch(inventoryV3ApiSupplier, itemInventoryList);
-
-        //check the result of the small batch; wait for it to complete
-        //TODO: this could also be accomplished via reading from an update stream
-        while (!isUpdateComplete(inventoryV3ApiSupplier, requestId)) {
-            //some stuff is still pending; wait a bit and try again
-            Thread.sleep(500);
-        }
-    }
-
     private void doInventoryStreamProcessing()
-    throws Exception
+            throws Throwable
     {
         //arbitrary date to limit stream to a smaller subset for demo purposes
         String updatedSince = "2019-08-15T18:26:00Z";
@@ -361,12 +206,12 @@ public class StreamsDemonstration
         switch (selection)
         {
             case "1":
-                modifyDataToPopulateStream(updatedSince);
+                updateInventoryCmd.execute();
                 new InventoryBasic(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin();
                 break;
 
             case "2":
-                modifyDataToPopulateStream(updatedSince);
+                updateInventoryCmd.execute();
                 int numberOfConsumers = Integer.parseInt(getConsoleInput("\nHow many concurrent consumers > "));
                 new InventoryFanout(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin(numberOfConsumers);
                 break;
@@ -383,66 +228,33 @@ public class StreamsDemonstration
         }
     }
 
-    private void doOtherStreamProcessing()
+    private void doOrderStreamProcessing()
     throws Exception
     {
-        String selection = getConsoleInput(
-                "1) Invoice Stream\n" +
-                        "2) Cancellation Stream\n" +
-                        "3) Undeliverable Shipment Stream\n" +
-                        "4) Shipment Stream\n" +
-                        " > "
-        );
-        switch (selection)
-        {
-            case "1": {
-                String streamId = getConsoleInput("streamId > ");
+        //create am order stream (retailer)
+        String streamId = getConsoleInput("order streamId > ");
 
-                //see if the stream has been created. if not, create it. note that is' the retailer creating the stream
-                if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                    createInvoiceStream(streamV3ApiRetailer, streamId, "supplier invoice stream");
+        //see if the stream has been created. if not, create it.
+        if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+            createOrderStream(streamV3ApiRetailer, streamId, "order stream");
 
-                    //it can sometimes take a bit of time before the stream becomes available; wait for it
-                    while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                        logger.info("stream not yet created. waiting a bit and checking again...");
-                        Thread.sleep(500);
-                    }
-                }
-
-                String invoiceId = getConsoleInput("invoiceId > ");
-
-                new InvoiceBasic(streamV3ApiRetailer, streamId, invoiceV3ApiSupplier).begin(invoiceId);
-
+            //it can sometimes take a bit of time before the stream becomes available; wait for it
+            while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+                logger.info("stream not yet created. waiting a bit and checking again...");
+                Thread.sleep(500);
             }
-            break;
-
-            case "2":
-                //TODO: cancellation stream
-                //logger.warn("not yet implemented");
-                //break;
-
-            case "3":
-                //TODO: undeliverable shipment stream
-                //logger.warn("not yet implemented");
-                //break;
-
-            case "4":
-                //TODO: shipment stream
-                logger.warn("not yet implemented");
-                break;
         }
+
+        new OrderBasic(streamId).begin();
     }
 
     private void begin()
-    throws Exception
+    throws Throwable
     {
-
-
         //display the top level menu
         String selection = getConsoleInput(
             "1) Inventory Stream Processing\n" +
-                    "2) Other Stream Processing\n" +
-                    "3) Order Creation\n" +
+                    "2) Order Stream Processing\n" +
                     " > "
         );
         switch (selection)
@@ -452,11 +264,7 @@ public class StreamsDemonstration
                 break;
 
             case "2":
-                doOtherStreamProcessing();
-                break;
-
-            case "3":
-                //TODO: add in order creation
+                doOrderStreamProcessing();
                 break;
         }
     }
@@ -468,7 +276,7 @@ public class StreamsDemonstration
         try {
             new StreamsDemonstration().begin();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("unexpected error", e);
 
         } finally {

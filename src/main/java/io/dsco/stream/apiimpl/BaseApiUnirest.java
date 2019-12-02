@@ -1,4 +1,4 @@
-package io.dsco.stream.impl;
+package io.dsco.stream.apiimpl;
 
 import org.jetbrains.annotations.NotNull;
 

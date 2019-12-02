@@ -1,4 +1,4 @@
-package io.dsco.stream.impl;
+package io.dsco.stream.apiimpl;
 
 import io.dsco.stream.api.InventoryV2Api;
 import kong.unirest.HttpResponse;
