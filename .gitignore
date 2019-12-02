@@ -1,4 +1,8 @@
 dsco.properties
 build/
 out/
-.DS_Store
+/.gradle/
+.classpath
+.project
+.settings/
+bin/
