@@ -1,6 +1,6 @@
-package io.dsco.demo.scenario.base;
+package io.dsco.stream.shared;
 
-import io.dsco.stream.api.StreamV3Api;
+import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.StreamItemInventory;
 import kong.unirest.HttpResponse;
@@ -15,59 +15,20 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-/**
- * a class rather than an interface because we can't have private methods in interfaces (until java 9).
- */
-public class ItemInventoryMethods
+public abstract class StreamItemInventoryBase
+implements Command<List<String>, List<StreamItemInventory>>
 {
-    private final Logger logger;
-    protected final StreamV3Api streamV3Api;
-    protected final String streamId;
     private final String uniqueIdentifierKey;
+    private final Logger logger;
 
-    public ItemInventoryMethods(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey, Logger logger)
+    public StreamItemInventoryBase(String uniqueIdentifierKey, Logger logger)
     {
-        this.streamV3Api = streamV3Api;
-        this.streamId = streamId;
         this.uniqueIdentifierKey = uniqueIdentifierKey;
         this.logger = logger;
     }
 
-    //this can't throw an exception because it's used in a lambda function call
-    public List<StreamItemInventory> getItemInventoryEventsFromPosition(String position)
-    //throws ExecutionException, InterruptedException
-    {
-        try {
-            if (logger.isDebugEnabled()) {
-                logger.debug(MessageFormat.format("getting events in stream {0} from position {1}", streamId, position));
-            }
-
-            CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.getStreamEventsFromPosition(streamId, position);
-
-            return refactorParseStreamEvents(future);
-
-        } catch (Exception e) {
-            logger.error("unexpected error", e);
-            return null;
-        }
-    }
-
-    public List<StreamItemInventory> getItemInventoryEventsInRange(String startPosition, String endPosition)
-            throws ExecutionException, InterruptedException
-    {
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format(
-                    "getting events in stream {0} from {1} to {2}",
-                    streamId, startPosition, endPosition));
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.getStreamEventsInRange(streamId, startPosition, endPosition);
-
-        return refactorParseStreamEvents(future);
-    }
-
-    private List<StreamItemInventory> refactorParseStreamEvents(CompletableFuture<HttpResponse<JsonNode>> future)
-            throws ExecutionException, InterruptedException
+    protected List<StreamItemInventory> refactorParseStreamEvents(CompletableFuture<HttpResponse<JsonNode>> future)
+    throws ExecutionException, InterruptedException
     {
         List<StreamItemInventory> items;
 

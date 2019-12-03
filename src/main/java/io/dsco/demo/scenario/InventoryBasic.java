@@ -1,10 +1,9 @@
 package io.dsco.demo.scenario;
 
-import io.dsco.demo.scenario.base.BasicStreamProcessor;
-import io.dsco.demo.scenario.base.CommonStreamMethods;
-import io.dsco.demo.scenario.base.ItemInventoryMethods;
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.command.retailer.GetItemInventoryEventsFromPosition;
+import io.dsco.stream.command.retailer.ProcessItemInventoryStream;
+import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,16 +18,16 @@ implements CommonStreamMethods
     private final StreamV3Api streamV3Api;
     private final String streamId;
 
-    private final BasicStreamProcessor<StreamItemInventory> basicStreamProcessor;
-    private final ItemInventoryMethods itemInventoryMethods;
+    private final ProcessItemInventoryStream processItemInventoryStreamCmd;
 
     public InventoryBasic(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        basicStreamProcessor = new BasicStreamProcessor<>(logger, streamV3Api, streamId);
-        itemInventoryMethods = new ItemInventoryMethods(streamV3Api, streamId, uniqueIdentifierKey, logger);
+        GetItemInventoryEventsFromPosition getItemInventoryEventsFromPositionCmd =
+                new GetItemInventoryEventsFromPosition(streamV3Api, streamId, uniqueIdentifierKey);
+        processItemInventoryStreamCmd = new ProcessItemInventoryStream(streamV3Api, streamId, getItemInventoryEventsFromPositionCmd);
     }
 
     public void begin()
@@ -41,7 +40,7 @@ implements CommonStreamMethods
             String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
             logger.info("initial stream position: " + streamPosition);
 
-            basicStreamProcessor.processAllItemsInStream(streamPosition, itemInventoryMethods::getItemInventoryEventsFromPosition);
+            processItemInventoryStreamCmd.execute(streamPosition);
 
             long e = System.currentTimeMillis();
             logger.info(MessageFormat.format("total time (ms): {0}", (e-b)));

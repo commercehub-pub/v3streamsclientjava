@@ -1,8 +1,10 @@
 package io.dsco.demo.scenario;
 
-import io.dsco.demo.scenario.base.*;
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.command.retailer.CreateItemInventoryStreamSync;
+import io.dsco.stream.command.retailer.GetItemInventoryEventsFromPosition;
+import io.dsco.stream.command.retailer.ProcessItemInventoryStream;
+import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.MessageFormat;
 
 public class InventorySync
-implements CommonStreamMethods, StreamSyncMethods
+implements CommonStreamMethods
 {
     private static final Logger logger = LogManager.getLogger(InventorySync.class);
 
@@ -19,16 +21,19 @@ implements CommonStreamMethods, StreamSyncMethods
     private final StreamV3Api streamV3Api;
     private final String streamId;
 
-    private final BasicStreamProcessor<StreamItemInventory> basicStreamProcessor;
-    private final ItemInventoryMethods itemInventoryMethods;
+    private final CreateItemInventoryStreamSync createItemInventoryStreamSyncCmd;
+    private final ProcessItemInventoryStream processItemInventoryStreamCmd;
 
     public InventorySync(@NotNull StreamV3Api streamV3Api, @NotNull String streamId, @NotNull String uniqueIdentifierKey)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        basicStreamProcessor = new BasicStreamProcessor<>(logger, streamV3Api, streamId);
-        itemInventoryMethods = new ItemInventoryMethods(streamV3Api, streamId, uniqueIdentifierKey, logger);
+        createItemInventoryStreamSyncCmd = new CreateItemInventoryStreamSync(streamV3Api, streamId);
+
+        GetItemInventoryEventsFromPosition getItemInventoryEventsFromPositionCmd =
+                new GetItemInventoryEventsFromPosition(streamV3Api, streamId, uniqueIdentifierKey);
+        processItemInventoryStreamCmd = new ProcessItemInventoryStream(streamV3Api, streamId, getItemInventoryEventsFromPositionCmd);
     }
 
     public void begin()
@@ -37,19 +42,20 @@ implements CommonStreamMethods, StreamSyncMethods
             long b = System.currentTimeMillis();
             logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
-            /*String operationUuid =*/ createStreamSync(streamV3Api, streamId, logger);
+            /*String operationUuid =*/ createItemInventoryStreamSyncCmd.execute(null);
 
             //get the initial stream position
             String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
             logger.info("initial stream position: " + streamPosition);
 
-            basicStreamProcessor.processAllItemsInStream(streamPosition, itemInventoryMethods::getItemInventoryEventsFromPosition);
+            //basicStreamProcessor.processAllItemsInStream(streamPosition, getItemInventoryEventsFromPositionCmd::execute);
+            processItemInventoryStreamCmd.execute(streamPosition);
 
             long e = System.currentTimeMillis();
             logger.info(MessageFormat.format("total time (ms): {0}", (e-b)));
             logger.info(MessageFormat.format("***** {0} scenario complete *****", SCENARIO_NAME));
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("unhandled exception", e);
         }
     }

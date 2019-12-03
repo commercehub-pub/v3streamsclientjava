@@ -1,18 +1,30 @@
-package io.dsco.demo.scenario.base;
+package io.dsco.stream.command.retailer;
 
 import io.dsco.stream.api.StreamV3Api;
+import io.dsco.stream.command.Command;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-public interface StreamSyncMethods
+public class CreateItemInventoryStreamSync
+implements Command<Void, String>
 {
-    default String createStreamSync(StreamV3Api streamV3Api, String streamId, Logger logger)
-    throws ExecutionException, InterruptedException
+    private static final Logger logger = LogManager.getLogger(CreateItemInventoryStreamSync.class);
+    private final StreamV3Api streamV3Api;
+    private final java.lang.String streamId;
+
+    public CreateItemInventoryStreamSync(StreamV3Api streamV3Api, java.lang.String streamId)
+    {
+        this.streamId = streamId;
+        this.streamV3Api = streamV3Api;
+    }
+
+    @Override
+    public String execute(Void x) throws Exception
     {
         if (logger.isDebugEnabled()) {
             logger.debug("creating stream sync operation");

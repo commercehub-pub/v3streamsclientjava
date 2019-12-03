@@ -2,29 +2,24 @@ package io.dsco.demo;
 
 //TODO: make a sequence diagram of the fan out scenario
 
-import com.google.gson.Gson;
 import io.dsco.demo.scenario.*;
-import io.dsco.demo.scenario.OrderBasic;
 import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.command.supplier.UpdateInventory;
-import io.dsco.stream.domain.ItemInventory;
-import io.dsco.stream.domain.ItemWarehouse;
 import io.dsco.stream.apiimpl.ApiBuilder;
-import io.dsco.stream.shared.GetInventoryItems;
+import io.dsco.stream.command.supplier.UpdateInventory;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -69,7 +64,9 @@ public class StreamsDemonstration
                     props.store(os, null);
                 }
 
-                logger.info("No properties file found. A default properties file has been created in the resources directory. Please populate it with appropriate values before rerunning the application.");
+                logger.info(
+                        "No properties file found. A default properties file has been created in the resources directory.\n" +
+                        "Please populate it with appropriate values before rerunning the application.");
                 System.exit(1);
             }
             props.load(is);
@@ -176,9 +173,6 @@ public class StreamsDemonstration
     private void doInventoryStreamProcessing()
             throws Throwable
     {
-        //arbitrary date to limit stream to a smaller subset for demo purposes
-        String updatedSince = "2019-08-15T18:26:00Z";
-
         String uniqueIdentifierKey = getConsoleInput("ItemInventory unique identifier (ex: sku, ean, gtin, isbn, mpn, upc, etc) > ");
 
         String streamId = getConsoleInput("streamId > ");
@@ -203,15 +197,24 @@ public class StreamsDemonstration
                         "     > "
         );
 
+        //TODO: new menu item: Simulate Activity In Streams - update iteminventory quantities available
+        // with an ask of how many items to update
+
         switch (selection)
         {
             case "1":
-                updateInventoryCmd.execute();
+                //updateInventoryCmd.execute(null);
                 new InventoryBasic(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin();
+
+                //TODO: set these to true when creating the stream
+                //omitItemsOnHold
+                //quantityChangeOnly
+                //clearQuantityForStoppedItems
+
                 break;
 
             case "2":
-                updateInventoryCmd.execute();
+                updateInventoryCmd.execute(null);
                 int numberOfConsumers = Integer.parseInt(getConsoleInput("\nHow many concurrent consumers > "));
                 new InventoryFanout(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin(numberOfConsumers);
                 break;

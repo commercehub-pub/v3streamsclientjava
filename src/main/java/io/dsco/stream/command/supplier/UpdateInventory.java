@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class UpdateInventory
-implements Command, GetInventoryItems
+implements Command<Void, Void>, GetInventoryItems
 {
     private static final Logger logger = LogManager.getLogger(UpdateInventory.class);
 
@@ -37,8 +37,7 @@ implements Command, GetInventoryItems
     }
 
     @Override
-    public void execute()
-    throws Throwable
+    public Void execute(Void x) throws Exception
     {
         //TODO: don't hardcode
         //arbitrary date to limit stream to a smaller subset for demo purposes
@@ -87,6 +86,8 @@ implements Command, GetInventoryItems
             //some stuff is still pending; wait a bit and try again
             Thread.sleep(500);
         }
+
+        return null;
     }
 
     private String updateInventorySmallBatch(InventoryV3Api inventoryApi, List<ItemInventory> items)

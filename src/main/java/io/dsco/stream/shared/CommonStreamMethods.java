@@ -1,4 +1,4 @@
-package io.dsco.demo.scenario.base;
+package io.dsco.stream.shared;
 
 import io.dsco.stream.api.StreamV3Api;
 import kong.unirest.HttpResponse;

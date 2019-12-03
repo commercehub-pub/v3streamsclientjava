@@ -1,16 +1,17 @@
 package io.dsco.demo.scenario;
 
-import io.dsco.demo.scenario.base.BasicStreamProcessor;
-import io.dsco.demo.scenario.base.CommonStreamMethods;
-import io.dsco.demo.scenario.base.ItemInventoryMethods;
 import io.dsco.stream.api.StreamV3Api;
+import io.dsco.stream.command.retailer.GetItemInventoryEventsFromPosition;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.shared.CommonStreamMethods;
+import io.dsco.stream.shared.ItemInventoryProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -25,7 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * consumer to be processed.
  */
 public class InventoryFanout
-implements CommonStreamMethods
+implements CommonStreamMethods, ItemInventoryProcessor
 {
     private static final Logger logger = LogManager.getLogger(InventoryFanout.class);
 
@@ -41,16 +42,15 @@ implements CommonStreamMethods
     private List<QueuePositionOrganizer> processedPositionList = new ArrayList<>();
     private Lock listLock = new ReentrantLock();
 
-    private final BasicStreamProcessor<StreamItemInventory> basicStreamProcessor;
-    private final ItemInventoryMethods itemInventoryMethods;
+    private final GetItemInventoryEventsFromPosition getItemInventoryEventsFromPositionCmd;
 
     public InventoryFanout(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        basicStreamProcessor = new BasicStreamProcessor<>(logger, streamV3Api, streamId);
-        itemInventoryMethods = new ItemInventoryMethods(streamV3Api, streamId, uniqueIdentifierKey, logger);
+        getItemInventoryEventsFromPositionCmd =
+                new GetItemInventoryEventsFromPosition(streamV3Api, streamId, uniqueIdentifierKey);
     }
 
     public void begin(int numberOfConsumers)
@@ -92,23 +92,22 @@ implements CommonStreamMethods
     }
 
     private void processAllItemsInStream(String streamPosition)
-    throws InterruptedException, ExecutionException
+    throws Exception
     {
-        List<StreamItemInventory> items = itemInventoryMethods.getItemInventoryEventsFromPosition(streamPosition);
+        List<StreamItemInventory> items = getItemInventoryEventsFromPositionCmd.execute(Collections.singletonList(streamPosition));
 
-        if (items.size() == 0) {
-            //now that the stream is drained, let each consumer know it can shut down when processing is finished
-            consumers.forEach(Consumer::notifyOkToShutdown);
+        while (items.size() > 0) {
+            //pass the data off to the consumers for processing
+            logger.info("sending items to consumer queues...");
+            addItemsToQueue(items);
 
-            return; //all done
+            //do it again, from the last known position
+            streamPosition = items.get(items.size()-1).getId();
+            items = getItemInventoryEventsFromPositionCmd.execute(Collections.singletonList(streamPosition));
         }
 
-        //pass the data off to the consumers for processing
-        logger.info("sending items to consumer queues...");
-        addItemsToQueue(items);
-
-        //do it again, from the last known position
-        processAllItemsInStream(items.get(items.size()-1).getId());
+        //now that the stream is drained, let each consumer know it can shut down when processing is finished
+        consumers.forEach(Consumer::notifyOkToShutdown);
     }
 
     private void markInventoryItemAsProcessed(String position)
@@ -138,7 +137,7 @@ implements CommonStreamMethods
                 // removed. this allows us to only call updateStreamPosition one time instead of many, if there were many
                 // items that have now been contiguously completed
                 //updateStreamPosition(updateStreamPositionToHere);
-                basicStreamProcessor.updateStreamPosition(streamV3Api, streamId, updateStreamPositionToHere, logger);
+                updateStreamPosition(streamV3Api, streamId, updateStreamPositionToHere, logger);
 
                 //logger.info(">>> " + numItemsRemoved + " were marked with only 1 call");
 
@@ -234,7 +233,7 @@ implements CommonStreamMethods
                     if (streamItemInventory.getId().equals("-1")) break;
 
                     //process the item
-                    tester.basicStreamProcessor.processItem(streamItemInventory);
+                    tester.processItem(streamItemInventory, logger);
 
                     //mark the item as processed
                     tester.markInventoryItemAsProcessed(streamItemInventory.getId());

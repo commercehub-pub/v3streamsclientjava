@@ -1,6 +1,6 @@
 package io.dsco.stream.command;
 
-public interface Command
+public interface Command<P, R>
 {
-    void execute() throws Throwable;
+    R  execute(P param) throws Exception;
 }
