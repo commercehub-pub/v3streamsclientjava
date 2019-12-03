@@ -9,38 +9,20 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.apache.logging.log4j.Logger;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public interface GetInventoryItems
 {
     default List<ItemInventory> getInventoryItems(
             InventoryV2Api inventoryApi, @SuppressWarnings("SameParameterValue") String pageIdentifier,
             String updatedSince, Logger logger)
-    throws ExecutionException, InterruptedException
+    throws Exception
     {
-        List<ItemInventory> items;
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("about to query for inventory items");
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = inventoryApi.getAllInventory(pageIdentifier, updatedSince);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for inventory items");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for get items: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when retrieving items: " + httpStatus);
-        }
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return inventoryApi.getAllInventory(pageIdentifier, updatedSince);
+        }, inventoryApi, logger, "getInventoryItems", NetworkExecutor.HTTP_RESPONSE_200);
 
         //don't bother with paging for the demo. just grab whatever came back in the first page.
         JSONObject responseJson = future.get().getBody().getObject();
@@ -51,7 +33,7 @@ public interface GetInventoryItems
         }
 
         //convert the items from json to java for easy manipulation
-        items = new ArrayList<>(itemInventoryJson.length());
+        List<ItemInventory> items = new ArrayList<>(itemInventoryJson.length());
         for (int i=0; i<itemInventoryJson.length(); i++) {
             JSONObject itemJson = itemInventoryJson.getJSONObject(i);
             String jsonStr = itemJson.toString();

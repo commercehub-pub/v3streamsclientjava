@@ -14,7 +14,7 @@ public interface CommonStreamMethods
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
             return streamV3Api.listStream(streamId);
-        }, logger, "getStreamPosition", NetworkExecutor.HTTP_RESPONSE_200);
+        }, streamV3Api, logger, "getStreamPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
         //pull out the stream position from the response
         return future.get().getBody().getArray().getJSONObject(0).getString("position");
@@ -25,6 +25,6 @@ public interface CommonStreamMethods
     {
         /*CompletableFuture<HttpResponse<JsonNode>> future =*/ NetworkExecutor.getInstance().execute((x) -> {
             return streamV3Api.updateStreamPosition(streamId, streamPosition);
-        }, logger, "updateStreamPosition", NetworkExecutor.HTTP_RESPONSE_200);
+        }, streamV3Api, logger, "updateStreamPosition", NetworkExecutor.HTTP_RESPONSE_200);
     }
 }

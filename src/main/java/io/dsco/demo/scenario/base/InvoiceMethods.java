@@ -5,6 +5,7 @@ import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.*;
+import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
@@ -17,12 +18,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-//TODO: can probably be moved to an interface now for the invoice specific methods
-/**
- * needed to be a class rather than an interface so the getInvoiceEventsFromPosition can be passed to a lambda function
- */
+//TODO: move this down into a set of invoice commands
 public class InvoiceMethods
 {
     private final StreamV3Api streamV3ApiRetailer;
@@ -39,26 +36,11 @@ public class InvoiceMethods
     }
 
     public ResponseInvoiceCreate createInvoiceSmallBatch(InvoiceV3Api invoiceV3ApiSupplier, List<InvoiceForUpdate> invoices)
-    throws ExecutionException, InterruptedException
+    throws Exception
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("About to add {0} invoices", invoices.size()));
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = invoiceV3ApiSupplier.createInvoiceSmallBatch(invoices);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for invoices add");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for invoice add: {0}", httpStatus));
-        }
-        if (httpStatus != 202) {
-            throw new IllegalStateException("got invalid http response when adding invoices: " + httpStatus);
-        }
-
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return invoiceV3ApiSupplier.createInvoiceSmallBatch(invoices);
+        }, invoiceV3ApiSupplier, logger, "createInvoiceSmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 //logger.info(future.get().getBody());
 
         return new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceCreate.class);
@@ -68,7 +50,7 @@ public class InvoiceMethods
      * find the given invoice update request and return it
      */
     public InvoiceChangeLog getInvoiceChangeLog(InvoiceV3Api invoiceV3ApiSupplier, String requestId, String eventDate)
-    throws ExecutionException, InterruptedException
+    throws Exception
     {
         //due to propagation delay issues, recommended best practice is to shift everything back by 10 seconds and begin searching from then
         ZonedDateTime from = ZonedDateTime.parse(eventDate).minusSeconds(10L);
@@ -76,26 +58,9 @@ public class InvoiceMethods
 
         String nowMinus10Seconds = Util.dateToIso8601(new Date(System.currentTimeMillis()-10_000L));
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format(
-                    "About to check status of added invoice, beginEnd: {0}, endDate: {1} (now={2})", fromDateMinus10Seconds, nowMinus10Seconds, Util.dateToIso8601(new Date())));
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future =
-                invoiceV3ApiSupplier.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for status check");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for status check: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            logger.error(future.get().getBody());
-            throw new IllegalStateException("got invalid http response when checking status: " + httpStatus);
-        }
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return invoiceV3ApiSupplier.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
+        }, invoiceV3ApiSupplier, logger, "getInvoiceChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
 
 //logger.info(future.get().getBody());
 
@@ -112,40 +77,20 @@ public class InvoiceMethods
         return requestedResponseRecord;
     }
 
-    //can't throw an exception. used in lambda function call
     public List<StreamItemInvoice> getInvoiceEventsFromPosition(String position)
+    throws Exception
     {
-        try {
-            if (logger.isDebugEnabled()) {
-                logger.debug(MessageFormat.format("getting invoice events in stream {0} from position {1}", streamId, position));
-            }
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return streamV3ApiRetailer.getStreamEventsFromPosition(streamId, position);
+        }, streamV3ApiRetailer, logger, "getInvoiceEventsFromPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
-            CompletableFuture<HttpResponse<JsonNode>> future = streamV3ApiRetailer.getStreamEventsFromPosition(streamId, position);
+        JSONArray list = future.get().getBody().getArray();
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("waiting for response for stream events");
-            }
-
-            int httpStatus = future.get().getStatus();
-            if (logger.isDebugEnabled()) {
-                logger.debug(MessageFormat.format("http response code for stream events: {0}", httpStatus));
-            }
-            if (httpStatus != 200) {
-                throw new IllegalStateException("got invalid http response when retrieving stream events: " + httpStatus);
-            }
-
-            JSONArray list = future.get().getBody().getArray();
-
-            if (logger.isDebugEnabled()) {
-                logger.debug(MessageFormat.format("there are {0} items in the stream", list.length()));
-            }
-
-            StreamItemInvoice[] results = new Gson().fromJson(future.get().getBody().toString(), StreamItemInvoice[].class);
-            return Arrays.asList(results);
-
-        } catch (Exception e) {
-            logger.error("unexpected error", e);
-            return null;
+        if (logger.isDebugEnabled()) {
+            logger.debug(MessageFormat.format("there are {0} items in the stream", list.length()));
         }
+
+        StreamItemInvoice[] results = new Gson().fromJson(future.get().getBody().toString(), StreamItemInvoice[].class);
+        return Arrays.asList(results);
     }
 }

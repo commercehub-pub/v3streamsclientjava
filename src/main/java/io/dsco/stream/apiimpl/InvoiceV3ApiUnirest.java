@@ -16,13 +16,13 @@ public class InvoiceV3ApiUnirest
 extends BaseApiUnirest
 implements InvoiceV3Api
 {
-    InvoiceV3ApiUnirest(@NotNull String accessToken, @NotNull String baseUrl)
+    InvoiceV3ApiUnirest(@NotNull String clientId, @NotNull String secret, @NotNull String baseUrl)
     {
-        super(accessToken, baseUrl);
+        super(clientId, secret, baseUrl);
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> createInvoiceSmallBatch(List<InvoiceForUpdate> invoices)
+    public CompletableFuture<HttpResponse<JsonNode>> createInvoiceSmallBatch(@NotNull List<InvoiceForUpdate> invoices)
     {
         return Unirest.post(baseUrl + "invoice/batch/small")
                 .headers(defaultHeaders)
@@ -46,8 +46,8 @@ implements InvoiceV3Api
                 throw new IllegalArgumentException("both startDate and endDate are required");
             }
 
-            if (startDate != null) params.put("startDate", startDate);
-            if (endDate != null) params.put("endDate", endDate);
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
         }
 
         if (status != null) params.put("status", status.toString());

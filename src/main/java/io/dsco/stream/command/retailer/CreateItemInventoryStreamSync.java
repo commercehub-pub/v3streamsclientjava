@@ -2,12 +2,12 @@ package io.dsco.stream.command.retailer;
 
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.Command;
+import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
 
 public class CreateItemInventoryStreamSync
@@ -24,25 +24,11 @@ implements Command<Void, String>
     }
 
     @Override
-    public String execute(Void x) throws Exception
+    public String execute(Void v) throws Exception
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug("creating stream sync operation");
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.createStreamOperation(streamId, StreamV3Api.OperationType.sync);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for sync operation");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for sync operation: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when creating sync operation: " + httpStatus);
-        }
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return streamV3Api.createStreamOperation(streamId, StreamV3Api.OperationType.sync);
+        }, streamV3Api, logger, "createStreamSync", NetworkExecutor.HTTP_RESPONSE_200);
 
         //return the operationUuid
 //logger.info(future.get().getBody());

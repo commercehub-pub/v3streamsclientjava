@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface InvoiceV3Api
+extends OAuthSupport
 {
     public enum ChangeLogStatus {pending, success, failure, success_or_failure}
 

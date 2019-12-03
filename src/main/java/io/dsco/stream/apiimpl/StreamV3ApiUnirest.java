@@ -14,14 +14,14 @@ public class StreamV3ApiUnirest
 extends BaseApiUnirest
 implements StreamV3Api
 {
-    StreamV3ApiUnirest(@NotNull String accessToken, @NotNull String baseUrl)
+    StreamV3ApiUnirest(@NotNull String clientId, @NotNull String secret, @NotNull String baseUrl)
     {
-        super(accessToken, baseUrl);
+        super(clientId, secret, baseUrl);
     }
 
     @Override
     public CompletableFuture<HttpResponse<JsonNode>> createStream(
-            String id, String description, ObjectType objectType, Map<String, Object> query)
+            @NotNull String id, @NotNull String description, ObjectType objectType, Map<String, Object> query)
     {
         Map<String, Object> body = new HashMap<>();
         body.put("id", id);
@@ -43,7 +43,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> listStream(String id)
+    public CompletableFuture<HttpResponse<JsonNode>> listStream(@NotNull String id)
     {
         //note: i am adding the _ts param because if this is first called and gets a 404
         // that value seems to be cached inside of Unirest, and even if later on the url
@@ -66,7 +66,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(String id, String newDescription, Map<String, Object> query)
+    public CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(@NotNull String id, @NotNull String newDescription, Map<String, Object> query)
     {
         Map<String, Object> body = new HashMap<>();
         body.put("id", id);
@@ -95,7 +95,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> getStreamEventsFromPosition(String id, String position)
+    public CompletableFuture<HttpResponse<JsonNode>> getStreamEventsFromPosition(@NotNull String id, @NotNull String position)
     {
         return Unirest.get(baseUrl + "stream/{id}/{position}")
                 .routeParam("id", id)
@@ -105,7 +105,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> getStreamEventsInRange(String id, String startPosition, String endPosition)
+    public CompletableFuture<HttpResponse<JsonNode>> getStreamEventsInRange(@NotNull String id, @NotNull String startPosition, @NotNull String endPosition)
     {
         return Unirest.get(baseUrl + "stream/{id}/{startPosition}/{endPosition}")
                 .routeParam("id", id)
@@ -116,7 +116,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> updateStreamPosition(String id, String position)
+    public CompletableFuture<HttpResponse<JsonNode>> updateStreamPosition(@NotNull String id, @NotNull String position)
     {
         return Unirest.put(baseUrl + "stream/{id}/{position}")
                 .routeParam("id", id)
@@ -126,7 +126,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> deleteStream(String id)
+    public CompletableFuture<HttpResponse<JsonNode>> deleteStream(@NotNull String id)
     {
         return Unirest.delete(baseUrl + "stream/{id}")
                 .routeParam("id", id)

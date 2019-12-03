@@ -48,7 +48,6 @@ implements CommonStreamMethods
             String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
             logger.info("initial stream position: " + streamPosition);
 
-            //basicStreamProcessor.processAllItemsInStream(streamPosition, getItemInventoryEventsFromPositionCmd::execute);
             processItemInventoryStreamCmd.execute(streamPosition);
 
             long e = System.currentTimeMillis();

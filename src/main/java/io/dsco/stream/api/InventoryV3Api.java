@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface InventoryV3Api
+extends OAuthSupport
 {
     CompletableFuture<HttpResponse<JsonNode>> updateInventorySmallBatch(@NotNull List<ItemInventory> items);
 

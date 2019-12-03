@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public interface StreamV3Api
+extends OAuthSupport
 {
     enum ObjectType {order, invoice, inventory, catalog, catalogchangelog, orderitemchange, undeliverableshipment}
 

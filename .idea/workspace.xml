@@ -2,11 +2,32 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="88fe881d-f015-487e-837f-51befe0ea6fd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/BaseApi.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/Util.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryFanout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryFanout.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventorySync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventorySync.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/InvoiceMethods.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/InvoiceMethods.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InventoryV2Api.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InventoryV2Api.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InventoryV3Api.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InventoryV3Api.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InvoiceV3Api.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/InvoiceV3Api.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/StreamV3Api.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/api/StreamV3Api.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/ApiBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/ApiBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/BaseApiUnirest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InventoryV2ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InventoryV2ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InventoryV3ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InventoryV3ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InvoiceV3ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/InvoiceV3ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/StreamV3ApiUnirest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/apiimpl/StreamV3ApiUnirest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/CreateItemInventoryStreamSync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/CreateItemInventoryStreamSync.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/GetItemInventoryEventsFromPosition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/GetItemInventoryEventsFromPosition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/GetItemInventoryEventsInRange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/GetItemInventoryEventsInRange.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/ProcessItemInventoryStream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/retailer/ProcessItemInventoryStream.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/supplier/UpdateInventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/supplier/UpdateInventory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/CommonStreamMethods.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/CommonStreamMethods.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/GetInventoryItems.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/GetInventoryItems.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/NetworkExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/NetworkExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/StreamItemInventoryBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/StreamItemInventoryBase.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,8 +91,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -221,7 +242,7 @@
       <workItem from="1574785745370" duration="35001000" />
       <workItem from="1574880459869" duration="13892000" />
       <workItem from="1575303885171" duration="14954000" />
-      <workItem from="1575326296314" duration="12527000" />
+      <workItem from="1575326296314" duration="23520000" />
     </task>
     <servers />
   </component>
@@ -242,44 +263,48 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="676" y="215" key="#com.intellij.ide.util.MemberChooser" timestamp="1575338052904">
-      <screen x="0" y="23" width="1680" height="1027" />
+    <state x="2693" y="242" key="#com.intellij.ide.util.MemberChooser" timestamp="1575400763434">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state x="515" y="153" key="#com.intellij.ide.util.MemberChooser/0.23.1280.697@0.23.1280.697" timestamp="1575318313566" />
     <state x="676" y="215" key="#com.intellij.ide.util.MemberChooser/0.23.1680.1027@0.23.1680.1027" timestamp="1575338052904" />
-    <state x="2693" y="242" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309089317" />
+    <state x="2693" y="242" key="#com.intellij.ide.util.MemberChooser/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575400763434" />
+    <state x="2457" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1575404856246">
+      <screen x="1920" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2457" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575404856246" />
     <state x="611" y="297" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1575338408535">
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
     <state x="611" y="297" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1575338408535" />
     <state x="2618" y="305" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304746432" />
-    <state width="1878" height="888" key="GridCell.Tab.0.bottom" timestamp="1575391505207">
-      <screen x="0" y="23" width="1920" height="1057" />
+    <state width="1878" height="888" key="GridCell.Tab.0.bottom" timestamp="1575395930088">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.bottom/0.23.1280.697@0.23.1280.697" timestamp="1575327708932" />
     <state width="1638" height="546" key="GridCell.Tab.0.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275495" />
-    <state width="1878" height="888" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241441" />
+    <state width="1878" height="888" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575395930088" />
     <state width="1878" height="888" key="GridCell.Tab.0.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505207" />
-    <state width="1878" height="888" key="GridCell.Tab.0.center" timestamp="1575391505206">
-      <screen x="0" y="23" width="1920" height="1057" />
+    <state width="1878" height="888" key="GridCell.Tab.0.center" timestamp="1575395930087">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.center/0.23.1280.697@0.23.1280.697" timestamp="1575327708931" />
     <state width="1638" height="546" key="GridCell.Tab.0.center/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275495" />
-    <state width="1878" height="888" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241440" />
+    <state width="1878" height="888" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575395930087" />
     <state width="1878" height="888" key="GridCell.Tab.0.center/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505206" />
-    <state width="1878" height="888" key="GridCell.Tab.0.left" timestamp="1575391505205">
-      <screen x="0" y="23" width="1920" height="1057" />
+    <state width="1878" height="888" key="GridCell.Tab.0.left" timestamp="1575395930086">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.left/0.23.1280.697@0.23.1280.697" timestamp="1575327708930" />
     <state width="1638" height="546" key="GridCell.Tab.0.left/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275491" />
-    <state width="1878" height="888" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241439" />
+    <state width="1878" height="888" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575395930086" />
     <state width="1878" height="888" key="GridCell.Tab.0.left/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505205" />
-    <state width="1878" height="888" key="GridCell.Tab.0.right" timestamp="1575391505207">
-      <screen x="0" y="23" width="1920" height="1057" />
+    <state width="1878" height="888" key="GridCell.Tab.0.right" timestamp="1575395930088">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.right/0.23.1280.697@0.23.1280.697" timestamp="1575327708932" />
     <state width="1638" height="546" key="GridCell.Tab.0.right/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275495" />
-    <state width="1878" height="888" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241440" />
+    <state width="1878" height="888" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575395930088" />
     <state width="1878" height="888" key="GridCell.Tab.0.right/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505207" />
     <state width="1238" height="251" key="GridCell.Tab.1.bottom" timestamp="1575327009327">
       <screen x="0" y="23" width="1280" height="697" />
@@ -302,18 +327,19 @@
     </state>
     <state x="513" y="346" key="com.intellij.ide.util.TipDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1575326300872" />
     <state x="2506" y="355" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575303885115" />
-    <state x="2669" y="475" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1575307534089">
+    <state x="2669" y="475" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1575401694614">
       <screen x="1920" y="23" width="1920" height="1057" />
     </state>
-    <state x="2669" y="475" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575307534089" />
-    <state x="0" y="23" width="816" height="697" key="find.popup" timestamp="1575326501182">
-      <screen x="0" y="23" width="1280" height="697" />
+    <state x="2669" y="475" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575401694614" />
+    <state x="1920" y="23" width="1224" height="1057" key="find.popup" timestamp="1575400122875">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state x="0" y="23" width="816" height="697" key="find.popup/0.23.1280.697@0.23.1280.697" timestamp="1575326501182" />
-    <state x="417" y="178" key="search.everywhere.popup" timestamp="1575326678412">
-      <screen x="0" y="23" width="1280" height="697" />
+    <state x="1920" y="23" width="1224" height="1057" key="find.popup/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575400122875" />
+    <state x="2545" y="258" width="670" height="676" key="search.everywhere.popup" timestamp="1575402950058">
+      <screen x="1920" y="23" width="1920" height="1057" />
     </state>
     <state x="417" y="178" key="search.everywhere.popup/0.23.1280.697@0.23.1280.697" timestamp="1575326678412" />
-    <state x="2545" y="258" key="search.everywhere.popup/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309631464" />
+    <state x="2545" y="258" width="670" height="676" key="search.everywhere.popup/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575402950058" />
   </component>
 </project>

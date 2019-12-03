@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -20,6 +21,12 @@ public class Util
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         df.setTimeZone(tz);
         return df.format(date);
+    }
+
+    public static Date iso8601ToDate(@NotNull String date)
+    {
+        ZonedDateTime from = ZonedDateTime.parse(date);
+        return Date.from(from.toInstant());
     }
 
     public static @NotNull String getConsoleInput(@NotNull String prompt)

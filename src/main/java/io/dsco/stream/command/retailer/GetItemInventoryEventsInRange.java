@@ -3,6 +3,7 @@ package io.dsco.stream.command.retailer;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.shared.NetworkExecutor;
 import io.dsco.stream.shared.StreamItemInventoryBase;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -41,7 +42,9 @@ implements Command<List<String>, List<StreamItemInventory>>
                     streamId, startPosition, endPosition));
         }
 
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.getStreamEventsInRange(streamId, startPosition, endPosition);
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return streamV3Api.getStreamEventsInRange(streamId, startPosition, endPosition);
+        }, streamV3Api, logger, "getItemInventoryEventsInRange", NetworkExecutor.HTTP_RESPONSE_200);
 
         return refactorParseStreamEvents(future);
     }

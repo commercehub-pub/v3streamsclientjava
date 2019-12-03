@@ -50,6 +50,7 @@ implements Command<String, Void>, CommonStreamMethods, ItemInventoryProcessor
                 }
             }
 
+            //do a final position update for this batch of items
             updateStreamPosition(streamV3Api, streamId, lastItem.getId(), logger);
 
             //get the next batch of items

@@ -30,20 +30,6 @@ implements Command<List<String>, List<StreamItemInventory>>
     protected List<StreamItemInventory> refactorParseStreamEvents(CompletableFuture<HttpResponse<JsonNode>> future)
     throws ExecutionException, InterruptedException
     {
-        List<StreamItemInventory> items;
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for stream events");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for stream events: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when retrieving stream events: " + httpStatus);
-        }
-
         JSONArray list = future.get().getBody().getArray();
 
         if (logger.isDebugEnabled()) {
@@ -52,7 +38,7 @@ implements Command<List<String>, List<StreamItemInventory>>
 
         //in the real system, this would parse out each stream itemInventory, but for demo purposes all we care about is the
         // id and the sku, so that the stream position can be updated
-        items = new ArrayList<>(list.length());
+        List<StreamItemInventory> items = new ArrayList<>(list.length());
         for (int i=0; i<list.length(); i++) {
             JSONObject obj = list.getJSONObject(i);
             String id = obj.getString("id");

@@ -6,6 +6,7 @@ import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.ItemWarehouse;
 import io.dsco.stream.shared.GetInventoryItems;
+import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
@@ -17,15 +18,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class UpdateInventory
-implements Command<Void, Void>, GetInventoryItems
+implements Command<Integer, Void>, GetInventoryItems
 {
     private static final Logger logger = LogManager.getLogger(UpdateInventory.class);
-
-    //for demo purposes, limit how many item inventory objects get updated
-    private static final int ITEM_INVENTORY_UPDATE_LIMITER = 5;
 
     private final InventoryV2Api inventoryV2Api;
     private final InventoryV3Api inventoryV3Api;
@@ -37,8 +34,12 @@ implements Command<Void, Void>, GetInventoryItems
     }
 
     @Override
-    public Void execute(Void x) throws Exception
+    public Void execute(Integer numberItemsToUpdate) throws Exception
     {
+        if (numberItemsToUpdate == null) {
+            numberItemsToUpdate = 5;
+        }
+
         //TODO: don't hardcode
         //arbitrary date to limit stream to a smaller subset for demo purposes
         String updatedSince = "2019-08-15T18:26:00Z";
@@ -52,7 +53,7 @@ implements Command<Void, Void>, GetInventoryItems
 
         //for demo purposes, grab the quantity in the first warehouse for each item and increment by 1
         int count = 0;
-        List<ItemInventory> changedItems = new ArrayList<>(ITEM_INVENTORY_UPDATE_LIMITER);
+        List<ItemInventory> changedItems = new ArrayList<>(numberItemsToUpdate);
         for (int i = itemInventoryList.size() - 1; i >= 0; i--) {
             ItemInventory itemInventory = itemInventoryList.get(i);
 
@@ -68,7 +69,7 @@ implements Command<Void, Void>, GetInventoryItems
 
                 //break out early based on the limit set for demo purposes
                 count++;
-                if (count > ITEM_INVENTORY_UPDATE_LIMITER) break;
+                if (count >= numberItemsToUpdate) break;
 
             } else {
                 //remove from the list; it doesn't have a warehouse. safe to do since we're looping backwards
@@ -91,25 +92,11 @@ implements Command<Void, Void>, GetInventoryItems
     }
 
     private String updateInventorySmallBatch(InventoryV3Api inventoryApi, List<ItemInventory> items)
-            throws ExecutionException, InterruptedException
+    throws Exception
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("about to update {0} inventory items", items.size()));
-        }
-
-        CompletableFuture<HttpResponse<JsonNode>> future = inventoryApi.updateInventorySmallBatch(items);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for update");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for update items: {0}", httpStatus));
-        }
-        if (httpStatus != 202) {
-            throw new IllegalStateException("got invalid http response when updating items: " + httpStatus);
-        }
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return inventoryApi.updateInventorySmallBatch(items);
+        }, inventoryApi, logger, "updateInventorySmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 
         //since this is an asynchronous api, grab the "requestId" from the response. it will be needed to check
         // the result of the operation at a later time.
@@ -124,27 +111,13 @@ implements Command<Void, Void>, GetInventoryItems
     }
 
     private boolean isUpdateComplete(InventoryV3Api inventoryApi, String requestId)
-    throws ExecutionException, InterruptedException
+    throws Exception
     {
-        if (logger.isDebugEnabled()) {
-            logger.debug("about to check status of batch update request");
-        }
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return inventoryApi.getInventoryChangeLog(requestId);
+        }, inventoryApi, logger, "getInventoryChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
 
-        CompletableFuture<HttpResponse<JsonNode>> future = inventoryApi.getInventoryChangeLog(requestId);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("waiting for response for status check");
-        }
-
-        int httpStatus = future.get().getStatus();
-        if (logger.isDebugEnabled()) {
-            logger.debug(MessageFormat.format("http response code for status check: {0}", httpStatus));
-        }
-        if (httpStatus != 200) {
-            throw new IllegalStateException("got invalid http response when checking update status: " + httpStatus);
-        }
-
-        //in a real system you'd want to loop them and check the status of each item to make sure it was successful
+        //see if each item is successful, pending, or failed
         JSONArray jsonList = future.get().getBody().getObject().getJSONArray("logs");
 
         int numSuccess = 0;

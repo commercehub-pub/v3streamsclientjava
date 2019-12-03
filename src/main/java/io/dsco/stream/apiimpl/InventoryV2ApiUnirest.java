@@ -16,7 +16,17 @@ implements InventoryV2Api
 {
     InventoryV2ApiUnirest(@NotNull String accessToken, @NotNull String baseUrl)
     {
-        super(accessToken, baseUrl);
+        super(accessToken, "", baseUrl);
+
+        //cause the accessToken to get set
+        setTokenAndExpiration(accessToken, 0);
+    }
+
+    //for v2, the token never expires, so always return something in the future
+    @Override
+    public long getExpiresAt()
+    {
+        return System.currentTimeMillis() + 300_000L;
     }
 
     @Override

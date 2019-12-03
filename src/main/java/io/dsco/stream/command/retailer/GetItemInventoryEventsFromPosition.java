@@ -2,6 +2,7 @@ package io.dsco.stream.command.retailer;
 
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.shared.NetworkExecutor;
 import io.dsco.stream.shared.StreamItemInventoryBase;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -34,7 +35,9 @@ extends StreamItemInventoryBase
             logger.debug(MessageFormat.format("getting events in stream {0} from position {1}", streamId, positions.get(0)));
         }
 
-        CompletableFuture<HttpResponse<JsonNode>> future = streamV3Api.getStreamEventsFromPosition(streamId, positions.get(0));
+        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+            return streamV3Api.getStreamEventsFromPosition(streamId, positions.get(0));
+        }, streamV3Api, logger, "getItemInventoryEventsFromPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
         return refactorParseStreamEvents(future);
     }

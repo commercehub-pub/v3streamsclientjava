@@ -14,9 +14,9 @@ public class InventoryV3ApiUnirest
 extends BaseApiUnirest
 implements InventoryV3Api
 {
-    InventoryV3ApiUnirest(@NotNull String accessToken, @NotNull String baseUrl)
+    InventoryV3ApiUnirest(@NotNull String clientId, @NotNull String secret, @NotNull String baseUrl)
     {
-        super(accessToken, baseUrl);
+        super(clientId, secret, baseUrl);
     }
 
     @Override
