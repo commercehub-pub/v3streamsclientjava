@@ -111,7 +111,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
     }
 
     private void markInventoryItemAsProcessed(String position)
-    throws InterruptedException, ExecutionException
+    throws Exception
     {
         listLock.lock();
         try {
@@ -238,8 +238,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
                     //mark the item as processed
                     tester.markInventoryItemAsProcessed(streamItemInventory.getId());
                 }
-            } catch (InterruptedException ignored) {
-            } catch (ExecutionException e) {
+            } catch (Exception e) {
                 logger.error("uncaught exception while processing item", e);
             }
 

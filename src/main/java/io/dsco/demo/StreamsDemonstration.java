@@ -203,7 +203,7 @@ public class StreamsDemonstration
         switch (selection)
         {
             case "1":
-                //updateInventoryCmd.execute(null);
+                updateInventoryCmd.execute(null);
                 new InventoryBasic(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin();
 
                 //TODO: set these to true when creating the stream

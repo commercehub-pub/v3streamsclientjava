@@ -2,19 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="88fe881d-f015-487e-837f-51befe0ea6fd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/StreamsDemonstration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryBasic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryBasic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryErrorRecovery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryErrorRecovery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryFanout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventoryFanout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventorySync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InventorySync.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/InvoiceBasic.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/BasicStreamProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/CommonStreamMethods.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/CommonStreamMethods.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/ItemInventoryMethods.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/demo/scenario/base/StreamSyncMethods.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/supplier/UpdateInventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/command/supplier/UpdateInventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/CommonStreamMethods.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/dsco/stream/shared/CommonStreamMethods.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,8 +70,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -229,7 +221,7 @@
       <workItem from="1574785745370" duration="35001000" />
       <workItem from="1574880459869" duration="13892000" />
       <workItem from="1575303885171" duration="14954000" />
-      <workItem from="1575326296314" duration="8223000" />
+      <workItem from="1575326296314" duration="12527000" />
     </task>
     <servers />
   </component>
@@ -261,30 +253,34 @@
     </state>
     <state x="611" y="297" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1575338408535" />
     <state x="2618" y="305" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575304746432" />
-    <state width="1238" height="546" key="GridCell.Tab.0.bottom" timestamp="1575327708932">
-      <screen x="0" y="23" width="1280" height="697" />
+    <state width="1878" height="888" key="GridCell.Tab.0.bottom" timestamp="1575391505207">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.bottom/0.23.1280.697@0.23.1280.697" timestamp="1575327708932" />
     <state width="1638" height="546" key="GridCell.Tab.0.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275495" />
-    <state width="1878" height="219" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792366" />
-    <state width="1238" height="546" key="GridCell.Tab.0.center" timestamp="1575327708931">
-      <screen x="0" y="23" width="1280" height="697" />
+    <state width="1878" height="888" key="GridCell.Tab.0.bottom/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241441" />
+    <state width="1878" height="888" key="GridCell.Tab.0.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505207" />
+    <state width="1878" height="888" key="GridCell.Tab.0.center" timestamp="1575391505206">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.center/0.23.1280.697@0.23.1280.697" timestamp="1575327708931" />
     <state width="1638" height="546" key="GridCell.Tab.0.center/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275495" />
-    <state width="1878" height="219" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792365" />
-    <state width="1238" height="546" key="GridCell.Tab.0.left" timestamp="1575327708930">
-      <screen x="0" y="23" width="1280" height="697" />
+    <state width="1878" height="888" key="GridCell.Tab.0.center/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241440" />
+    <state width="1878" height="888" key="GridCell.Tab.0.center/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505206" />
+    <state width="1878" height="888" key="GridCell.Tab.0.left" timestamp="1575391505205">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.left/0.23.1280.697@0.23.1280.697" timestamp="1575327708930" />
     <state width="1638" height="546" key="GridCell.Tab.0.left/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275491" />
-    <state width="1878" height="219" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792364" />
-    <state width="1238" height="546" key="GridCell.Tab.0.right" timestamp="1575327708932">
-      <screen x="0" y="23" width="1280" height="697" />
+    <state width="1878" height="888" key="GridCell.Tab.0.left/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241439" />
+    <state width="1878" height="888" key="GridCell.Tab.0.left/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505205" />
+    <state width="1878" height="888" key="GridCell.Tab.0.right" timestamp="1575391505207">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state width="1238" height="546" key="GridCell.Tab.0.right/0.23.1280.697@0.23.1280.697" timestamp="1575327708932" />
     <state width="1638" height="546" key="GridCell.Tab.0.right/0.23.1680.1027@0.23.1680.1027" timestamp="1575326275495" />
-    <state width="1878" height="219" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575309792366" />
+    <state width="1878" height="888" key="GridCell.Tab.0.right/0.23.1920.1057/1920.23.1920.1057@1920.23.1920.1057" timestamp="1575387241440" />
+    <state width="1878" height="888" key="GridCell.Tab.0.right/0.23.1920.1057@0.23.1920.1057" timestamp="1575391505207" />
     <state width="1238" height="251" key="GridCell.Tab.1.bottom" timestamp="1575327009327">
       <screen x="0" y="23" width="1280" height="697" />
     </state>
