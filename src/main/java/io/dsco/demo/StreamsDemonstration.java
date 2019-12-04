@@ -44,14 +44,15 @@ public class StreamsDemonstration
         //load the properties file to read configuration information
         Properties props = new Properties();
         try (InputStream is = StreamsDemonstration.class.getClassLoader().getResourceAsStream("dsco.properties")) {
+            
             if (is == null) {
                 //if this project was just checked out from source, there will be no properties file.
                 // in that case, load the log4j2.xml file (which WILL exist) and use its directory location
                 // to know where to save a default properties file.
                 @SuppressWarnings("ConstantConditions")
-                String resourcesPath = StreamsDemonstration.class.getClassLoader().getResource("log4j2.xml").getFile();
-                resourcesPath = resourcesPath.substring(0, resourcesPath.lastIndexOf(File.separator + "out"));
-                String outputPath = resourcesPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dsco.properties";
+                String currentWorkingDir = new File("x").getAbsolutePath();
+                currentWorkingDir = currentWorkingDir.substring(0, currentWorkingDir.lastIndexOf(File.separator));
+                String outputPath = currentWorkingDir + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dsco.properties";
                 //logger.info("saving file: " + outputPath);
 
                 //create the properties, but with placeholder values that must be filled in
