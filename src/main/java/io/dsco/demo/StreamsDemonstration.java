@@ -37,7 +37,6 @@ public class StreamsDemonstration
 
     private final UpdateInventory updateInventoryCmd;
 
-//TODO: grab the oAuth stuff and store it ... somewhere
     private StreamsDemonstration()
     {
         //load the properties file to read configuration information
@@ -85,7 +84,7 @@ public class StreamsDemonstration
         String baseV3Url = props.getProperty("base.v3.url");
         String v3oAuthUrl = props.getProperty("v3.oauth.url");
 
-        String supplierV2Token = props.getProperty("retailer.v2.token");
+        String supplierV2Token = props.getProperty("supplier.v2.token");
         String supplierV3ClientId = props.getProperty("supplier.v3.clientId");
         String supplierV3Secret = props.getProperty("supplier.v3.secret");
 
@@ -200,7 +199,7 @@ public class StreamsDemonstration
     {
         String streamId = getConsoleInput("\nstreamId > ");
 
-        new OrderBasic(streamId).begin();
+        //TODO: new OrderBasic(streamId).begin();
     }
 
     private void doCreateStream()

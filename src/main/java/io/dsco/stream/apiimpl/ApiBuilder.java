@@ -13,7 +13,7 @@ public class ApiBuilder
         return new StreamV3ApiUnirest(clientId, secret, baseUrl);
     }
 
-    public static InventoryV2Api getInventoryV2Api(String accessToken, String baseUrl)
+    public static InventoryV2Api getInventoryV2Api(@NotNull String accessToken, @NotNull String baseUrl)
     {
         return new InventoryV2ApiUnirest(accessToken, baseUrl);
     }

@@ -35,47 +35,6 @@ public class InvoiceMethods
         this.logger = logger;
     }
 
-    public ResponseInvoiceCreate createInvoiceSmallBatch(InvoiceV3Api invoiceV3ApiSupplier, List<InvoiceForUpdate> invoices)
-    throws Exception
-    {
-        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return invoiceV3ApiSupplier.createInvoiceSmallBatch(invoices);
-        }, invoiceV3ApiSupplier, logger, "createInvoiceSmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
-//logger.info(future.get().getBody());
-
-        return new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceCreate.class);
-    }
-
-    /**
-     * find the given invoice update request and return it
-     */
-    public InvoiceChangeLog getInvoiceChangeLog(InvoiceV3Api invoiceV3ApiSupplier, String requestId, String eventDate)
-    throws Exception
-    {
-        //due to propagation delay issues, recommended best practice is to shift everything back by 10 seconds and begin searching from then
-        ZonedDateTime from = ZonedDateTime.parse(eventDate).minusSeconds(10L);
-        String fromDateMinus10Seconds = Util.dateToIso8601(Date.from(from.toInstant()));
-
-        String nowMinus10Seconds = Util.dateToIso8601(new Date(System.currentTimeMillis()-10_000L));
-
-        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return invoiceV3ApiSupplier.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
-        }, invoiceV3ApiSupplier, logger, "getInvoiceChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
-
-//logger.info(future.get().getBody());
-
-        //convert to java and look for the given requestId
-        InvoiceChangeLog requestedResponseRecord = null;
-        ResponseInvoiceChangeLog response = new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceChangeLog.class);
-        for (InvoiceChangeLog log : response.getLogs()) {
-            if (log.getRequestId().equals(requestId)) {
-                requestedResponseRecord = log;
-                break;
-            }
-        }
-
-        return requestedResponseRecord;
-    }
 
     public List<StreamItemInvoice> getInvoiceEventsFromPosition(String position)
     throws Exception

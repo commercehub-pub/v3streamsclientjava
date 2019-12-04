@@ -40,16 +40,16 @@ implements OAuthSupport
     }
 
     @Override
-    public void setTokenAndExpiration(String token, long expiresAt /*int expiresIn*/)
+    public void setTokenAndExpiration(String token, long expiresIn)
     {
         //store the new auth token in the authorization header
         defaultHeaders.put("Authorization", "bearer " + token);
 
         //determine when the token will expire
         //expiresIn is in seconds. convert to milliseconds, add to the current time, and we now have expiresAt
-        //expiresAt = System.currentTimeMillis() + expiresIn * 1_000L;
+        expiresAt = System.currentTimeMillis() + expiresIn * 1_000L;
 
-        this.expiresAt = expiresAt;
+        //this.expiresAt = expiresAt;
     }
 
     @Override

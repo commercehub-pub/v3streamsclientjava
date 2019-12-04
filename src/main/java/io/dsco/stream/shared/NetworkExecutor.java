@@ -9,6 +9,7 @@ import kong.unirest.Unirest;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.Collections;
@@ -19,10 +20,10 @@ import java.util.stream.Stream;
 
 public class NetworkExecutor
 {
-    public static Set<Integer> HTTP_RESPONSE_200 = Collections.singleton(200);
-    public static Set<Integer> HTTP_RESPONSE_201 = Collections.singleton(201);
-    public static Set<Integer> HTTP_RESPONSE_202 = Collections.singleton(202);
-    public static Set<Integer> HTTP_RESPONSE_200or404 = Stream.of(200, 404).collect(Collectors.toSet());
+    public static final Set<Integer> HTTP_RESPONSE_200 = Collections.singleton(200);
+    public static final Set<Integer> HTTP_RESPONSE_201 = Collections.singleton(201);
+    public static final Set<Integer> HTTP_RESPONSE_202 = Collections.singleton(202);
+    public static final Set<Integer> HTTP_RESPONSE_200or404 = Stream.of(200, 404).collect(Collectors.toSet());
 
     private String authEndpoint;
 
@@ -32,7 +33,7 @@ public class NetworkExecutor
     public static NetworkExecutor getInstance()
     {
         if (instance == null) {
-            instance=  new NetworkExecutor();
+            instance = new NetworkExecutor();
         }
         return instance;
     }
@@ -109,6 +110,8 @@ logger.info(result.get().getBody());
             throw new IllegalStateException("setAuthEndpoint never called on NetworkExecutor");
         }
 
+        logger.info(MessageFormat.format("refreshing access token for client: {0}", oAuthSupport.getClientId()));
+
         CompletableFuture<HttpResponse<JsonNode>> future = Unirest.post(authEndpoint)
                 //.header("Content-Type", "application/x-www-form-urlencoded") -- this is defaulted when using the .field calls
                 .field("client_id", URLEncoder.encode(oAuthSupport.getClientId(), "UTF-8"))
@@ -117,10 +120,13 @@ logger.info(result.get().getBody());
 
         int httpStatus = future.get().getStatus();
         if (httpStatus == 200) {
+logger.info(future.get().getBody());
             OAuth2Response oAuth2Response = new Gson().fromJson(future.get().getBody().toString(), OAuth2Response.class);
-            long expiresAt = Util.iso8601ToDate(oAuth2Response.expiration).getTime();
+            //long expiresAt = Util.iso8601ToDate(oAuth2Response.expiration).getTime();
 
-            oAuthSupport.setTokenAndExpiration(oAuth2Response.token, expiresAt);
+            String decodedAccesesToken = URLDecoder.decode(oAuth2Response.access_token, "UTF-8");
+logger.info("ACCESS TOKEN (url decoded):\n\n" + decodedAccesesToken + "\n\n");
+            oAuthSupport.setTokenAndExpiration(decodedAccesesToken, oAuth2Response.expires_in);
 
         } else {
             logger.error("unexpected response from oAuth:\n" + future.get().getBody());
@@ -129,7 +135,8 @@ logger.info(result.get().getBody());
 
     private static class OAuth2Response
     {
-        public String token;
-        public String expiration;
+        public String access_token;
+        public long expires_in;
+        //public String token_type;
     }
 }
