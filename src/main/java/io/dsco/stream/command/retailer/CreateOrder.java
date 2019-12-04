@@ -1,5 +1,6 @@
 package io.dsco.stream.command.retailer;
 
+import com.google.gson.Gson;
 import io.dsco.stream.api.OrderV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.Order;
@@ -27,6 +28,7 @@ implements Command<Order, String>
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future = NetworkExecutor.getInstance().execute((x) -> {
+logger.info(new Gson().toJson(order));
             return orderV3Api.createOrder(order);
         }, orderV3Api, logger, "createOrder", NetworkExecutor.HTTP_RESPONSE_201);
 

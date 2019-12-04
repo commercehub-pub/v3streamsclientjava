@@ -44,7 +44,7 @@ public class StreamsDemonstration
         //load the properties file to read configuration information
         Properties props = new Properties();
         try (InputStream is = StreamsDemonstration.class.getClassLoader().getResourceAsStream("dsco.properties")) {
-            
+
             if (is == null) {
                 //if this project was just checked out from source, there will be no properties file.
                 // in that case, load the log4j2.xml file (which WILL exist) and use its directory location
@@ -147,15 +147,15 @@ public class StreamsDemonstration
         createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.invoice, query);
     }
 
-    private void createOrderStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-    throws Exception
-    {
-        Map<String, Object> query = new HashMap<>();
-        query.put("queryType", StreamV3Api.ObjectType.order.toString());
-        //add other query filter criteria as needed
-
-        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.order, query);
-    }
+//    private void createOrderStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
+//    throws Exception
+//    {
+//        Map<String, Object> query = new HashMap<>();
+//        query.put("queryType", StreamV3Api.ObjectType.order.toString());
+//        //add other query filter criteria as needed
+//
+//        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.order, query);
+//    }
 
     private void createStreamRefactor(
             StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription,
@@ -221,7 +221,10 @@ public class StreamsDemonstration
 
         String streamType = getConsoleInput(
         "\n1) ItemInventory Stream\n" +
-                "2) Order Stream\n" +
+                "2) Invoice Stream\n" +
+                "3) Cancel Stream\n" +
+                "4) Undeliverable Shipment Stream\n" +
+                "5) Shipment Stream\n" +
                 " > "
         );
 
@@ -241,19 +244,20 @@ public class StreamsDemonstration
             }
             break;
 
-            case "2": {
-                //see if the stream has been created. if not, create it.
-                if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                    createOrderStream(streamV3ApiRetailer, streamId, "order stream");
-
-                    //it can sometimes take a bit of time before the stream becomes available; wait for it
-                    while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                        logger.info("stream not yet created. waiting a bit and checking again...");
-                        Thread.sleep(500);
-                    }
-                }
-            }
-            break;
+            //TODO
+//            case "2": {
+//                //see if the stream has been created. if not, create it.
+//                if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+//                    createOrderStream(streamV3ApiRetailer, streamId, "order stream");
+//
+//                    //it can sometimes take a bit of time before the stream becomes available; wait for it
+//                    while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
+//                        logger.info("stream not yet created. waiting a bit and checking again...");
+//                        Thread.sleep(500);
+//                    }
+//                }
+//            }
+//            break;
         }
 
         begin();
@@ -265,7 +269,12 @@ public class StreamsDemonstration
         //String streamId = getConsoleInput("\nstreamId > ");
 
         String streamType = getConsoleInput(
-                "\n1) ItemInventory Stream\n" +
+                "\n1) Update ItemInventory\n" +
+                        "2) Create and acknowledge Order\n" +
+                        "3) Create Invoice\n" +
+                        "4) Cancel order line item\n" +
+                        "5) Mark line item undeliverable\n" +
+                        "6) Add shipment\n" +
                         " > "
         );
 
@@ -287,7 +296,7 @@ public class StreamsDemonstration
         //display the top level menu
         String selection = getConsoleInput(
     "\n1) Create Stream\n" +
-            "2) Simulate activity on Stream\n" +
+            "2) Cause activity on Stream\n" +
             "3) Inventory Stream Processing\n" +
             "4) Order Stream Processing\n" +
             " > "
