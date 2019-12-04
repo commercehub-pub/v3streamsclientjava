@@ -81,20 +81,20 @@ public class Order
 
     public Order(
             @NotNull List<OrderLineItem> lineItems, @NotNull String poNumber, @NotNull OrderShipping shipping,
-            @NotNull OrderBillTo billTo, @NotNull OrderLifecycle dscoLifecycle)
+            @NotNull OrderBillTo billTo, @NotNull String expectedDeliveryDate)
     {
         this.lineItems = lineItems;
         this.poNumber = poNumber;
         this.shipping = shipping;
         this.billTo = billTo;
-        this.dscoLifecycle = dscoLifecycle;
+        this.expectedDeliveryDate = expectedDeliveryDate;
     }
 
     public Order(
             @NotNull List<OrderLineItem> lineItems, @NotNull String poNumber, @NotNull OrderShipping shipping, String acknowledgeByDate,
             @NotNull OrderBillTo billTo, String cancelAfterDate, String channel, String consumerOrderNumber, List<OrderCoupon> coupons,
             String currencyCode, String dscoAcknowledgeLateDate, String dscoCancelLateDate, String dscoCreateDate, String dscoInvoiceLateDate,
-            String dscoLastUpdate, @NotNull OrderLifecycle dscoLifecycle, String dscoRetailerId,
+            String dscoLastUpdate, OrderLifecycle dscoLifecycle, String dscoRetailerId,
             String dscoShipCarrier, String dscoShipLateDate, String dscoShipMethod, String dscoShippingServiceLevelCode,
             String dscoStatus, String dscoSupplierId, String dscoTradingPartnerId, String dscoTradingPartnerName, String dscoWarehouseCode,
             String dscoWarehouseDscoId, String dscoWarehouseRetailerCode, String expectedDeliveryDate, Boolean giftFlag, String giftFromName,
@@ -123,7 +123,6 @@ public class Order
         this.dscoInvoiceLateDate = dscoInvoiceLateDate;
         this.dscoLastUpdate = dscoLastUpdate;
         this.dscoLifecycle = dscoLifecycle;
-        this.dscoOrderId = dscoOrderId;
         this.dscoRetailerId = dscoRetailerId;
         this.dscoShipCarrier = dscoShipCarrier;
         this.dscoShipLateDate = dscoShipLateDate;

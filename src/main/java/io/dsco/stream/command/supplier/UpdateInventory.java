@@ -1,5 +1,6 @@
 package io.dsco.stream.command.supplier;
 
+import com.google.gson.Gson;
 import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.command.Command;
@@ -95,6 +96,10 @@ implements Command<Integer, Void>, GetInventoryItems
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
+
+//logger.info(MessageFormat.format("\n{0}\n", new Gson().toJson(items)));
+
+
             return inventoryApi.updateInventorySmallBatch(items);
         }, inventoryApi, logger, "updateInventorySmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 

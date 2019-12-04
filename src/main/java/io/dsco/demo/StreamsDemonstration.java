@@ -1,10 +1,7 @@
 package io.dsco.demo;
 
 import io.dsco.demo.scenario.*;
-import io.dsco.stream.api.InventoryV2Api;
-import io.dsco.stream.api.InventoryV3Api;
-import io.dsco.stream.api.InvoiceV3Api;
-import io.dsco.stream.api.StreamV3Api;
+import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
 import io.dsco.stream.command.supplier.UpdateInventory;
 import io.dsco.stream.shared.NetworkExecutor;
@@ -34,6 +31,11 @@ public class StreamsDemonstration
     private final InventoryV2Api inventoryV2ApiSupplier;
     private final InventoryV3Api inventoryV3ApiSupplier;
     private final InvoiceV3Api invoiceV3ApiSupplier;
+    private final OrderV3Api orderV3ApiRetailer;
+    private final OrderV3Api orderV3ApiSupplier;
+
+    private final String supplierAccountId;
+    private final String retailerAccountId;
 
     private final UpdateInventory updateInventoryCmd;
 
@@ -59,10 +61,12 @@ public class StreamsDemonstration
 
                 props.setProperty("retailer.v3.clientId", "xxxxxx");
                 props.setProperty("retailer.v3.secret", "xxxxxx");
+                props.setProperty("retailer.accountId", "xxxxxx");
 
                 props.setProperty("supplier.v2.token", "xxxxxx");
                 props.setProperty("supplier.v3.clientId", "xxxxxx");
                 props.setProperty("supplier.v3.secret", "xxxxxx");
+                props.setProperty("supplier.accountId", "xxxxxx");
 
                 try (OutputStream os = new FileOutputStream(outputPath)) {
                     props.store(os, null);
@@ -96,6 +100,11 @@ public class StreamsDemonstration
         inventoryV2ApiSupplier = ApiBuilder.getInventoryV2Api(supplierV2Token, baseV2Url);
         inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
         invoiceV3ApiSupplier = ApiBuilder.getInvoiceV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
+        orderV3ApiRetailer = ApiBuilder.getOrderV3Api(retailerV3ClientId, retailerV3Secret, baseV3Url);
+        orderV3ApiSupplier = ApiBuilder.getOrderV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
+
+        supplierAccountId = props.getProperty("supplier.accountId");
+        retailerAccountId = props.getProperty("retailer.accountId");
 
         updateInventoryCmd = new UpdateInventory(inventoryV2ApiSupplier, inventoryV3ApiSupplier);
 
@@ -197,9 +206,11 @@ public class StreamsDemonstration
 
     private void doOrderStreamProcessing()
     {
-        String streamId = getConsoleInput("\nstreamId > ");
+        //String streamId = getConsoleInput("\nstreamId > ");
 
-        //TODO: new OrderBasic(streamId).begin();
+        new OrderBasic(
+                inventoryV2ApiSupplier, orderV3ApiRetailer, orderV3ApiSupplier, invoiceV3ApiSupplier, retailerAccountId
+        ).begin();
     }
 
     private void doCreateStream()
@@ -253,14 +264,15 @@ public class StreamsDemonstration
         //String streamId = getConsoleInput("\nstreamId > ");
 
         String streamType = getConsoleInput(
-                "\n1) ItemInventory Stream"
+                "\n1) ItemInventory Stream\n" +
+                        " > "
         );
 
         switch (streamType)
         {
             case "1": {
                 int numItemsToUpdate = Integer.parseInt(getConsoleInput("\nnumber of items to update > "));
-                updateInventoryCmd.execute(null);
+                updateInventoryCmd.execute(numItemsToUpdate);
             }
             break;
         }

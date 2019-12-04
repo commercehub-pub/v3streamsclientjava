@@ -10,7 +10,7 @@ public class ShipmentLineItemForUpdate
     private String sku;
     private String upc;
 
-    public ShipmentLineItemForUpdate(int quantity, String dscoItemId, String ean, Integer lineNumber, String partnerSku, String sku, String upc)
+    public ShipmentLineItemForUpdate(int quantity, String dscoItemId, String ean, int lineNumber, String partnerSku, String sku, String upc)
     {
         //one of the id fields is required
         if (dscoItemId == null && ean == null && partnerSku == null && sku == null && upc == null) {

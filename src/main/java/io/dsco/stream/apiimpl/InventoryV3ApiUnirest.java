@@ -17,6 +17,9 @@ implements InventoryV3Api
     InventoryV3ApiUnirest(@NotNull String clientId, @NotNull String secret, @NotNull String baseUrl)
     {
         super(clientId, secret, baseUrl);
+
+        //TODO: workaround to not use oauth on inventory stream until monty fixes it
+        setTokenAndExpiration("478468df-019d-40d9-a9b4-d0b2503ec35b", 999_999_999L);
     }
 
     @Override

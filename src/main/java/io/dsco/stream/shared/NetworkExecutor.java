@@ -79,7 +79,7 @@ public class NetworkExecutor
             if (httpStatus == 401) {
                 //401 means the auth token was invalidated; this will log that fact, and refresh the token
                 numRetries--;
-logger.info(result.get().getBody());
+                logger.warn(result.get().getBody());
                 if (logger.isDebugEnabled()) {
                     logger.debug("auth token not valid. refreshing and retrying...");
                 }
@@ -88,8 +88,8 @@ logger.info(result.get().getBody());
             } else if (!validResponseCodes.contains(httpStatus)) {
                 //if the response code is invalid, throw an error
                 throw new IllegalStateException(MessageFormat.format(
-                        "got invalid http response when checking {0}. got: {1}, expected: {2}",
-                        logDescription, httpStatus, validResponseCodes));
+                        "got invalid http response when checking {0}. got: {1}, expected: {2}\n{3}",
+                        logDescription, httpStatus, validResponseCodes, result.get().getBody()));
 
             } else {
                 //all is well; pass the result back to the caller
@@ -125,7 +125,7 @@ logger.info(future.get().getBody());
             //long expiresAt = Util.iso8601ToDate(oAuth2Response.expiration).getTime();
 
             String decodedAccesesToken = URLDecoder.decode(oAuth2Response.access_token, "UTF-8");
-logger.info("ACCESS TOKEN (url decoded):\n\n" + decodedAccesesToken + "\n\n");
+//logger.info("ACCESS TOKEN (url decoded):\n\n" + decodedAccesesToken + "\n\n");
             oAuthSupport.setTokenAndExpiration(decodedAccesesToken, oAuth2Response.expires_in);
 
         } else {

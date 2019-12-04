@@ -2,7 +2,7 @@ package io.dsco.stream.domain;
 
 public class InvoiceLineItemForUpdate
 {
-    public int quantity;
+    public int quantity; //TODO:
     public String basisOfUnitPrice;
     public String dscoItemId;
     public String dscoShipmentId;
@@ -19,16 +19,16 @@ public class InvoiceLineItemForUpdate
     public String shipCarrier;
     public String shipDate; //iso8601
     public String shipMethod;
-    public String shippingServiceLevelCode;
+    public String shippingServiceLevelCode; //TODO: use this: UPCG
     public Float shipWeight;
     public String shipWeightUnits;
     public String sku;
     public String ssccBarcode;
     public Float subtotal;
     public Float taxAmount;
-    public String trackingNumber;
+    public String trackingNumber; //TODO: this
     public String unitOfMeasure;
-    public Float unitPrice;
+    public Float unitPrice; //TODO: this
     public String upc;
     public String warehouseCode;
     public String warehouseDscoId;

@@ -1,9 +1,6 @@
 package io.dsco.stream.apiimpl;
 
-import io.dsco.stream.api.InventoryV3Api;
-import io.dsco.stream.api.InvoiceV3Api;
-import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.api.InventoryV2Api;
+import io.dsco.stream.api.*;
 import org.jetbrains.annotations.NotNull;
 
 public class ApiBuilder
@@ -27,4 +24,10 @@ public class ApiBuilder
     {
         return new InvoiceV3ApiUnirest(clientId, secret, baseUrl);
     }
+
+    public static OrderV3Api getOrderV3Api(@NotNull String clientId, @NotNull String secret, @NotNull String baseUrl)
+    {
+        return new OrderV3ApiUnirest(clientId, secret, baseUrl);
+    }
+
 }

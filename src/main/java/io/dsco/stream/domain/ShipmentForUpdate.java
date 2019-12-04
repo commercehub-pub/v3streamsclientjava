@@ -21,6 +21,12 @@ public class ShipmentForUpdate
     private String warehouseDscoId;
     private String warehouseRetailerCode;
 
+//TODO
+//    public ShipmentForUpdate(lineItems, trackingNumber, shippingServiceLevelCode, )
+//    {
+//
+//    }
+
     public ShipmentForUpdate(
             @NotNull List<ShipmentLineItemForUpdate> lineItems, @NotNull String trackingNumber,
              String currencyCode, String shipCarrier, Float shipCost, String shipDate, String shipMethod,

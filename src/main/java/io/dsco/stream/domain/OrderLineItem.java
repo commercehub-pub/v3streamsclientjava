@@ -53,10 +53,19 @@ public class OrderLineItem
 
     public OrderLineItem() {}
 
-    public OrderLineItem(int quantity, String sku)
+    public OrderLineItem(int quantity, int lineNumber, String dscoItemId, String ean, String partnerSku, String sku, String upc)
     {
+        if (dscoItemId == null && ean == null && partnerSku == null && sku == null && upc == null) {
+            throw new IllegalArgumentException("at least one of the unique id fields must be present");
+        }
+
         this.quantity = quantity;
+        this.lineNumber = lineNumber;
+        this.dscoItemId = dscoItemId;
+        this.ean = ean;
+        this.partnerSku = partnerSku;
         this.sku = sku;
+        this.upc = upc;
     }
 
     public OrderLineItem(

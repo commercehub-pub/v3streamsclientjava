@@ -36,8 +36,10 @@ public class InvoiceForUpdate
     public InvoiceForUpdate() {}
 
     public InvoiceForUpdate(
-            @NotNull String invoiceId, float totalAmount, @NotNull List<InvoiceCharge> charges, @NotNull List<InvoiceLineItemForUpdate> lineItems)
+            @NotNull String poNumber, @NotNull String invoiceId, float totalAmount, @NotNull List<InvoiceCharge> charges,
+            @NotNull List<InvoiceLineItemForUpdate> lineItems)
     {
+        this.poNumber = poNumber;
         this.invoiceId = invoiceId;
         this.totalAmount = totalAmount;
         this.charges = charges;
