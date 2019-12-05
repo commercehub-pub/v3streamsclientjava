@@ -19,6 +19,13 @@ public class InvoiceShipInfo
     public Float weight;
     public String weightUnits;
 
+    public InvoiceShipInfo(String date, String trackingNumber, String serviceLevelCode)
+    {
+        this.date = date;
+        this.trackingNumber = trackingNumber;
+        this.serviceLevelCode = serviceLevelCode;
+    }
+
     public String getCarrier()
     {
         return carrier;

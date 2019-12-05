@@ -36,7 +36,9 @@ public class InvoiceLineItemForUpdate
 
     public InvoiceLineItemForUpdate() {}
 
-    public InvoiceLineItemForUpdate(int quantity, String dscoItemId, String ean, String partnerSku, String sku, String upc)
+    public InvoiceLineItemForUpdate(
+            int quantity, String dscoItemId, String ean, String partnerSku, String sku, String upc,
+            float retailerPrice)
     {
         if (dscoItemId == null && ean == null && partnerSku == null && sku == null && upc == null) {
             throw new IllegalArgumentException("one of the unique id columns must be present");
@@ -48,6 +50,7 @@ public class InvoiceLineItemForUpdate
         this.partnerSku = partnerSku;
         this.sku = sku;
         this.upc = upc;
+        this.unitPrice = retailerPrice;
     }
 
     public int getQuantity()

@@ -2,9 +2,9 @@ package io.dsco.stream.domain;
 
 import java.util.List;
 
-public class OrderAcknowledgeResponse
+public class OrderCancelOrderItemSmallBatch
 {
-    public enum Status { success, pending, failure }
+    public enum Status { success, failure }
 
     private String eventDate; //iso8601
     private String requestId;

@@ -1,9 +1,6 @@
 package io.dsco.stream.api;
 
-import io.dsco.stream.domain.Order;
-import io.dsco.stream.domain.OrderAcknowledge;
-import io.dsco.stream.domain.OrderCancelItem;
-import io.dsco.stream.domain.OrderShipment;
+import io.dsco.stream.domain.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.jetbrains.annotations.NotNull;
@@ -21,4 +18,6 @@ extends OAuthSupport
     CompletableFuture<HttpResponse<JsonNode>> cancelOrderItemsSmallBatch(@NotNull List<OrderCancelItem> orderItemsToCancel);
 
     CompletableFuture<HttpResponse<JsonNode>> createShipmentSmallBatch(@NotNull List<OrderShipment> orderShipments);
+
+    CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderRequest getOrderRequest);
 }

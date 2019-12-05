@@ -31,9 +31,11 @@ implements Command<List<OrderAcknowledge>, OrderAcknowledgeResponse>
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future = NetworkExecutor.getInstance().execute((x) -> {
+logger.info(new Gson().toJson(ordersToAcknowledge));
             return orderV3Api.acknowledgeOrders(ordersToAcknowledge);
         }, orderV3Api, logger, "acknowledgeOrders", NetworkExecutor.HTTP_RESPONSE_202);
 
+logger.info(future.get().getBody());
         return new Gson().fromJson(future.get().getBody().toString(), OrderAcknowledgeResponse.class);
     }
 }

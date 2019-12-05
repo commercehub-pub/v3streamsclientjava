@@ -7,9 +7,9 @@ extends Address
 {
     public OrderBillTo(
             @NotNull String address1, @NotNull String city, @NotNull String firstName, @NotNull String lastName,
-            @NotNull String postal, @NotNull String region)
+            @NotNull String postal, @NotNull String region, @NotNull String country)
     {
-        super(address1, city, firstName, lastName, postal, region, null, null, null, null, null, null);
+        super(address1, city, firstName, lastName, postal, region, null, null, null, country, null, null);
     }
 
     public OrderBillTo(

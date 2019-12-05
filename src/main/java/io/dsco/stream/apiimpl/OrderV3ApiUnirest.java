@@ -1,16 +1,15 @@
 package io.dsco.stream.apiimpl;
 
 import io.dsco.stream.api.OrderV3Api;
-import io.dsco.stream.domain.Order;
-import io.dsco.stream.domain.OrderAcknowledge;
-import io.dsco.stream.domain.OrderCancelItem;
-import io.dsco.stream.domain.OrderShipment;
+import io.dsco.stream.domain.*;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class OrderV3ApiUnirest
@@ -55,6 +54,25 @@ implements OrderV3Api
         return Unirest.post(baseUrl + "order/shipment/batch/small")
                 .headers(defaultHeaders)
                 .body(orderShipments)
+                .asJsonAsync();
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderRequest getOrderRequest)
+    {
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderKey", getOrderRequest.getOrderKey());
+        params.put("value", getOrderRequest.getValue());
+        if (getOrderRequest.getDscoAccountId() != null) {
+            params.put("dscoAccountId", getOrderRequest.getDscoAccountId());
+        }
+        if (getOrderRequest.getDscoTradingPartnerId() != null) {
+            params.put("dscoTradingPartnerId", getOrderRequest.getDscoTradingPartnerId());
+        }
+        return Unirest.get(baseUrl + "order")
+                .headers(defaultHeaders)
+                .queryString(params)
+                .queryString("_ts", System.currentTimeMillis()) //to prevent 404 caching
                 .asJsonAsync();
     }
 }

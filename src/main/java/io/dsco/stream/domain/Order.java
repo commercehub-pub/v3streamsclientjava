@@ -81,13 +81,14 @@ public class Order
 
     public Order(
             @NotNull List<OrderLineItem> lineItems, @NotNull String poNumber, @NotNull OrderShipping shipping,
-            @NotNull OrderBillTo billTo, @NotNull String expectedDeliveryDate)
+            @NotNull OrderBillTo billTo, @NotNull String expectedDeliveryDate, @NotNull String shippingServiceLevelCode)
     {
         this.lineItems = lineItems;
         this.poNumber = poNumber;
         this.shipping = shipping;
         this.billTo = billTo;
         this.expectedDeliveryDate = expectedDeliveryDate;
+        this.shippingServiceLevelCode = shippingServiceLevelCode;
     }
 
     public Order(

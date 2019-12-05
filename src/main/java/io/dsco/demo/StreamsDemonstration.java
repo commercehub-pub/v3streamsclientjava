@@ -4,6 +4,7 @@ import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
 import io.dsco.stream.command.supplier.UpdateInventory;
+import io.dsco.stream.domain.Order;
 import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -38,6 +39,9 @@ public class StreamsDemonstration
     private final String retailerAccountId;
 
     private final UpdateInventory updateInventoryCmd;
+
+    //if an order has been created, use it
+    private Order order;
 
     private StreamsDemonstration()
     {
@@ -137,15 +141,28 @@ public class StreamsDemonstration
         createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.inventory, query);
     }
 
-    private void createInvoiceStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-    throws Exception
-    {
-        Map<String, Object> query = new HashMap<>();
-        query.put("queryType", StreamV3Api.ObjectType.invoice.toString());
-        //add other query filter criteria as needed
+//    private void createInventoryStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
+//            throws Exception
+//    {
+//        Map<String, Object> query = new HashMap<>();
+//        query.put("queryType", StreamV3Api.ObjectType.inventory.toString());
+//        query.put("omitItemsOnHold", true);
+//        query.put("quantityChangeOnly", true);
+//        query.put("clearQuantityForStoppedItems", true);
+//        //add other query filter criteria as needed
+//
+//        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.inventory, query);
+//    }
 
-        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.invoice, query);
-    }
+//    private void createInvoiceStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
+//    throws Exception
+//    {
+//        Map<String, Object> query = new HashMap<>();
+//        query.put("queryType", StreamV3Api.ObjectType.invoice.toString());
+//        //add other query filter criteria as needed
+//
+//        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.invoice, query);
+//    }
 
 //    private void createOrderStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
 //    throws Exception
@@ -205,15 +222,6 @@ public class StreamsDemonstration
         }
     }
 
-    private void doOrderStreamProcessing()
-    {
-        //String streamId = getConsoleInput("\nstreamId > ");
-
-        new OrderBasic(
-                inventoryV2ApiSupplier, orderV3ApiRetailer, orderV3ApiSupplier, invoiceV3ApiSupplier, retailerAccountId
-        ).begin();
-    }
-
     private void doCreateStream()
     throws Exception
     {
@@ -263,7 +271,7 @@ public class StreamsDemonstration
         begin();
     }
 
-    private void doSimulateStreamActivity()
+    private void doCauseActivityOnStream()
     throws Exception
     {
         //String streamId = getConsoleInput("\nstreamId > ");
@@ -273,8 +281,8 @@ public class StreamsDemonstration
                         "2) Create and acknowledge Order\n" +
                         "3) Create Invoice\n" +
                         "4) Cancel order line item\n" +
-                        "5) Mark line item undeliverable\n" +
-                        "6) Add shipment\n" +
+                        "5) Add shipment\n" +
+                        "6) Mark shipment undeliverable\n" +
                         " > "
         );
 
@@ -283,6 +291,52 @@ public class StreamsDemonstration
             case "1": {
                 int numItemsToUpdate = Integer.parseInt(getConsoleInput("\nnumber of items to update > "));
                 updateInventoryCmd.execute(numItemsToUpdate);
+            }
+            break;
+
+            case "2": {
+                order = new OrderCreateAndAck(
+                        retailerAccountId, inventoryV2ApiSupplier, orderV3ApiRetailer, orderV3ApiSupplier
+                ).begin();
+            }
+            break;
+
+            case "3": {
+                if (order == null) {
+                    System.out.println("\nyou must first create an order");
+                } else {
+                    new OrderInvoice(invoiceV3ApiSupplier).begin(order);
+                }
+            }
+            break;
+
+            case "4": {
+                if (order == null) {
+                    System.out.println("\nyou must first create an order");
+                } else {
+                    //TODO: cancel the order line item
+                    System.out.println("\nNOT YET IMPLEMENTED");
+                }
+            }
+            break;
+
+            case "5": {
+                if (order == null) {
+                    System.out.println("\nyou must first create an order");
+                } else {
+                    //TODO: add shipment
+                    System.out.println("\nNOT YET IMPLEMENTED");
+                }
+            }
+            break;
+
+            case "6": {
+                if (order == null) {
+                    System.out.println("\nyou must first create an order");
+                } else {
+                    //TODO: mark shipnment undeliveravble
+                    System.out.println("\nNOT YET IMPLEMENTED");
+                }
             }
             break;
         }
@@ -298,7 +352,6 @@ public class StreamsDemonstration
     "\n1) Create Stream\n" +
             "2) Cause activity on Stream\n" +
             "3) Inventory Stream Processing\n" +
-            "4) Order Stream Processing\n" +
             " > "
         );
         switch (selection)
@@ -308,16 +361,13 @@ public class StreamsDemonstration
                 break;
 
             case "2":
-                doSimulateStreamActivity();
+                doCauseActivityOnStream();
                 break;
 
             case "3":
                 doInventoryStreamProcessing();
                 break;
 
-            case "4":
-                doOrderStreamProcessing();
-                break;
         }
     }
 

@@ -2,14 +2,12 @@ package io.dsco.stream.domain;
 
 import java.util.List;
 
-public class OrderAcknowledgeResponse
+public class CreateOrderResponse
 {
-    public enum Status { success, pending, failure }
-
     private String eventDate; //iso8601
     private String requestId;
-    private Status status;
-    private List<ApiResponseMessage> messages;
+    private String status;
+    private List<CreateOrderResponseMessage> messages;
 
     public String getEventDate()
     {
@@ -31,22 +29,22 @@ public class OrderAcknowledgeResponse
         this.requestId = requestId;
     }
 
-    public Status getStatus()
+    public String getStatus()
     {
         return status;
     }
 
-    public void setStatus(Status status)
+    public void setStatus(String status)
     {
         this.status = status;
     }
 
-    public List<ApiResponseMessage> getMessages()
+    public List<CreateOrderResponseMessage> getMessages()
     {
         return messages;
     }
 
-    public void setMessages(List<ApiResponseMessage> messages)
+    public void setMessages(List<CreateOrderResponseMessage> messages)
     {
         this.messages = messages;
     }

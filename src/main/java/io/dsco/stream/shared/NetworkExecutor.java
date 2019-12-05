@@ -24,6 +24,7 @@ public class NetworkExecutor
     public static final Set<Integer> HTTP_RESPONSE_201 = Collections.singleton(201);
     public static final Set<Integer> HTTP_RESPONSE_202 = Collections.singleton(202);
     public static final Set<Integer> HTTP_RESPONSE_200or404 = Stream.of(200, 404).collect(Collectors.toSet());
+    public static final Set<Integer> HTTP_RESPONSE_201or404 = Stream.of(201, 404).collect(Collectors.toSet());
 
     private String authEndpoint;
 
