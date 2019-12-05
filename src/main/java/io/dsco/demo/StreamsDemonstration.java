@@ -278,6 +278,32 @@ implements StreamCreator
         begin();
     }
 
+    private void doOtherStreamProcessing()
+    throws Exception
+    {
+        String selection = getConsoleInput(
+                "Type of stream?\n" +
+                    "1) View Invoice Stream\n" +
+                    "2) View Cancelled Stream\n" +
+                    "3) View Undeliverable Shipment Stream\n" +
+                    "4) View Shipped Stream\n" +
+                    " > "
+        );
+
+        String streamId = getConsoleInput("\nstreamId > ");
+
+        switch (selection)
+        {
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+                new AnyStreamBasic(streamV3ApiRetailer, streamId).begin();
+
+                break;
+        }
+    }
+
     private void begin()
     throws Exception
     {
@@ -286,6 +312,7 @@ implements StreamCreator
     "\n1) Create Stream\n" +
             "2) Cause activity on Stream\n" +
             "3) Inventory Stream Processing\n" +
+            "4) Other Stream Processing\n" +
             " > "
         );
         switch (selection)
@@ -300,6 +327,10 @@ implements StreamCreator
 
             case "3":
                 doInventoryStreamProcessing();
+                break;
+
+            case "4":
+                doOtherStreamProcessing();
                 break;
 
         }

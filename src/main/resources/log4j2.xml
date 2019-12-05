@@ -7,15 +7,19 @@
     </Appenders>
     <Loggers>
         <!--
-        <Logger name="xx.xx.xx" level="debug" additivity="false">
+        <Logger name="org.apache.hc.client5.http" level="DEBUG">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        -->
-        <Root level="debug">
+        <Logger name="org.apache.hc.client5.http.wire" level="DEBUG">
             <AppenderRef ref="LogToConsole"/>
-        </Root>
+        </Logger>
         <Logger name="org.apache.http" level="debug">
             <AppenderRef ref="LogToConsole" />
         </Logger>
+        -->
+
+        <Root level="debug">
+            <AppenderRef ref="LogToConsole"/>
+        </Root>
     </Loggers>
 </Configuration>
