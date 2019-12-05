@@ -4,6 +4,7 @@ import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
 import io.dsco.stream.command.supplier.UpdateInventory;
+import io.dsco.stream.domain.InvoiceForUpdate;
 import io.dsco.stream.domain.Order;
 import io.dsco.stream.shared.NetworkExecutor;
 import io.dsco.stream.shared.StreamCreator;
@@ -36,8 +37,9 @@ implements StreamCreator
 
     private final UpdateInventory updateInventoryCmd;
 
-    //if an order has been created, use it
+    //objects creating during the app run
     private Order order;
+    private InvoiceForUpdate invoice;
 
     private StreamsDemonstration()
     {
@@ -216,8 +218,8 @@ implements StreamCreator
                         "2) Create and acknowledge Order\n" +
                         "3) Create Invoice\n" +
                         "4) Cancel order line item\n" +
-                        "5) Add shipment\n" +
-                        "6) Mark shipment undeliverable\n" +
+                        //"5) Add shipment\n" +
+                        //"6) Mark shipment undeliverable\n" +
                         " > "
         );
 
@@ -240,40 +242,37 @@ implements StreamCreator
                 if (order == null) {
                     System.out.println("\nyou must first create an order");
                 } else {
-                    new OrderInvoice(invoiceV3ApiSupplier).begin(order);
+                    invoice = new OrderInvoice(invoiceV3ApiSupplier).begin(order);
                 }
             }
             break;
 
             case "4": {
-                if (order == null) {
-                    System.out.println("\nyou must first create an order");
+                if (order == null || invoice == null) {
+                    System.out.println("\nyou must first create an order and an invoice");
                 } else {
-                    //TODO: cancel the order line item
-                    System.out.println("\nNOT YET IMPLEMENTED");
+                    new OrderCancelItem(orderV3ApiSupplier).begin(order, invoice);
                 }
             }
             break;
 
-            case "5": {
-                if (order == null) {
-                    System.out.println("\nyou must first create an order");
-                } else {
-                    //TODO: add shipment
-                    System.out.println("\nNOT YET IMPLEMENTED");
-                }
-            }
-            break;
-
-            case "6": {
-                if (order == null) {
-                    System.out.println("\nyou must first create an order");
-                } else {
-                    //TODO: mark shipnment undeliveravble
-                    System.out.println("\nNOT YET IMPLEMENTED");
-                }
-            }
-            break;
+//            case "5": {
+//                if (order == null) {
+//                    System.out.println("\nyou must first create an order");
+//                } else {
+//                    System.out.println("\nNOT YET IMPLEMENTED");
+//                }
+//            }
+//            break;
+//
+//            case "6": {
+//                if (order == null) {
+//                    System.out.println("\nyou must first create an order");
+//                } else {
+//                    System.out.println("\nNOT YET IMPLEMENTED");
+//                }
+//            }
+//            break;
         }
 
         begin();

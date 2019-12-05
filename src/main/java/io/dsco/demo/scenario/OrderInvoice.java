@@ -22,18 +22,21 @@ public class OrderInvoice
         createInvoiceSmallBatchCmd = new CreateInvoiceSmallBatch(invoiceV3ApiSupplier);
     }
 
-    public void begin(Order order)
+    public InvoiceForUpdate begin(Order order)
     throws Exception
     {
         long b = System.currentTimeMillis();
         logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
         //create an invoice for the order (supplier)
-        createInvoiceSmallBatchCmd.execute(Collections.singletonList(createInvoiceObject(order)));
+        InvoiceForUpdate invoice = createInvoiceObject(order);
+        createInvoiceSmallBatchCmd.execute(Collections.singletonList(invoice));
 
         long e = System.currentTimeMillis();
         logger.info(MessageFormat.format("total time (ms): {0}", (e-b)));
         logger.info(MessageFormat.format("***** {0} scenario complete *****", SCENARIO_NAME));
+
+        return invoice;
     }
 
     private InvoiceForUpdate createInvoiceObject(Order order)

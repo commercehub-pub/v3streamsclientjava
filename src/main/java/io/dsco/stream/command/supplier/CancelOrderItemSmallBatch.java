@@ -1,5 +1,6 @@
 package io.dsco.stream.command.supplier;
 
+import com.google.gson.Gson;
 import io.dsco.stream.api.OrderV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.OrderCancelItem;
@@ -31,7 +32,6 @@ implements Command<List<OrderCancelItem>, ResponseSmallBatch>
             return orderV3Api.cancelOrderItemsSmallBatch(orderItemsToCancel);
         }, orderV3Api, logger, "cancelOrderItemsSmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 
-        //return new Gson().fromJson();
-        return null;
+        return new Gson().fromJson(future.get().getBody().toString(), ResponseSmallBatch.class);
     }
 }
