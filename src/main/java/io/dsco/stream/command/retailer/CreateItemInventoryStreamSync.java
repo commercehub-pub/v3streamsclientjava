@@ -17,7 +17,7 @@ implements Command<Void, String>
     private final StreamV3Api streamV3Api;
     private final java.lang.String streamId;
 
-    public CreateItemInventoryStreamSync(StreamV3Api streamV3Api, java.lang.String streamId)
+    public CreateItemInventoryStreamSync(StreamV3Api streamV3Api, String streamId)
     {
         this.streamId = streamId;
         this.streamV3Api = streamV3Api;

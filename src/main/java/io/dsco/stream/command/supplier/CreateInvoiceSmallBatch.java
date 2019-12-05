@@ -43,14 +43,14 @@ implements Command<List<InvoiceForUpdate>, Void>
 //logger.info(future.get().getBody());
 
         ResponseInvoiceCreate createResponse = new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceCreate.class);
-
-        if (createResponse.getStatus() != ResponseInvoiceCreate.Status.success) {
-            logger.error("unable to create invoice:\n" + future.get().getBody());
-            throw new IllegalStateException("unable to create invoice");
+        if (createResponse.getStatus() == ResponseInvoiceCreate.Status.failure) {
+            throw new IllegalStateException("unable to create invoice\n" + future.get().getBody());
         }
 
         String requestId = createResponse.getRequestId();
         String eventDate = createResponse.getEventDate();
+
+        logger.info("*** requestId: " + requestId);
 
         //as the previous call was async, might need to try a few times until the invoice is created
         InvoiceChangeLog changeLog = getInvoiceChangeLog(requestId, eventDate);
@@ -69,10 +69,13 @@ implements Command<List<InvoiceForUpdate>, Void>
                     case success:
                         break;
                     case pending:
-                        logger.info("invoice state pending");
+                        logger.info("invoice state pending. trying again...");
                         changeLog = null;
                         break;
                 }
+
+            } else {
+                logger.info("no matching request found in logs. trying again...");
             }
         }
 
@@ -94,18 +97,27 @@ implements Command<List<InvoiceForUpdate>, Void>
             return invoiceV3Api.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
         }, invoiceV3Api, logger, "getInvoiceChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
 
-//logger.info(future.get().getBody());
+logger.info(future.get().getBody());
 
         //convert to java and look for the given requestId
         InvoiceChangeLog requestedResponseRecord = null;
         ResponseInvoiceChangeLog response = new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceChangeLog.class);
-        for (InvoiceChangeLog log : response.getLogs()) {
-            if (log.getRequestId().equals(requestId)) {
-                requestedResponseRecord = log;
-                break;
-            }
+
+        //TODO: server bug causing the requestId's not to match up, so for now, take the first row and just use it, since
+        // on stage, it's 99% likely it's the one we're looking for
+        if (response.getLogs() != null && response.getLogs().size() > 0) {
+            return response.getLogs().get(0);
+        } else {
+            return null;
         }
 
-        return requestedResponseRecord;
+//TODO: put this back once the server bug gets fixed2
+//        for (InvoiceChangeLog log : response.getLogs()) {
+//            if (log.getRequestId().equals(requestId)) {
+//                requestedResponseRecord = log;
+//                break;
+//            }
+//        }
+//        return requestedResponseRecord;
     }
 }

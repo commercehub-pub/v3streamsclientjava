@@ -1,5 +1,6 @@
 package io.dsco.demo.scenario;
 
+import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.command.supplier.CreateInvoiceSmallBatch;
 import io.dsco.stream.domain.*;
@@ -7,10 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class OrderInvoice
 {
@@ -40,7 +38,7 @@ public class OrderInvoice
 
     private InvoiceForUpdate createInvoiceObject(Order order)
     {
-        String invoiceId = UUID.randomUUID().toString();
+        String invoiceId = order.getPoNumber(); //match the po# unless there's a specific reason not to
         float totalAmount = 0.0F;
 
         List<InvoiceLineItemForUpdate> lineItems = new ArrayList<>(order.getLineItems().size());
@@ -59,11 +57,7 @@ public class OrderInvoice
             );
         }
 
-//        List<InvoiceCharge> charges = Collections.singletonList(
-//                new InvoiceCharge(totalAmount, "everything")
-//        );
-
-        InvoiceShipInfo invoiceShipInfo = new InvoiceShipInfo(null, null, order.getShippingServiceLevelCode());
+        InvoiceShipInfo invoiceShipInfo = new InvoiceShipInfo(Util.dateToIso8601(new Date()), "1234567891234", order.getShippingServiceLevelCode());
 
         return new InvoiceForUpdate(order.getPoNumber(), invoiceId, totalAmount, lineItems, invoiceShipInfo);
     }

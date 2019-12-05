@@ -1,42 +1,38 @@
-package io.dsco.demo.scenario.base;
+package io.dsco.stream.command.retailer;
 
 import com.google.gson.Gson;
-import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.domain.*;
+import io.dsco.stream.command.Command;
+import io.dsco.stream.domain.StreamItemInvoice;
 import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-//TODO: move this down into a set of invoice commands
-public class InvoiceMethods
+public class GetInvoiceEventsFromPosition
+implements Command<String, List<StreamItemInvoice>>
 {
-    private final StreamV3Api streamV3ApiRetailer;
-    private final String streamId;
-    private final Logger logger;
+    private static final Logger logger = LogManager.getLogger(GetInvoiceEventsFromPosition.class);
 
-    //retailer stream and streamId are passed here because the are used in the lambda function and can't be
-    // passed as params later
-    public InvoiceMethods(@NotNull StreamV3Api streamV3ApiRetailer, @NotNull String streamId, @NotNull Logger logger)
+    private final String streamId;
+    private final StreamV3Api streamV3ApiRetailer;
+
+    public GetInvoiceEventsFromPosition(String streamId, StreamV3Api streamV3ApiRetailer)
     {
-        this.streamV3ApiRetailer = streamV3ApiRetailer;
         this.streamId = streamId;
-        this.logger = logger;
+        this.streamV3ApiRetailer = streamV3ApiRetailer;
     }
 
-
-    public List<StreamItemInvoice> getInvoiceEventsFromPosition(String position)
+    @Override
+    public List<StreamItemInvoice> execute(String position)
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {

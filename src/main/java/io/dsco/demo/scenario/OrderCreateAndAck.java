@@ -11,7 +11,9 @@ import io.dsco.stream.shared.GetInventoryItems;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -56,9 +58,12 @@ implements GetInventoryItems
         if (itemInventoryList.size() < 3) {
             throw new IllegalStateException("not enough items for the demo");
         }
-        ItemInventory item1 = itemInventoryList.get(new Random(System.currentTimeMillis()).nextInt(itemInventoryList.size()));
-        ItemInventory item2 = itemInventoryList.get(new Random(System.currentTimeMillis()).nextInt(itemInventoryList.size()));
-        ItemInventory item3 = itemInventoryList.get(new Random(System.currentTimeMillis()).nextInt(itemInventoryList.size()));
+
+        //shuffle the list and pick the first 3
+        Collections.shuffle(itemInventoryList);
+        ItemInventory item1 = itemInventoryList.get(0);
+        ItemInventory item2 = itemInventoryList.get(1);
+        ItemInventory item3 = itemInventoryList.get(2);
 
         //create an order (retailer)
         Order order = createOrderObject(Arrays.asList(item1, item2, item3), retailerAccountId);
@@ -76,12 +81,12 @@ implements GetInventoryItems
 
         //wait until the order exists (call getOrder)
         int httpResponse = -1;
-        while (httpResponse != 201) {
+        while (httpResponse != 200) {
             httpResponse = getOrderCmd.execute(new GetOrderRequest(
                     GetOrderRequest.OrderKey.dscoOrderId, order.getDscoOrderId(), null, null)
             );
 
-            if (httpResponse != 201) {
+            if (httpResponse != 200) {
                 Thread.sleep(1_000L);
             }
         }
@@ -89,24 +94,6 @@ implements GetInventoryItems
         //acknowledge the order (supplier)
         List<OrderAcknowledge> ordersToAcknowledge = Collections.singletonList(
                 new OrderAcknowledge(order.getPoNumber(), OrderAcknowledge.Type.PO_NUMBER, null));
-//        boolean waitingForAck = true;
-//        while (waitingForAck) {
-//            OrderAcknowledgeResponse acknowledgeResponse = acknowledgeOrderCmd.execute(ordersToAcknowledge);
-//
-//            switch (acknowledgeResponse.getStatus())
-//            {
-//                case failure:
-//                    throw new IllegalStateException("unable to acknowledge order");
-//
-//                case success:
-//                    waitingForAck = false;
-//                    break;
-//
-//                default:
-//                    logger.info("order status: " + acknowledgeResponse.getStatus());
-//                    Thread.sleep(1_000L);
-//            }
-//        }
 
         long e = System.currentTimeMillis();
         logger.info(MessageFormat.format("total time (ms): {0}", (e-b)));
@@ -117,7 +104,7 @@ implements GetInventoryItems
 
     private Order createOrderObject(List<ItemInventory> items, String retailerAccountId)
     {
-        String poNumber = UUID.randomUUID().toString();
+        String poNumber = new SimpleDateFormat("yyMMddhmmss").format(new Date());
 
         //3 days from now
         String expectedDeliveryDate =

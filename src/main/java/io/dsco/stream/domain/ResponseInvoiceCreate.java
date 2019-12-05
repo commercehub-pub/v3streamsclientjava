@@ -5,7 +5,7 @@ import java.util.List;
 //map the response of /invoice/batch/small to a java object
 public class ResponseInvoiceCreate
 {
-    public enum Status {success, failure}
+    public enum Status {pending, success, failure}
 
     private String eventDate; //iso8601
     private String requestId;

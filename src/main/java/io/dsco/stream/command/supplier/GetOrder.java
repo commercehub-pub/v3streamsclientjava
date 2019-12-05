@@ -29,7 +29,7 @@ implements Command<GetOrderRequest, Integer>
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
             return orderV3Api.getOrder(orderRequest);
-        }, orderV3Api, logger, "getOrder", NetworkExecutor.HTTP_RESPONSE_200or404); //TODO: should be 201 or 404 but server is returning a 200; change once server is fixed
+        }, orderV3Api, logger, "getOrder", NetworkExecutor.HTTP_RESPONSE_200or404);
 
 logger.info(future.get().getBody());
         return future.get().getStatus();
