@@ -22,8 +22,8 @@ extends OAuthSupport
 
     CompletableFuture<HttpResponse<JsonNode>> listStreams();
 
-    CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(
-            @NotNull String id, @NotNull String newDescription, @Nullable Map<String, Object> query);
+//    CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(
+//            @NotNull String id, @NotNull String newDescription, @Nullable Map<String, Object> query);
 
     CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(@NotNull String id, @NotNull OperationType operationType);
 

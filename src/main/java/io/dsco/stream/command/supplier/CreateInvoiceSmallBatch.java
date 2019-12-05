@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.command.Command;
-import io.dsco.stream.command.retailer.CreateOrder;
 import io.dsco.stream.domain.InvoiceChangeLog;
 import io.dsco.stream.domain.InvoiceForUpdate;
 import io.dsco.stream.domain.ResponseInvoiceChangeLog;
@@ -40,7 +39,7 @@ implements Command<List<InvoiceForUpdate>, Void>
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
             return invoiceV3Api.createInvoiceSmallBatch(invoices);
         }, invoiceV3Api, logger, "createInvoiceSmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
-//logger.info(future.get().getBody());
+logger.info(future.get().getBody());
 
         ResponseInvoiceCreate createResponse = new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceCreate.class);
         if (createResponse.getStatus() == ResponseInvoiceCreate.Status.failure) {
@@ -111,7 +110,7 @@ logger.info(future.get().getBody());
             return null;
         }
 
-//TODO: put this back once the server bug gets fixed2
+//TODO: put this back once the server bug gets fixed21
 //        for (InvoiceChangeLog log : response.getLogs()) {
 //            if (log.getRequestId().equals(requestId)) {
 //                requestedResponseRecord = log;

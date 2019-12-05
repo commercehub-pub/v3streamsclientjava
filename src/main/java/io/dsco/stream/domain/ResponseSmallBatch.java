@@ -2,7 +2,7 @@ package io.dsco.stream.domain;
 
 import java.util.List;
 
-public class OrderCancelOrderItemSmallBatch
+public class ResponseSmallBatch
 {
     public enum Status { success, failure }
 

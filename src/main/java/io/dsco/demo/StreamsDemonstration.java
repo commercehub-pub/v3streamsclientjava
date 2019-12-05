@@ -6,8 +6,7 @@ import io.dsco.stream.apiimpl.ApiBuilder;
 import io.dsco.stream.command.supplier.UpdateInventory;
 import io.dsco.stream.domain.Order;
 import io.dsco.stream.shared.NetworkExecutor;
-import kong.unirest.HttpResponse;
-import kong.unirest.JsonNode;
+import io.dsco.stream.shared.StreamCreator;
 import kong.unirest.Unirest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,26 +15,23 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
 import static io.dsco.demo.Util.getConsoleInput;
 
 public class StreamsDemonstration
+implements StreamCreator
 {
     private static final Logger logger = LogManager.getLogger(StreamsDemonstration.class);
 
     private final StreamV3Api streamV3ApiRetailer;
-    private final StreamV3Api streamV3ApiSupplier;
+//    private final StreamV3Api streamV3ApiSupplier;
     private final InventoryV2Api inventoryV2ApiSupplier;
-    private final InventoryV3Api inventoryV3ApiSupplier;
     private final InvoiceV3Api invoiceV3ApiSupplier;
     private final OrderV3Api orderV3ApiRetailer;
     private final OrderV3Api orderV3ApiSupplier;
 
-    private final String supplierAccountId;
+//    private final String supplierAccountId;
     private final String retailerAccountId;
 
     private final UpdateInventory updateInventoryCmd;
@@ -53,7 +49,6 @@ public class StreamsDemonstration
                 //if this project was just checked out from source, there will be no properties file.
                 // in that case, load the log4j2.xml file (which WILL exist) and use its directory location
                 // to know where to save a default properties file.
-                @SuppressWarnings("ConstantConditions")
                 String currentWorkingDir = new File("x").getAbsolutePath();
                 currentWorkingDir = currentWorkingDir.substring(0, currentWorkingDir.lastIndexOf(File.separator));
                 String outputPath = currentWorkingDir + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dsco.properties";
@@ -101,87 +96,20 @@ public class StreamsDemonstration
         String retailerV3Secret = props.getProperty("retailer.v3.secret");
 
         streamV3ApiRetailer = ApiBuilder.getStreamV3Api(retailerV3ClientId, retailerV3Secret, baseV3Url);
-        streamV3ApiSupplier = ApiBuilder.getStreamV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
+//        streamV3ApiSupplier = ApiBuilder.getStreamV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
         inventoryV2ApiSupplier = ApiBuilder.getInventoryV2Api(supplierV2Token, baseV2Url);
-        inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
+        InventoryV3Api inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
         invoiceV3ApiSupplier = ApiBuilder.getInvoiceV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
         orderV3ApiRetailer = ApiBuilder.getOrderV3Api(retailerV3ClientId, retailerV3Secret, baseV3Url);
         orderV3ApiSupplier = ApiBuilder.getOrderV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
 
-        supplierAccountId = props.getProperty("supplier.accountId");
+//        supplierAccountId = props.getProperty("supplier.accountId");
         retailerAccountId = props.getProperty("retailer.accountId");
 
         updateInventoryCmd = new UpdateInventory(inventoryV2ApiSupplier, inventoryV3ApiSupplier);
 
         //let the network executor know where to go for auth token refreshes
         NetworkExecutor.getInstance().setAuthEndpoint(v3oAuthUrl);
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean doesStreamExist(StreamV3Api streamApi, String streamId)
-    throws Exception
-    {
-        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamApi.listStream(streamId);
-        }, streamApi, logger, "doesStreamExist", NetworkExecutor.HTTP_RESPONSE_200or404);
-
-        return future.get().getStatus() == 200; //404=doesn't exist
-    }
-
-    private void createInventoryStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-    throws Exception
-    {
-        Map<String, Object> query = new HashMap<>();
-        query.put("queryType", StreamV3Api.ObjectType.inventory.toString());
-        query.put("omitItemsOnHold", true);
-        query.put("quantityChangeOnly", true);
-        query.put("clearQuantityForStoppedItems", true);
-        //add other query filter criteria as needed
-
-        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.inventory, query);
-    }
-
-//    private void createInventoryStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-//            throws Exception
-//    {
-//        Map<String, Object> query = new HashMap<>();
-//        query.put("queryType", StreamV3Api.ObjectType.inventory.toString());
-//        query.put("omitItemsOnHold", true);
-//        query.put("quantityChangeOnly", true);
-//        query.put("clearQuantityForStoppedItems", true);
-//        //add other query filter criteria as needed
-//
-//        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.inventory, query);
-//    }
-
-//    private void createInvoiceStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-//    throws Exception
-//    {
-//        Map<String, Object> query = new HashMap<>();
-//        query.put("queryType", StreamV3Api.ObjectType.invoice.toString());
-//        //add other query filter criteria as needed
-//
-//        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.invoice, query);
-//    }
-
-//    private void createOrderStream(StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription)
-//    throws Exception
-//    {
-//        Map<String, Object> query = new HashMap<>();
-//        query.put("queryType", StreamV3Api.ObjectType.order.toString());
-//        //add other query filter criteria as needed
-//
-//        createStreamRefactor(streamApi, streamId, streamDescription, StreamV3Api.ObjectType.order, query);
-//    }
-
-    private void createStreamRefactor(
-            StreamV3Api streamApi, String streamId, @SuppressWarnings("SameParameterValue") String streamDescription,
-            StreamV3Api.ObjectType objectType, Map<String, Object> query)
-    throws Exception
-    {
-        /*CompletableFuture<HttpResponse<JsonNode>> future =*/ NetworkExecutor.getInstance().execute((x) -> {
-            return streamApi.createStream(streamId, streamDescription, objectType, query);
-        }, streamApi, logger, "createStream", NetworkExecutor.HTTP_RESPONSE_201);
     }
 
     private void doInventoryStreamProcessing()
@@ -225,47 +153,54 @@ public class StreamsDemonstration
     private void doCreateStream()
     throws Exception
     {
-        String streamId = getConsoleInput("\nstreamId > ");
-
         String streamType = getConsoleInput(
         "\n1) ItemInventory Stream\n" +
                 "2) Invoice Stream\n" +
-                "3) Cancel Stream\n" +
+                "3) Cancelled Stream\n" +
                 "4) Undeliverable Shipment Stream\n" +
-                "5) Shipment Stream\n" +
+                "5) Shipped Stream\n" +
                 " > "
         );
 
+        String streamId = getConsoleInput("\nstreamId > ");
+
+        Map<String, Object> query = new HashMap<>();
         switch (streamType)
         {
-            case "1": {
-                //see if the stream has been created. if not, create it.
-                if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                    createInventoryStream(streamV3ApiRetailer, streamId, "demonstration item inventory stream");
+            case "1":
+                query.put("queryType", StreamV3Api.ObjectType.inventory);
+                query.put("omitItemsOnHold", true);
+                query.put("quantityChangeOnly", true);
+                break;
 
-                    //it can sometimes take a bit of time before the stream becomes available; wait for it
-                    while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-                        logger.info("stream not yet created. waiting a bit and checking again...");
-                        Thread.sleep(500);
-                    }
-                }
+            case "2":
+                query.put("queryType", StreamV3Api.ObjectType.invoice);
+                break;
+
+            case "3":
+                query.put("queryType", StreamV3Api.ObjectType.orderitemchange);
+                query.put("statuses", Collections.singletonList("cancelled"));
+                break;
+
+            case "4":
+                query.put("queryType", StreamV3Api.ObjectType.undeliverableshipment);
+                break;
+
+            case "5":
+                query.put("queryType", StreamV3Api.ObjectType.orderitemchange);
+                query.put("statuses", Collections.singletonList("shipped"));
+                break;
+        }
+
+        //see if the stream has been created. if not, create it.
+        if (!doesStreamExist(streamId, streamV3ApiRetailer, logger)) {
+            createStream(streamId, streamV3ApiRetailer, logger, query);
+
+            //it can sometimes take a bit of time before the stream becomes available; wait for it
+            while (!doesStreamExist(streamId, streamV3ApiRetailer, logger)) {
+                logger.info("stream not yet created. waiting a bit and checking again...");
+                Thread.sleep(500);
             }
-            break;
-
-            //TODO
-//            case "2": {
-//                //see if the stream has been created. if not, create it.
-//                if (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-//                    createOrderStream(streamV3ApiRetailer, streamId, "order stream");
-//
-//                    //it can sometimes take a bit of time before the stream becomes available; wait for it
-//                    while (!doesStreamExist(streamV3ApiRetailer, streamId)) {
-//                        logger.info("stream not yet created. waiting a bit and checking again...");
-//                        Thread.sleep(500);
-//                    }
-//                }
-//            }
-//            break;
         }
 
         begin();

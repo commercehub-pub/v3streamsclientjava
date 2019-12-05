@@ -1,5 +1,6 @@
 package io.dsco.stream.apiimpl;
 
+import com.google.gson.Gson;
 import io.dsco.stream.api.StreamV3Api;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -30,9 +31,9 @@ implements StreamV3Api
 
         if (query != null) {
             //ensure that query contains the required value AND that it matches the objectType
-            String queryType = (String) query.get("queryType");
+            ObjectType queryType = (ObjectType) query.get("queryType");
             if (queryType == null) throw new IllegalArgumentException("queryType not found in query");
-            if (! queryType.equals(objectType.toString())) throw new IllegalArgumentException("queryType does not match objectType");
+            if (queryType != objectType) throw new IllegalArgumentException("queryType does not match objectType");
             body.put("query", query);
         }
 
@@ -65,21 +66,21 @@ implements StreamV3Api
                 .asJsonAsync();
     }
 
-    @Override
-    public CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(@NotNull String id, @NotNull String newDescription, Map<String, Object> query)
-    {
-        Map<String, Object> body = new HashMap<>();
-        body.put("id", id);
-        body.put("description", newDescription);
-        body.put("objectType", "order");
-        body.put("query", query);
-
-        return Unirest.put(baseUrl + "stream/{id}")
-                .routeParam("id", id)
-                .headers(defaultHeaders)
-                .body(body)
-                .asJsonAsync();
-    }
+//    @Override
+//    public CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(@NotNull String id, @NotNull String newDescription, Map<String, Object> query)
+//    {
+//        Map<String, Object> body = new HashMap<>();
+//        body.put("id", id);
+//        body.put("description", newDescription);
+//        body.put("objectType", "order"); //no...
+//        body.put("query", query);
+//
+//        return Unirest.put(baseUrl + "stream/{id}")
+//                .routeParam("id", id)
+//                .headers(defaultHeaders)
+//                .body(body)
+//                .asJsonAsync();
+//    }
 
     @Override
     public CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(@NotNull String id, @NotNull OperationType operationType)

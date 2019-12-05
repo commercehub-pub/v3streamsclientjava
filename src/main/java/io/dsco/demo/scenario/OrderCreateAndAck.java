@@ -11,7 +11,6 @@ import io.dsco.stream.shared.GetInventoryItems;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -93,7 +92,9 @@ implements GetInventoryItems
 
         //acknowledge the order (supplier)
         List<OrderAcknowledge> ordersToAcknowledge = Collections.singletonList(
-                new OrderAcknowledge(order.getPoNumber(), OrderAcknowledge.Type.PO_NUMBER, null));
+                new OrderAcknowledge(order.getPoNumber(), OrderAcknowledge.Type.PO_NUMBER, null)
+        );
+        acknowledgeOrderCmd.execute(ordersToAcknowledge);
 
         long e = System.currentTimeMillis();
         logger.info(MessageFormat.format("total time (ms): {0}", (e-b)));
