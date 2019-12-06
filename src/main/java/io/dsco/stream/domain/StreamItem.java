@@ -155,4 +155,5 @@ public abstract class StreamItem<T>
             return "not yet implemented";
         }
     }
+
 }

@@ -11,6 +11,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
+//TODO: convert to StreamItem
 public class InventoryErrorRecovery
 implements ItemInventoryProcessor
 {

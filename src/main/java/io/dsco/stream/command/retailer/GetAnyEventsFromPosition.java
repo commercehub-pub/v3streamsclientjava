@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public class GetAnyEventsFromPosition
 implements Command<String, List<StreamItem<?>>>
 {
-    public enum Type { UndeliverableShipment, Invoice, Cancelled, Shipped } //Inventory, Order, OrderItemChange
+    public enum Type { UndeliverableShipment, Invoice, Cancelled, Shipped, Inventory } //, Order, OrderItemChange
 
     private static final Logger logger = LogManager.getLogger(GetAnyEventsFromPosition.class);
     private final Type type;
@@ -65,14 +65,18 @@ implements Command<String, List<StreamItem<?>>>
                     results.add(new StreamItem.PayloadUndeliverableStreamItem(id, source, jsonPayload));
                     break;
 
+                case Inventory:
+                    results.add(new StreamItem.PayloadItemInventoryStreamItem(id, source, jsonPayload));
+                    break;
+
                 case Cancelled:
                     //TODO: OrderItemChanged object, with a status of cancelled.
-                    //BUT hold off - API response and docs don't match
+                    //BUT hold off - API response and docs don't (yet) match
                     results.add(new StreamItem.PayloadGeneric(id, source));
 
                 case Shipped:
                     //TODO: OrderItemChanged object, with a status of shipped.
-                    //BUT hold off - API response and docs don't match
+                    //BUT hold off - API response and docs don't (yet) match
                     results.add(new StreamItem.PayloadGeneric(id, source));
 
                 default:
@@ -80,10 +84,6 @@ implements Command<String, List<StreamItem<?>>>
 
 //                case Order:
 //                    results.add(new StreamItem.PayloadOrderStreamItem(id, source, jsonPayload));
-//                    break;
-//
-//                case Inventory:
-//                    results.add(new StreamItem.PayloadItemInventoryStreamItem(id, source, jsonPayload));
 //                    break;
 //
 //                case OrderItemChange:

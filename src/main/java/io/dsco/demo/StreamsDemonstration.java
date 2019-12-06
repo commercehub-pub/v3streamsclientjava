@@ -132,13 +132,13 @@ implements StreamCreator
         switch (selection)
         {
             case "1":
-                new InventoryBasic(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin();
+                new InventoryBasic(streamV3ApiRetailer, streamId).begin();
                 break;
 
             case "2":
                 int numberOfConsumers = Integer.parseInt(getConsoleInput("\nHow many concurrent consumers > "));
                 int queueSize = Integer.parseInt(getConsoleInput("\nQueue size> "));
-                new InventoryFanout(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin(numberOfConsumers, queueSize);
+                new InventoryFanout(streamV3ApiRetailer, streamId).begin(numberOfConsumers, queueSize);
                 break;
 
             case "3":
