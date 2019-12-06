@@ -29,9 +29,11 @@ implements Command<List<OrderCancelItem>, ResponseSmallBatch>
     public ResponseSmallBatch execute(List<OrderCancelItem> orderItemsToCancel) throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future = NetworkExecutor.getInstance().execute((x) -> {
+logger.info(new Gson().toJson(orderItemsToCancel));
             return orderV3Api.cancelOrderItemsSmallBatch(orderItemsToCancel);
         }, orderV3Api, logger, "cancelOrderItemsSmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 
+logger.info(future.get().getBody());
         return new Gson().fromJson(future.get().getBody().toString(), ResponseSmallBatch.class);
     }
 }

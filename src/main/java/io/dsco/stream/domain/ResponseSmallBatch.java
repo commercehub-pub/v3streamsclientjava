@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ResponseSmallBatch
 {
-    public enum Status { success, failure }
+    public enum Status { success, failure, pending }
 
     private String eventDate; //iso8601
     private String requestId;

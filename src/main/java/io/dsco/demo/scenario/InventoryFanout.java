@@ -1,17 +1,16 @@
 package io.dsco.demo.scenario;
 
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.command.retailer.GetItemInventoryEventsFromPosition;
+import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.domain.ItemInventory;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamItem;
+import io.dsco.stream.shared.AnyProcessor;
 import io.dsco.stream.shared.CommonStreamMethods;
-import io.dsco.stream.shared.ItemInventoryProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -25,34 +24,32 @@ import java.util.concurrent.locks.ReentrantLock;
  * consumer to be processed.
  */
 public class InventoryFanout
-implements CommonStreamMethods, ItemInventoryProcessor
+implements CommonStreamMethods, AnyProcessor
 {
     private static final Logger logger = LogManager.getLogger(InventoryFanout.class);
 
     private static final String SCENARIO_NAME = "Fan-out Inventory Stream Processing";
-    private static final int QUEUE_SIZE = 50;
 
     private final StreamV3Api streamV3Api;
     private final String streamId;
 
-    private List<BlockingQueue<StreamItemInventory>> queues;
+    private List<BlockingQueue<StreamItem<?>>> queues;
     private List<Consumer> consumers;
     private CountDownLatch countDownLatch;
     private List<QueuePositionOrganizer> processedPositionList = new ArrayList<>();
     private Lock listLock = new ReentrantLock();
 
-    private final GetItemInventoryEventsFromPosition getItemInventoryEventsFromPositionCmd;
+    private final GetAnyEventsFromPosition getAnyEventsFromPositionCmd;
 
-    public InventoryFanout(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey)
+    public InventoryFanout(StreamV3Api streamV3Api, String streamId)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        getItemInventoryEventsFromPositionCmd =
-                new GetItemInventoryEventsFromPosition(streamV3Api, streamId, uniqueIdentifierKey);
+        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId);
     }
 
-    public void begin(int numberOfConsumers)
+    public void begin(int numberOfConsumers, int queueSize)
     {
         try {
             long b = System.currentTimeMillis();
@@ -65,7 +62,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
 
             //spin up the consumers
             for (int i = 0; i < numberOfConsumers; i++) {
-                queues.add(new ArrayBlockingQueue<>(QUEUE_SIZE));
+                queues.add(new ArrayBlockingQueue<>(queueSize));
                 Consumer consumer = new Consumer(this, queues.get(i));
                 consumers.add(consumer);
 
@@ -93,7 +90,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
     private void processAllItemsInStream(String streamPosition)
     throws Exception
     {
-        List<StreamItemInventory> items = getItemInventoryEventsFromPositionCmd.execute(Collections.singletonList(streamPosition));
+        List<StreamItem<?>> items = getAnyEventsFromPositionCmd.execute(streamPosition);
 
         while (items.size() > 0) {
             //pass the data off to the consumers for processing
@@ -102,7 +99,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
 
             //do it again, from the last known position
             streamPosition = items.get(items.size()-1).getId();
-            items = getItemInventoryEventsFromPositionCmd.execute(Collections.singletonList(streamPosition));
+            items = getAnyEventsFromPositionCmd.execute(streamPosition);
         }
 
         //now that the stream is drained, let each consumer know it can shut down when processing is finished
@@ -159,11 +156,11 @@ implements CommonStreamMethods, ItemInventoryProcessor
      * This algorithm will take the primary identifier and hash the value. It will then take that modulus the number of available
      * consumers so it will always route the same item to the same consumer.
      */
-    private void addItemsToQueue(List<StreamItemInventory> items)
+    private void addItemsToQueue(List<StreamItem<?>> items)
     throws InterruptedException
     {
-        for (StreamItemInventory streamItemInventory : items) {
-            ItemInventory item = streamItemInventory.getItemInventory();
+        for (StreamItem<?> streamItemInventory : items) {
+            ItemInventory item = (ItemInventory) streamItemInventory.getPayload();
 
             //determine which queue gets the item
             //longstanding java math bug, this can produce a negative number if the hashcode is negative
@@ -196,10 +193,10 @@ implements CommonStreamMethods, ItemInventoryProcessor
     implements Runnable
     {
         private InventoryFanout tester;
-        private BlockingQueue<StreamItemInventory> queue;
+        private BlockingQueue<StreamItem<?>> queue;
         private boolean running = true;
 
-        Consumer(InventoryFanout tester, BlockingQueue<StreamItemInventory> queue)
+        Consumer(InventoryFanout tester, BlockingQueue<StreamItem<?>> queue)
         {
             this.tester = tester;
             this.queue = queue;
@@ -214,7 +211,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
                 // item in the queue so the thread will resume, but it will know to ignore the special item and
                 // terminate the loop
                 try {
-                    queue.put(new StreamItemInventory("-1", null, null));
+                    queue.put(new StreamItem.PayloadItemInventoryStreamItem("-1", null, null));
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -226,7 +223,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
             try {
                 while (!queue.isEmpty() || running) {
                     //grab the next item from the queue. this will block until an item becomes available
-                    StreamItemInventory streamItemInventory = queue.take();
+                    StreamItem<?> streamItemInventory = queue.take();
 
                     //if this is the special marker item, ignore it and break the loop
                     if (streamItemInventory.getId().equals("-1")) break;

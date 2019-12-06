@@ -1,8 +1,8 @@
 package io.dsco.demo.scenario;
 
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.command.retailer.GetItemInventoryEventsFromPosition;
-import io.dsco.stream.command.retailer.ProcessItemInventoryStream;
+import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
+import io.dsco.stream.command.retailer.ProcessAnyStream;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,16 +18,14 @@ implements CommonStreamMethods
     private final StreamV3Api streamV3Api;
     private final String streamId;
 
-    private final ProcessItemInventoryStream processItemInventoryStreamCmd;
+    private final ProcessAnyStream processAnyStreamCmd;
 
-    public InventoryBasic(StreamV3Api streamV3Api, String streamId, String uniqueIdentifierKey)
+    public InventoryBasic(StreamV3Api streamV3Api, String streamId)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        GetItemInventoryEventsFromPosition getItemInventoryEventsFromPositionCmd =
-                new GetItemInventoryEventsFromPosition(streamV3Api, streamId, uniqueIdentifierKey);
-        processItemInventoryStreamCmd = new ProcessItemInventoryStream(streamV3Api, streamId, getItemInventoryEventsFromPositionCmd);
+        processAnyStreamCmd = new ProcessAnyStream(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId);
     }
 
     public void begin()
@@ -40,7 +38,7 @@ implements CommonStreamMethods
             String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
             logger.info("initial stream position: " + streamPosition);
 
-            processItemInventoryStreamCmd.execute(streamPosition);
+            processAnyStreamCmd.execute(streamPosition);
 
             long e = System.currentTimeMillis();
             logger.info(MessageFormat.format("total time (ms): {0}", (e-b)));

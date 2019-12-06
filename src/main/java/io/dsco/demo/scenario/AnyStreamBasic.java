@@ -1,6 +1,7 @@
 package io.dsco.demo.scenario;
 
 import io.dsco.stream.api.StreamV3Api;
+import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.command.retailer.ProcessAnyStream;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +20,11 @@ implements CommonStreamMethods
     private final String streamId;
     private final ProcessAnyStream processAnyStreamCmd;
 
-    public AnyStreamBasic(StreamV3Api streamV3Api, String streamId)
+    public AnyStreamBasic(GetAnyEventsFromPosition.Type type, StreamV3Api streamV3Api, String streamId)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
-        processAnyStreamCmd = new ProcessAnyStream(streamV3Api, streamId);
+        processAnyStreamCmd = new ProcessAnyStream(type, streamV3Api, streamId);
     }
 
     public void begin()
