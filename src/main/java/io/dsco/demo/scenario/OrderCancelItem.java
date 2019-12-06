@@ -35,7 +35,7 @@ public class OrderCancelItem
         ResponseSmallBatch response = cancelOrderItemSmallBatchCmd.execute(itemsToCancel);
 
         //make sure the async response was a success
-        if (response.getStatus() != ResponseSmallBatch.Status.success) {
+        if (response.getStatus() == ResponseSmallBatch.Status.failure) {
             //for non-demo, you'd want to check the messages array to find what went wrong
             throw new IllegalStateException("unable to cancel order item");
         }

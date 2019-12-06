@@ -10,6 +10,7 @@ import io.dsco.stream.shared.StreamItemInventoryBase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +38,10 @@ implements Command<String, Void>, CommonStreamMethods, AnyProcessor
     public Void execute(String position) throws Exception
     {
         List<String> items = getAnyEventsFromPositionCmd.execute(position);
+        if (logger.isDebugEnabled()) {
+            logger.debug(MessageFormat.format("there are {0} items in the stream", items.size()));
+        }
+
         String lastItem = null;
 
         while (items.size() > 0) {

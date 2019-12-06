@@ -1,16 +1,27 @@
 package io.dsco.stream.domain;
 
-public abstract class StreamItem
+import com.google.gson.Gson;
+
+public abstract class StreamItem<T>
 {
     public enum Source { stream, sync }
 
     private String id; //the stream position
     private Source source;
+    private T payload;
 
+    @Deprecated
     public StreamItem(String id, Source source)
     {
         this.id = id;
         this.source = source;
+    }
+
+    public StreamItem(String id, Source source, T payload)
+    {
+        this.id = id;
+        this.source = source;
+        this.payload = payload;
     }
 
     //a unique identifier for the object; what this is depends on the subtype
@@ -26,4 +37,105 @@ public abstract class StreamItem
         return source;
     }
 
+    public T getPayload()
+    {
+        return payload;
+    }
+
+    static class PayloadUndeliverableShipment
+    {
+        public String eventUuid;
+        public Order order;
+        public Package shipment;
+    }
+
+    static class PayloadUndeliverableStreamItem
+    extends StreamItem<PayloadUndeliverableShipment>
+    {
+        public PayloadUndeliverableStreamItem(String id, Source source, String payloadJson)
+        {
+            super(id, source, new Gson().fromJson(payloadJson, PayloadUndeliverableShipment.class));
+        }
+
+        @Override
+        public String getKey()
+        {
+            return getPayload().eventUuid;
+        }
+    }
+
+    static class PayloadInvoiceForUpdate
+    {
+        public String invoiceId;
+        public float totalAmount;
+        public String buyerId;
+        public InvoiceCharge charges;
+        public String consumerOrderNumber;
+        public String currencyCode;
+        public String dscoOrderId;
+        public Float expectedOrderTotalAmount;
+        public Float expectedOrderTotalDifference;
+        public String externalBatchId;
+        public Float freightAmount;
+        public Float handlingAmount;
+        public String invoiceDate; //iso8601
+        public InvoiceLineItemForUpdate lineItems;
+        public Float lineItemsSubtotal;
+        public Integer numberOfLineItems;
+        public String poNumber;
+        public Float salesTaxAmount;
+        public String sellerId;
+        public String sellerInvoiceNumber;
+        public InvoiceShipInfo ship;
+        public InvoiceShipFromTo shipFrom;
+        public InvoiceShipFromTo shipTo;
+        public Float subtotalExcludingLineItems;
+        public String supplierOrderNumber;
+        public InvoiceTerms terms;
+    }
+
+    static class PayloadInvoiceForUpdateStreamItem
+    extends StreamItem<PayloadInvoiceForUpdate>
+    {
+        public PayloadInvoiceForUpdateStreamItem(String id, Source source, String payloadJson)
+        {
+            super(id, source, new Gson().fromJson(payloadJson, PayloadInvoiceForUpdate.class));
+        }
+
+        @Override
+        public String getKey()
+        {
+            return getPayload().invoiceId;
+        }
+    }
+
+    static class PayloadOrderStreamItem
+    extends StreamItem<Order>
+    {
+        public PayloadOrderStreamItem(String id, Source source, String payloadJson)
+        {
+            super(id, source, new Gson().fromJson(payloadJson, Order.class));
+        }
+
+        @Override
+        public String getKey()
+        {
+            return getPayload().getDscoOrderId();
+        }
+    }
+
+    static class PayloadItemInventoryStreamItem
+    extends StreamItem<ItemInventory>
+    {
+        public PayloadItemInventoryStreamItem(String id, Source source, String payloadJson)
+        {
+            super(id, source, new Gson().fromJson(payloadJson, ItemInventory.class));
+        }
+
+        @Override
+        public String getKey()
+        {
+            return getPayload().getDscoItemId();
+        }
+    }
 }
