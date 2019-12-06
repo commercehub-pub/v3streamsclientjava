@@ -116,18 +116,17 @@ implements StreamCreator
 
     private void doInventoryStreamProcessing()
     {
-        String uniqueIdentifierKey = getConsoleInput("\nItemInventory unique identifier (ex: sku, ean, gtin, isbn, mpn, upc, etc) > ");
-
-        String streamId = getConsoleInput("\nstreamId > ");
+        String uniqueIdentifierKey = "sku"; //getConsoleInput("\nItemInventory unique identifier to display (ex: sku, ean, gtin, isbn, mpn, upc, etc) > ");
 
         String selection = getConsoleInput(
                 "\nWhich scenario would you like to run?\n" +
                         "    1) Basic Inventory Stream\n" +
                         "    2) Fan-out Inventory Stream\n" +
                         "    3) Basic Error Recovery\n" +
-                        "    4) Inventory Sync Stream Creation\n" +
                         "     > "
         );
+
+        String streamId = getConsoleInput("\nstreamId > ");
 
         switch (selection)
         {
@@ -137,17 +136,14 @@ implements StreamCreator
 
             case "2":
                 int numberOfConsumers = Integer.parseInt(getConsoleInput("\nHow many concurrent consumers > "));
-                new InventoryFanout(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin(numberOfConsumers);
+                int queueSize = Integer.parseInt(getConsoleInput("\nQueue size> "));
+                new InventoryFanout(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin(numberOfConsumers, queueSize);
                 break;
 
             case "3":
                 String startPosition = getConsoleInput("\nStream Start Position > ");
                 String endPosition = getConsoleInput("Stream End Position > ");
                 new InventoryErrorRecovery(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin(startPosition, endPosition);
-                break;
-
-            case "4":
-                new InventorySync(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin();
                 break;
         }
     }
@@ -218,8 +214,9 @@ implements StreamCreator
                         "2) Create and acknowledge Order\n" +
                         "3) Create Invoice and Shipment\n" +
                         "4) Cancel order line item\n" +
-                        //"5) Add shipment\n" +
-                        //"6) Mark shipment undeliverable\n" +
+                        "5) Do Inventory Sync\n" +
+                        //"6) Add shipment\n" +
+                        //"7) Mark shipment undeliverable\n" +
                         " > "
         );
 
@@ -232,6 +229,8 @@ implements StreamCreator
             break;
 
             case "2": {
+                order = null;
+                invoice = null;
                 order = new OrderCreateAndAck(
                         retailerAccountId, inventoryV2ApiSupplier, orderV3ApiRetailer, orderV3ApiSupplier
                 ).begin();
@@ -248,7 +247,7 @@ implements StreamCreator
             break;
 
             case "4": {
-                if (order == null || invoice == null) {
+                if (order == null) {
                     System.out.println("\nyou must first create an order and an invoice");
                 } else {
                     new OrderCancelItem(orderV3ApiSupplier).begin(order, invoice);
@@ -256,7 +255,14 @@ implements StreamCreator
             }
             break;
 
-//            case "5": {
+            case "5": {
+                String streamId = getConsoleInput("\nstreamId > ");
+                String uniqueIdentifierKey = "sku"; //getConsoleInput("\nItemInventory unique identifier to display (ex: sku, ean, gtin, isbn, mpn, upc, etc) > ");
+                new InventorySync(streamV3ApiRetailer, streamId, uniqueIdentifierKey).begin();
+            }
+            break;
+
+//            case "6": {
 //                if (order == null) {
 //                    System.out.println("\nyou must first create an order");
 //                } else {
@@ -265,7 +271,7 @@ implements StreamCreator
 //            }
 //            break;
 //
-//            case "6": {
+//            case "7": {
 //                if (order == null) {
 //                    System.out.println("\nyou must first create an order");
 //                } else {

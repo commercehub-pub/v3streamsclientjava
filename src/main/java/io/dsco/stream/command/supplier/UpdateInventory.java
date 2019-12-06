@@ -122,6 +122,7 @@ implements Command<Integer, Void>, GetInventoryItems
             return inventoryApi.getInventoryChangeLog(requestId);
         }, inventoryApi, logger, "getInventoryChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
 
+//logger.info(future.get().getBody());
         //see if each item is successful, pending, or failed
         JSONArray jsonList = future.get().getBody().getObject().getJSONArray("logs");
 

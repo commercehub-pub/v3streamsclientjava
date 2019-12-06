@@ -30,7 +30,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
     private static final Logger logger = LogManager.getLogger(InventoryFanout.class);
 
     private static final String SCENARIO_NAME = "Fan-out Inventory Stream Processing";
-    private static final int QUEUE_SIZE = 50;
+    //private static final int QUEUE_SIZE = 50;
 
     private final StreamV3Api streamV3Api;
     private final String streamId;
@@ -52,7 +52,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
                 new GetItemInventoryEventsFromPosition(streamV3Api, streamId, uniqueIdentifierKey);
     }
 
-    public void begin(int numberOfConsumers)
+    public void begin(int numberOfConsumers, int queueSize)
     {
         try {
             long b = System.currentTimeMillis();
@@ -65,7 +65,7 @@ implements CommonStreamMethods, ItemInventoryProcessor
 
             //spin up the consumers
             for (int i = 0; i < numberOfConsumers; i++) {
-                queues.add(new ArrayBlockingQueue<>(QUEUE_SIZE));
+                queues.add(new ArrayBlockingQueue<>(queueSize));
                 Consumer consumer = new Consumer(this, queues.get(i));
                 consumers.add(consumer);
 
