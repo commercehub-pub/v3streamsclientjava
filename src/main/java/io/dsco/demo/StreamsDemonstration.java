@@ -3,6 +3,7 @@ package io.dsco.demo;
 import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
+import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.command.supplier.UpdateInventory;
 import io.dsco.stream.domain.InvoiceForUpdate;
 import io.dsco.stream.domain.Order;
@@ -296,15 +297,24 @@ implements StreamCreator
                     " > "
         );
 
+        String streamId = getConsoleInput("\nstreamId > ");
+
         switch (selection)
         {
             case "1":
-            case "2":
-            case "3":
-            case "4":
-                String streamId = getConsoleInput("\nstreamId > ");
-                new AnyStreamBasic(streamV3ApiRetailer, streamId).begin();
+                new AnyStreamBasic(GetAnyEventsFromPosition.Type.Invoice, streamV3ApiRetailer, streamId).begin();
+                break;
 
+            case "2":
+                new AnyStreamBasic(GetAnyEventsFromPosition.Type.Cancelled, streamV3ApiRetailer, streamId).begin();
+                break;
+
+            case "3":
+                new AnyStreamBasic(GetAnyEventsFromPosition.Type.UndeliverableShipment, streamV3ApiRetailer, streamId).begin();
+                break;
+
+            case "4":
+                new AnyStreamBasic(GetAnyEventsFromPosition.Type.Shipped, streamV3ApiRetailer, streamId).begin();
                 break;
         }
 

@@ -2,6 +2,8 @@ package io.dsco.stream.domain;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 public abstract class StreamItem<T>
 {
     public enum Source { stream, sync }
@@ -49,7 +51,7 @@ public abstract class StreamItem<T>
         public Package shipment;
     }
 
-    static class PayloadUndeliverableStreamItem
+    public static class PayloadUndeliverableStreamItem
     extends StreamItem<PayloadUndeliverableShipment>
     {
         public PayloadUndeliverableStreamItem(String id, Source source, String payloadJson)
@@ -69,7 +71,7 @@ public abstract class StreamItem<T>
         public String invoiceId;
         public float totalAmount;
         public String buyerId;
-        public InvoiceCharge charges;
+        public List<InvoiceCharge> charges;
         public String consumerOrderNumber;
         public String currencyCode;
         public String dscoOrderId;
@@ -79,7 +81,7 @@ public abstract class StreamItem<T>
         public Float freightAmount;
         public Float handlingAmount;
         public String invoiceDate; //iso8601
-        public InvoiceLineItemForUpdate lineItems;
+        public List<InvoiceLineItemForUpdate> lineItems;
         public Float lineItemsSubtotal;
         public Integer numberOfLineItems;
         public String poNumber;
@@ -94,7 +96,7 @@ public abstract class StreamItem<T>
         public InvoiceTerms terms;
     }
 
-    static class PayloadInvoiceForUpdateStreamItem
+    public static class PayloadInvoiceForUpdateStreamItem
     extends StreamItem<PayloadInvoiceForUpdate>
     {
         public PayloadInvoiceForUpdateStreamItem(String id, Source source, String payloadJson)
@@ -109,7 +111,7 @@ public abstract class StreamItem<T>
         }
     }
 
-    static class PayloadOrderStreamItem
+    public static class PayloadOrderStreamItem
     extends StreamItem<Order>
     {
         public PayloadOrderStreamItem(String id, Source source, String payloadJson)
@@ -124,7 +126,7 @@ public abstract class StreamItem<T>
         }
     }
 
-    static class PayloadItemInventoryStreamItem
+    public static class PayloadItemInventoryStreamItem
     extends StreamItem<ItemInventory>
     {
         public PayloadItemInventoryStreamItem(String id, Source source, String payloadJson)
@@ -136,6 +138,21 @@ public abstract class StreamItem<T>
         public String getKey()
         {
             return getPayload().getDscoItemId();
+        }
+    }
+
+    public static class PayloadGeneric
+    extends StreamItem<String>
+    {
+        public PayloadGeneric(String id, Source source)
+        {
+            super(id, source, "Not yet implemented");
+        }
+
+        @Override
+        public String getKey()
+        {
+            return "not yet implemented";
         }
     }
 }

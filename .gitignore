@@ -9,3 +9,4 @@ bin/
 .DS_Store
 .idea/
 **/Test.java
+**/test/
