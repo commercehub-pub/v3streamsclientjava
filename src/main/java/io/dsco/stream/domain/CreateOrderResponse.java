@@ -5,9 +5,9 @@ import java.util.List;
 public class CreateOrderResponse
 {
     private String eventDate; //iso8601
-    private String requestId;
     private String status;
-    private List<CreateOrderResponseMessage> messages;
+    private List<String> dscoOrderIds;
+    private List<Order> dscoOrders;
 
     public String getEventDate()
     {
@@ -17,16 +17,6 @@ public class CreateOrderResponse
     public void setEventDate(String eventDate)
     {
         this.eventDate = eventDate;
-    }
-
-    public String getRequestId()
-    {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId)
-    {
-        this.requestId = requestId;
     }
 
     public String getStatus()
@@ -39,13 +29,23 @@ public class CreateOrderResponse
         this.status = status;
     }
 
-    public List<CreateOrderResponseMessage> getMessages()
+    public List<String> getDscoOrderIds()
     {
-        return messages;
+        return dscoOrderIds;
     }
 
-    public void setMessages(List<CreateOrderResponseMessage> messages)
+    public void setDscoOrderIds(List<String> dscoOrderIds)
     {
-        this.messages = messages;
+        this.dscoOrderIds = dscoOrderIds;
+    }
+
+    public List<Order> getDscoOrders()
+    {
+        return dscoOrders;
+    }
+
+    public void setDscoOrders(List<Order> dscoOrders)
+    {
+        this.dscoOrders = dscoOrders;
     }
 }

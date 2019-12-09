@@ -30,9 +30,10 @@ implements Command<Order, CreateOrderResponse>
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future = NetworkExecutor.getInstance().execute((x) -> {
-logger.info(new Gson().toJson(order));
+//logger.info("create order REQUEST\n" + new Gson().toJson(order));
             return orderV3Api.createOrder(order);
         }, orderV3Api, logger, "createOrder", NetworkExecutor.HTTP_RESPONSE_201);
+//logger.info("create order RESPONSE:\n" + future.get().getBody());
 
         return new Gson().fromJson(future.get().getBody().toString(), CreateOrderResponse.class);
     }
