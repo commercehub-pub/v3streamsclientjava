@@ -1,7 +1,7 @@
 dsco.properties
 build/
 out/
-/.gradle/
+.gradle/
 .classpath
 .project
 .settings/
