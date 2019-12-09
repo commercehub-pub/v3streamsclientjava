@@ -67,12 +67,9 @@ implements GetInventoryItems
         //create an order (retailer)
         Order order = createOrderObject(Arrays.asList(item1, item2, item3), retailerAccountId);
         CreateOrderResponse createOrderResponse = createOrderCmd.execute(order);
-        if (!createOrderResponse.getStatus().equals("success")) {
-            throw new IllegalStateException("unable to create order");
-        }
 
         //for the demo we'll assume just the one order
-        String orderId = createOrderResponse.getMessages().get(0).getDescription().getDscoOrderIds().get(0);
+        String orderId = createOrderResponse.getDscoOrderIds().get(0);
         order.setDscoOrderId(orderId);
 
         logger.info("*** PO_NUMBER: " + order.getPoNumber());
