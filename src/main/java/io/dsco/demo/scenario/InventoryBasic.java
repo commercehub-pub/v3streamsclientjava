@@ -3,11 +3,13 @@ package io.dsco.demo.scenario;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.command.retailer.ProcessAnyStream;
+import io.dsco.stream.domain.Stream;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 
 public class InventoryBasic
 implements CommonStreamMethods
@@ -25,7 +27,7 @@ implements CommonStreamMethods
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        processAnyStreamCmd = new ProcessAnyStream(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId);
+        processAnyStreamCmd = new ProcessAnyStream(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId, 0);
     }
 
     public void begin()
@@ -35,7 +37,8 @@ implements CommonStreamMethods
             logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
             //get the initial stream position
-            String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
 
             processAnyStreamCmd.execute(streamPosition);

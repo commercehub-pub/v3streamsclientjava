@@ -45,13 +45,13 @@ implements Command<String, Void>, CommonStreamMethods, ItemInventoryProcessor
 
                 //per the best practices suggestion, only update the stream position periodically.
                 if (System.currentTimeMillis() > lastStreamPositionUpdate + STREAM_UPDATE_INTERVAL) {
-                    updateStreamPosition(streamV3Api, streamId, item.getId(), logger);
+                    updateStreamPosition(streamV3Api, streamId, 0, item.getId(), logger);
                     lastStreamPositionUpdate = System.currentTimeMillis();
                 }
             }
 
             //do a final position update for this batch of items
-            updateStreamPosition(streamV3Api, streamId, lastItem.getId(), logger);
+            updateStreamPosition(streamV3Api, streamId, 0, lastItem.getId(), logger);
 
             //get the next batch of items
             items = itemRetrieverCmd.execute(Collections.singletonList(lastItem.getId()));

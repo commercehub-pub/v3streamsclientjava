@@ -3,6 +3,7 @@ package io.dsco.demo.scenario;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.domain.ItemInventory;
+import io.dsco.stream.domain.Stream;
 import io.dsco.stream.domain.StreamItem;
 import io.dsco.stream.shared.AnyProcessor;
 import io.dsco.stream.shared.CommonStreamMethods;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -46,7 +48,7 @@ implements CommonStreamMethods, AnyProcessor
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId);
+        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId, 0);
     }
 
     public void begin(int numberOfConsumers, int queueSize)
@@ -70,7 +72,8 @@ implements CommonStreamMethods, AnyProcessor
             }
 
             //get the initial stream position
-            String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
             processAllItemsInStream(streamPosition);
 
@@ -133,7 +136,7 @@ implements CommonStreamMethods, AnyProcessor
                 // removed. this allows us to only call updateStreamPosition one time instead of many, if there were many
                 // items that have now been contiguously completed
                 //updateStreamPosition(updateStreamPositionToHere);
-                updateStreamPosition(streamV3Api, streamId, updateStreamPositionToHere, logger);
+                updateStreamPosition(streamV3Api, streamId, 0, updateStreamPositionToHere, logger);
 
                 //logger.info(">>> " + numItemsRemoved + " were marked with only 1 call");
 

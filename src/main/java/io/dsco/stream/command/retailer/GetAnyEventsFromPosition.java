@@ -19,18 +19,21 @@ import java.util.concurrent.CompletableFuture;
 public class GetAnyEventsFromPosition
 implements Command<String, List<StreamItem<?>>>
 {
+
     public enum Type { UndeliverableShipment, Invoice, Cancelled, Shipped, Inventory } //, Order, OrderItemChange
 
     private static final Logger logger = LogManager.getLogger(GetAnyEventsFromPosition.class);
     private final Type type;
     private final StreamV3Api streamV3Api;
     private final String streamId;
+    private final int partitionId;
 
-    public GetAnyEventsFromPosition(Type type, StreamV3Api streamV3Api, String streamId)
+    public GetAnyEventsFromPosition(Type type, StreamV3Api streamV3Api, String streamId, int partitionId)
     {
         this.type = type;
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
+        this.partitionId = partitionId;
     }
 
     @Override
@@ -41,7 +44,7 @@ implements Command<String, List<StreamItem<?>>>
         }
 
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamV3Api.getStreamEventsFromPosition(streamId, position);
+            return streamV3Api.getStreamEventsFromPosition(streamId, partitionId, position);
         }, streamV3Api, logger, "getAnyEventsFromPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
         JSONArray resultsJsonArray = future.get().getBody().getArray();

@@ -36,7 +36,7 @@ extends StreamItemInventoryBase
         }
 
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamV3Api.getStreamEventsFromPosition(streamId, positions.get(0));
+            return streamV3Api.getStreamEventsFromPosition(streamId, 0, positions.get(0));
         }, streamV3Api, logger, "getItemInventoryEventsFromPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
         return refactorParseStreamEvents(future);

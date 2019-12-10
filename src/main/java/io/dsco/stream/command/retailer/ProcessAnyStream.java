@@ -20,15 +20,17 @@ implements Command<String, Void>, CommonStreamMethods, AnyProcessor
     private final GetAnyEventsFromPosition getAnyEventsFromPositionCmd;
 
     private long lastStreamPositionUpdate = 0L;
-    private StreamV3Api streamV3Api;
-    private String streamId;
+    private final StreamV3Api streamV3Api;
+    private final String streamId;
+    private final int partitionId;
 
-    public ProcessAnyStream(GetAnyEventsFromPosition.Type type, StreamV3Api streamV3Api, String streamId)
+    public ProcessAnyStream(GetAnyEventsFromPosition.Type type, StreamV3Api streamV3Api, String streamId, int partitionId)
     {
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
+        this.partitionId = partitionId;
 
-        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(type, streamV3Api, streamId);
+        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(type, streamV3Api, streamId, partitionId);
     }
 
     @Override
@@ -49,13 +51,13 @@ implements Command<String, Void>, CommonStreamMethods, AnyProcessor
 
                 //per the best practices suggestion, only update the stream position periodically.
                 if (System.currentTimeMillis() > lastStreamPositionUpdate + STREAM_UPDATE_INTERVAL) {
-                    updateStreamPosition(streamV3Api, streamId, item.getId(), logger);
+                    updateStreamPosition(streamV3Api, streamId, partitionId, item.getId(), logger);
                     lastStreamPositionUpdate = System.currentTimeMillis();
                 }
             }
 
             //do a final position update for this batch of items
-            updateStreamPosition(streamV3Api, streamId, lastItem.getId(), logger);
+            updateStreamPosition(streamV3Api, streamId, partitionId, lastItem.getId(), logger);
 
             //get the next batch of items
             items = getAnyEventsFromPositionCmd.execute(lastItem.getId());

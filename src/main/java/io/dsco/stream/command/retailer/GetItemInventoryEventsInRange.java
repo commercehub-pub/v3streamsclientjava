@@ -43,7 +43,7 @@ implements Command<List<String>, List<StreamItemInventory>>
         }
 
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamV3Api.getStreamEventsInRange(streamId, startPosition, endPosition);
+            return streamV3Api.getStreamEventsInRange(streamId, 0, startPosition, endPosition);
         }, streamV3Api, logger, "getItemInventoryEventsInRange", NetworkExecutor.HTTP_RESPONSE_200);
 
         return refactorParseStreamEvents(future);
