@@ -13,9 +13,9 @@ import java.util.concurrent.CompletableFuture;
 public interface StreamV3Api
 extends OAuthSupport
 {
-    enum ObjectType {order, invoice, inventory, catalog, catalogchangelog, orderitemchange, undeliverableshipment}
+    enum ObjectType { order, invoice, inventory, catalog, catalogchangelog, orderitemchange, undeliverableshipment }
 
-    enum OperationType {sync}
+    enum OperationType { sync, setpartitionowner }
 
     CompletableFuture<HttpResponse<JsonNode>> createStream(
             @NotNull String id, @NotNull String description, int numPartitions,
@@ -23,11 +23,13 @@ extends OAuthSupport
 
     CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, List<Integer> partitionIds);
 
+    //TODO: this should be modified to take a Stream object
     CompletableFuture<HttpResponse<JsonNode>> updateStream(
             @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber,
             @Nullable Map<String, Object> query);
 
-    CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(@NotNull String id, @NotNull OperationType operationType);
+    CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(
+            @NotNull String id, @NotNull OperationType operationType, Integer partitionId, String ownerId);
 
     CompletableFuture<HttpResponse<JsonNode>> getStreamEventsFromPosition(
             @NotNull String id, int partitionId, @NotNull String position);

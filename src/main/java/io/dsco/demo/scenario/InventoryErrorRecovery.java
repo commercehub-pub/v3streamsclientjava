@@ -2,7 +2,7 @@ package io.dsco.demo.scenario;
 
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.retailer.GetItemInventoryEventsInRange;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamEventInventory;
 import io.dsco.stream.shared.ItemInventoryProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,11 +51,11 @@ implements ItemInventoryProcessor
     private void processAllItemsInStream(String startPosition)
     throws Exception
     {
-        List<StreamItemInventory> items = getItemInventoryEventsInRangeCmd.execute(Arrays.asList(startPosition, desiredEndPosition));
+        List<StreamEventInventory> items = getItemInventoryEventsInRangeCmd.execute(Arrays.asList(startPosition, desiredEndPosition));
 
         if (items.size() == 0) return; //all done
 
-        for (StreamItemInventory item : items) {
+        for (StreamEventInventory item : items) {
             //processStreamInventoryItem(item);
             processItem(item, logger);
             //if you wish to maintain your own stream position in the stream, you could write it here to a file or database or whatever on your end

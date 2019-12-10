@@ -1,7 +1,6 @@
 package io.dsco.stream.shared;
 
-import io.dsco.stream.domain.StreamItem;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamEvent;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -9,7 +8,7 @@ import java.util.Random;
 
 public interface AnyProcessor
 {
-    default void processItem(StreamItem<?> item, Logger logger)
+    default void processItem(StreamEvent<?> item, Logger logger)
     throws InterruptedException
     {
         //this isn't actually going to do anything for the demo, other than wait a random amount of time from 25-100ms

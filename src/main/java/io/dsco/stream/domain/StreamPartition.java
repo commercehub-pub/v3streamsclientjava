@@ -8,9 +8,10 @@ public class StreamPartition
     private Status status;
     private String position;
     private String maxPosition;
-    private String positionLastUpdated; //iso8601
+    private String lastUpdate; //iso8601
     private String lastDeactivatedDate; //iso8601
     private String lastActivatedDate; //iso8601
+    private String ownerId;
 
     public int getPartitionId()
     {
@@ -52,14 +53,14 @@ public class StreamPartition
         this.maxPosition = maxPosition;
     }
 
-    public String getPositionLastUpdated()
+    public String getLastUpdate()
     {
-        return positionLastUpdated;
+        return lastUpdate;
     }
 
-    public void setPositionLastUpdated(String positionLastUpdated)
+    public void setLastUpdate(String lastUpdate)
     {
-        this.positionLastUpdated = positionLastUpdated;
+        this.lastUpdate = lastUpdate;
     }
 
     public String getLastDeactivatedDate()
@@ -80,5 +81,15 @@ public class StreamPartition
     public void setLastActivatedDate(String lastActivatedDate)
     {
         this.lastActivatedDate = lastActivatedDate;
+    }
+
+    public String getOwnerId()
+    {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId)
+    {
+        this.ownerId = ownerId;
     }
 }

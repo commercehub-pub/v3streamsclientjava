@@ -27,7 +27,7 @@ implements Command<Void, String>
     public String execute(Void v) throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamV3Api.createStreamOperation(streamId, StreamV3Api.OperationType.sync);
+            return streamV3Api.createStreamOperation(streamId, StreamV3Api.OperationType.sync, null, null);
         }, streamV3Api, logger, "createStreamSync", NetworkExecutor.HTTP_RESPONSE_200);
 
         //return the operationUuid

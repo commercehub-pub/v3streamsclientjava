@@ -53,8 +53,6 @@ implements StreamV3Api
         // does exist, it fails to find it because of the caching. but by putting the _ts
         // with a constantly updating value, it forces it to not cache.
 
-        //another potential option: Cache-Control: no-cache
-
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("_ts", System.currentTimeMillis());
         if (id != null) {
@@ -84,20 +82,28 @@ implements StreamV3Api
             body.put("query", query);
         }
         body.put("numPartitions", numPartitions);
-        body.put("incrementVersionNumber", incrementVersionNumber);
 
         return Unirest.put(baseUrl + "stream/{id}")
                 .routeParam("id", id)
                 .headers(defaultHeaders)
+                .queryString("incrementVersionNumber", incrementVersionNumber)
                 .body(body)
                 .asJsonAsync();
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(@NotNull String id, @NotNull OperationType operationType)
+    public CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(
+            @NotNull String id, @NotNull OperationType operationType, Integer partitionId, String ownerId)
     {
         Map<String, Object> body = new HashMap<>();
-        body.put("operationType", operationType.toString());
+        body.put("operationType", operationType);
+
+        if (partitionId != null) {
+            body.put("partitionId", partitionId);
+        }
+        if (ownerId != null) {
+            body.put("ownerId", ownerId);
+        }
 
         return Unirest.post(baseUrl + "stream/{id}")
                 .routeParam("id", id)

@@ -4,22 +4,23 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
-public abstract class StreamItem<T>
+public abstract class StreamEvent<T>
 {
     public enum Source { stream, sync }
 
     private String id; //the stream position
     private Source source;
+    private String ownerId;
     private T payload;
 
     @Deprecated
-    public StreamItem(String id, Source source)
+    public StreamEvent(String id, Source source)
     {
         this.id = id;
         this.source = source;
     }
 
-    public StreamItem(String id, Source source, T payload)
+    public StreamEvent(String id, Source source, String ownerId, T payload)
     {
         this.id = id;
         this.source = source;
@@ -39,6 +40,11 @@ public abstract class StreamItem<T>
         return source;
     }
 
+    public String getOwnerId()
+    {
+        return ownerId;
+    }
+
     public T getPayload()
     {
         return payload;
@@ -51,12 +57,12 @@ public abstract class StreamItem<T>
         public Package shipment;
     }
 
-    public static class PayloadUndeliverableStreamItem
-    extends StreamItem<PayloadUndeliverableShipment>
+    public static class PayloadUndeliverableStreamEvent
+    extends StreamEvent<PayloadUndeliverableShipment>
     {
-        public PayloadUndeliverableStreamItem(String id, Source source, String payloadJson)
+        public PayloadUndeliverableStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, new Gson().fromJson(payloadJson, PayloadUndeliverableShipment.class));
+            super(id, source, ownerId, new Gson().fromJson(payloadJson, PayloadUndeliverableShipment.class));
         }
 
         @Override
@@ -96,12 +102,12 @@ public abstract class StreamItem<T>
         public InvoiceTerms terms;
     }
 
-    public static class PayloadInvoiceForUpdateStreamItem
-    extends StreamItem<PayloadInvoiceForUpdate>
+    public static class PayloadInvoiceForUpdateStreamEvent
+    extends StreamEvent<PayloadInvoiceForUpdate>
     {
-        public PayloadInvoiceForUpdateStreamItem(String id, Source source, String payloadJson)
+        public PayloadInvoiceForUpdateStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, new Gson().fromJson(payloadJson, PayloadInvoiceForUpdate.class));
+            super(id, source, ownerId, new Gson().fromJson(payloadJson, PayloadInvoiceForUpdate.class));
         }
 
         @Override
@@ -111,12 +117,12 @@ public abstract class StreamItem<T>
         }
     }
 
-    public static class PayloadOrderStreamItem
-    extends StreamItem<Order>
+    public static class PayloadOrderStreamEvent
+    extends StreamEvent<Order>
     {
-        public PayloadOrderStreamItem(String id, Source source, String payloadJson)
+        public PayloadOrderStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, new Gson().fromJson(payloadJson, Order.class));
+            super(id, source, ownerId, new Gson().fromJson(payloadJson, Order.class));
         }
 
         @Override
@@ -126,12 +132,12 @@ public abstract class StreamItem<T>
         }
     }
 
-    public static class PayloadItemInventoryStreamItem
-    extends StreamItem<ItemInventory>
+    public static class PayloadItemInventoryStreamEvent
+    extends StreamEvent<ItemInventory>
     {
-        public PayloadItemInventoryStreamItem(String id, Source source, String payloadJson)
+        public PayloadItemInventoryStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, new Gson().fromJson(payloadJson, ItemInventory.class));
+            super(id, source, ownerId, new Gson().fromJson(payloadJson, ItemInventory.class));
         }
 
         @Override
@@ -142,11 +148,11 @@ public abstract class StreamItem<T>
     }
 
     public static class PayloadGeneric
-    extends StreamItem<String>
+    extends StreamEvent<String>
     {
         public PayloadGeneric(String id, Source source)
         {
-            super(id, source, "Not yet implemented");
+            super(id, source, null, "Not yet implemented");
         }
 
         @Override

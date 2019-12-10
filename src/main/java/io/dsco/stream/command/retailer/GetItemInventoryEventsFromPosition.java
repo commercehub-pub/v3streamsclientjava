@@ -1,7 +1,7 @@
 package io.dsco.stream.command.retailer;
 
 import io.dsco.stream.api.StreamV3Api;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamEventInventory;
 import io.dsco.stream.shared.NetworkExecutor;
 import io.dsco.stream.shared.StreamItemInventoryBase;
 import kong.unirest.HttpResponse;
@@ -29,7 +29,7 @@ extends StreamItemInventoryBase
     }
 
     @Override
-    public List<StreamItemInventory> execute(List<String> positions) throws Exception
+    public List<StreamEventInventory> execute(List<String> positions) throws Exception
     {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("getting events in stream {0} from position {1}", streamId, positions.get(0)));

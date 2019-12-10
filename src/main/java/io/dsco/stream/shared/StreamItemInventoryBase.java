@@ -2,7 +2,7 @@ package io.dsco.stream.shared;
 
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.ItemInventory;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamEventInventory;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.json.JSONArray;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public abstract class StreamItemInventoryBase
-implements Command<List<String>, List<StreamItemInventory>>
+implements Command<List<String>, List<StreamEventInventory>>
 {
     private final String uniqueIdentifierKey;
     private final Logger logger;
@@ -27,7 +27,7 @@ implements Command<List<String>, List<StreamItemInventory>>
         this.logger = logger;
     }
 
-    protected List<StreamItemInventory> refactorParseStreamEvents(CompletableFuture<HttpResponse<JsonNode>> future)
+    protected List<StreamEventInventory> refactorParseStreamEvents(CompletableFuture<HttpResponse<JsonNode>> future)
     throws ExecutionException, InterruptedException
     {
         JSONArray list = future.get().getBody().getArray();
@@ -38,15 +38,15 @@ implements Command<List<String>, List<StreamItemInventory>>
 
         //in the real system, this would parse out each stream itemInventory, but for demo purposes all we care about is the
         // id and the sku, so that the stream position can be updated
-        List<StreamItemInventory> items = new ArrayList<>(list.length());
+        List<StreamEventInventory> items = new ArrayList<>(list.length());
         for (int i=0; i<list.length(); i++) {
             JSONObject obj = list.getJSONObject(i);
             String id = obj.getString("id");
-            StreamItemInventory.Source source = StreamItemInventory.Source.valueOf(obj.getString("source"));
+            StreamEventInventory.Source source = StreamEventInventory.Source.valueOf(obj.getString("source"));
             String sku = obj.getJSONObject("payload").getString(uniqueIdentifierKey); //for demo, we'll assume it's the sku, but it can be supplied as any of the valid json keys
             ItemInventory item = new ItemInventory();
             item.setSku(sku);
-            items.add(new StreamItemInventory(id, source, item));
+            items.add(new StreamEventInventory(id, source, item));
         }
 
         return items;

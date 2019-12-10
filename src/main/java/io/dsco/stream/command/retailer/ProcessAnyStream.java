@@ -2,7 +2,7 @@ package io.dsco.stream.command.retailer;
 
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.Command;
-import io.dsco.stream.domain.StreamItem;
+import io.dsco.stream.domain.StreamEvent;
 import io.dsco.stream.shared.AnyProcessor;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
@@ -36,16 +36,16 @@ implements Command<String, Void>, CommonStreamMethods, AnyProcessor
     @Override
     public Void execute(String position) throws Exception
     {
-        List<StreamItem<?>> items = getAnyEventsFromPositionCmd.execute(position);
+        List<StreamEvent<?>> items = getAnyEventsFromPositionCmd.execute(position);
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("there are {0} items in the stream", items.size()));
         }
 
-        StreamItem<?> lastItem = null;
+        StreamEvent<?> lastItem = null;
 
         while (items.size() > 0) {
             //process each item
-            for (StreamItem<?> item : items) {
+            for (StreamEvent<?> item : items) {
                 processItem(item, logger);
                 lastItem = item;
 

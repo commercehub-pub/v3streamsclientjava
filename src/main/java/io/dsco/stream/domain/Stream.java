@@ -9,7 +9,6 @@ public class Stream
     private String id;
     private StreamV3Api.ObjectType objectType;
     private List<StreamPartition> partitions;
-    //private int numPartitions - but this can be had from the size of partitions
     //TODO: add in the query type. the type of query will depend on the type of stream
 
     public String getId()
@@ -40,5 +39,10 @@ public class Stream
     public void setPartitions(List<StreamPartition> partitions)
     {
         this.partitions = partitions;
+    }
+
+    public int getNumPartitions()
+    {
+        return partitions == null ? 0 : partitions.size();
     }
 }
