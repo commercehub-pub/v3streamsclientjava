@@ -10,25 +10,31 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.CompletableFuture;
 
-public class CreateItemInventoryStreamSync
+public class CreateStreamOperation
 implements Command<Void, String>
 {
-    private static final Logger logger = LogManager.getLogger(CreateItemInventoryStreamSync.class);
+    private static final Logger logger = LogManager.getLogger(CreateStreamOperation.class);
     private final StreamV3Api streamV3Api;
-    private final java.lang.String streamId;
+    private final String streamId;
+    public final StreamV3Api.OperationType operationType;
+    public final int partitionId;
+    public final String ownerId;
 
-    public CreateItemInventoryStreamSync(StreamV3Api streamV3Api, String streamId)
+    public CreateStreamOperation(StreamV3Api streamV3Api, String streamId, StreamV3Api.OperationType operationType, int partitionId, String ownerId)
     {
         this.streamId = streamId;
         this.streamV3Api = streamV3Api;
+        this.operationType = operationType;
+        this.partitionId = partitionId;
+        this.ownerId = ownerId;
     }
 
     @Override
     public String execute(Void v) throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamV3Api.createStreamOperation(streamId, StreamV3Api.OperationType.sync, null, null);
-        }, streamV3Api, logger, "createStreamSync", NetworkExecutor.HTTP_RESPONSE_200);
+            return streamV3Api.createStreamOperation(streamId, operationType, partitionId, ownerId);
+        }, streamV3Api, logger, "createStreamOperation", NetworkExecutor.HTTP_RESPONSE_200);
 
         //return the operationUuid
 //logger.info(future.get().getBody());

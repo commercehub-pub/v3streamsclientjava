@@ -1,38 +1,44 @@
 package io.dsco.stream.api;
 
+import io.dsco.stream.domain.StreamPartition;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public interface StreamV3Api
 extends OAuthSupport
 {
-    enum ObjectType {order, invoice, inventory, catalog, catalogchangelog, orderitemchange, undeliverableshipment}
+    enum ObjectType { order, invoice, inventory, catalog, catalogchangelog, orderitemchange, undeliverableshipment }
 
-    enum OperationType {sync}
+    enum OperationType { sync, setpartitionowner }
 
     CompletableFuture<HttpResponse<JsonNode>> createStream(
-            @NotNull String id, @NotNull String description, @NotNull ObjectType objectType, @Nullable Map<String, Object> query);
+            @NotNull String id, @NotNull String description, int numPartitions,
+            @NotNull ObjectType objectType, @Nullable Map<String, Object> query);
 
-    CompletableFuture<HttpResponse<JsonNode>> listStream(@NotNull String id);
+    CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, List<Integer> partitionIds);
 
-    CompletableFuture<HttpResponse<JsonNode>> listStreams();
+    //TODO: this should be modified to take a Stream object
+    CompletableFuture<HttpResponse<JsonNode>> updateStream(
+            @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber,
+            @Nullable Map<String, Object> query);
 
-//    CompletableFuture<HttpResponse<JsonNode>> updateStreamDescription(
-//            @NotNull String id, @NotNull String newDescription, @Nullable Map<String, Object> query);
+    CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(
+            @NotNull String id, @NotNull OperationType operationType, Integer partitionId, String ownerId);
 
-    CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(@NotNull String id, @NotNull OperationType operationType);
-
-    CompletableFuture<HttpResponse<JsonNode>> getStreamEventsFromPosition(@NotNull String id, @NotNull String position);
+    CompletableFuture<HttpResponse<JsonNode>> getStreamEventsFromPosition(
+            @NotNull String id, int partitionId, @NotNull String position);
 
     CompletableFuture<HttpResponse<JsonNode>> getStreamEventsInRange(
-            @NotNull String id, @NotNull String startPosition, @NotNull String endPosition);
+            @NotNull String id, int partitionId, @NotNull String startPosition, @NotNull String endPosition);
 
-    CompletableFuture<HttpResponse<JsonNode>> updateStreamPosition(@NotNull String id, @NotNull String position);
+    CompletableFuture<HttpResponse<JsonNode>> updateStreamPosition(
+            @NotNull String id, int partitionId, @NotNull String position);
 
     CompletableFuture<HttpResponse<JsonNode>> deleteStream(@NotNull String id);
 }

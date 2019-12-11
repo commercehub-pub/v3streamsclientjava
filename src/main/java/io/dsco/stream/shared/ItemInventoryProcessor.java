@@ -1,6 +1,6 @@
 package io.dsco.stream.shared;
 
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamEventInventory;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
@@ -8,7 +8,7 @@ import java.util.Random;
 
 public interface ItemInventoryProcessor
 {
-    default void processItem(StreamItemInventory item, Logger logger)
+    default void processItem(StreamEventInventory item, Logger logger)
     throws InterruptedException
     {
         //this isn't actually going to do anything for the demo, other than wait a random amount of time from 25-100ms

@@ -3,7 +3,9 @@ package io.dsco.demo.scenario;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.domain.ItemInventory;
-import io.dsco.stream.domain.StreamItem;
+import io.dsco.stream.domain.Stream;
+import io.dsco.stream.domain.StreamEvent;
+import io.dsco.stream.domain.StreamEventsResult;
 import io.dsco.stream.shared.AnyProcessor;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -33,7 +36,7 @@ implements CommonStreamMethods, AnyProcessor
     private final StreamV3Api streamV3Api;
     private final String streamId;
 
-    private List<BlockingQueue<StreamItem<?>>> queues;
+    private List<BlockingQueue<StreamEvent<?>>> queues;
     private List<Consumer> consumers;
     private CountDownLatch countDownLatch;
     private List<QueuePositionOrganizer> processedPositionList = new ArrayList<>();
@@ -46,7 +49,7 @@ implements CommonStreamMethods, AnyProcessor
         this.streamV3Api = streamV3Api;
         this.streamId = streamId;
 
-        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId);
+        getAnyEventsFromPositionCmd = new GetAnyEventsFromPosition(GetAnyEventsFromPosition.Type.Inventory, streamV3Api, streamId, 0);
     }
 
     public void begin(int numberOfConsumers, int queueSize)
@@ -70,7 +73,8 @@ implements CommonStreamMethods, AnyProcessor
             }
 
             //get the initial stream position
-            String streamPosition = getStreamPosition(streamV3Api, streamId, logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
             processAllItemsInStream(streamPosition);
 
@@ -90,16 +94,18 @@ implements CommonStreamMethods, AnyProcessor
     private void processAllItemsInStream(String streamPosition)
     throws Exception
     {
-        List<StreamItem<?>> items = getAnyEventsFromPositionCmd.execute(streamPosition);
+        StreamEventsResult<?> streamEventsResult = getAnyEventsFromPositionCmd.execute(streamPosition);
+        List<? extends StreamEvent<?>> items = streamEventsResult.getEvents();
 
         while (items.size() > 0) {
             //pass the data off to the consumers for processing
             logger.info("sending items to consumer queues...");
-            addItemsToQueue(items);
+            addItemsToQueue((List<StreamEvent<?>>) items);
 
             //do it again, from the last known position
             streamPosition = items.get(items.size()-1).getId();
-            items = getAnyEventsFromPositionCmd.execute(streamPosition);
+            streamEventsResult = getAnyEventsFromPositionCmd.execute(streamPosition);
+            items = streamEventsResult.getEvents();
         }
 
         //now that the stream is drained, let each consumer know it can shut down when processing is finished
@@ -133,7 +139,7 @@ implements CommonStreamMethods, AnyProcessor
                 // removed. this allows us to only call updateStreamPosition one time instead of many, if there were many
                 // items that have now been contiguously completed
                 //updateStreamPosition(updateStreamPositionToHere);
-                updateStreamPosition(streamV3Api, streamId, updateStreamPositionToHere, logger);
+                updateStreamPosition(streamV3Api, streamId, 0, updateStreamPositionToHere, logger);
 
                 //logger.info(">>> " + numItemsRemoved + " were marked with only 1 call");
 
@@ -156,11 +162,11 @@ implements CommonStreamMethods, AnyProcessor
      * This algorithm will take the primary identifier and hash the value. It will then take that modulus the number of available
      * consumers so it will always route the same item to the same consumer.
      */
-    private void addItemsToQueue(List<StreamItem<?>> items)
+    private void addItemsToQueue(List<StreamEvent<?>> items)
     throws InterruptedException
     {
-        for (StreamItem<?> streamItemInventory : items) {
-            ItemInventory item = (ItemInventory) streamItemInventory.getPayload();
+        for (StreamEvent<?> streamEventInventory : items) {
+            ItemInventory item = (ItemInventory) streamEventInventory.getPayload();
 
             //determine which queue gets the item
             //longstanding java math bug, this can produce a negative number if the hashcode is negative
@@ -174,14 +180,14 @@ implements CommonStreamMethods, AnyProcessor
             //add the id of the item to the organizer queue so it can keep proper order when updating stream position
             listLock.lock();
             try {
-                processedPositionList.add(new QueuePositionOrganizer(streamItemInventory.getId()));
+                processedPositionList.add(new QueuePositionOrganizer(streamEventInventory.getId()));
             } finally {
                 listLock.unlock();
             }
 
             //add the item to the queue. since these are bounded blocking queues, this will apply backpressure
             // by waiting until there is room in the queue if it fills up.
-            queues.get(consumerIdx).put(streamItemInventory);
+            queues.get(consumerIdx).put(streamEventInventory);
         }
     }
 
@@ -193,10 +199,10 @@ implements CommonStreamMethods, AnyProcessor
     implements Runnable
     {
         private InventoryFanout tester;
-        private BlockingQueue<StreamItem<?>> queue;
+        private BlockingQueue<StreamEvent<?>> queue;
         private boolean running = true;
 
-        Consumer(InventoryFanout tester, BlockingQueue<StreamItem<?>> queue)
+        Consumer(InventoryFanout tester, BlockingQueue<StreamEvent<?>> queue)
         {
             this.tester = tester;
             this.queue = queue;
@@ -211,7 +217,7 @@ implements CommonStreamMethods, AnyProcessor
                 // item in the queue so the thread will resume, but it will know to ignore the special item and
                 // terminate the loop
                 try {
-                    queue.put(new StreamItem.PayloadItemInventoryStreamItem("-1", null, null));
+                    queue.put(new StreamEvent.PayloadItemInventoryStreamEvent("-1", null, null, null));
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -223,16 +229,16 @@ implements CommonStreamMethods, AnyProcessor
             try {
                 while (!queue.isEmpty() || running) {
                     //grab the next item from the queue. this will block until an item becomes available
-                    StreamItem<?> streamItemInventory = queue.take();
+                    StreamEvent<?> streamEventInventory = queue.take();
 
                     //if this is the special marker item, ignore it and break the loop
-                    if (streamItemInventory.getId().equals("-1")) break;
+                    if (streamEventInventory.getId().equals("-1")) break;
 
                     //process the item
-                    tester.processItem(streamItemInventory, logger);
+                    tester.processItem(streamEventInventory, logger);
 
                     //mark the item as processed
-                    tester.markInventoryItemAsProcessed(streamItemInventory.getId());
+                    tester.markInventoryItemAsProcessed(streamEventInventory.getId());
                 }
             } catch (Exception e) {
                 logger.error("uncaught exception while processing item", e);

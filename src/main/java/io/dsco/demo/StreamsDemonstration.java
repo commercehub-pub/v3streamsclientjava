@@ -3,7 +3,9 @@ package io.dsco.demo;
 import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
+import io.dsco.stream.command.retailer.CreateStreamOperation;
 import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
+import io.dsco.stream.command.retailer.UpdateStreamPartitionSize;
 import io.dsco.stream.command.supplier.UpdateInventory;
 import io.dsco.stream.domain.InvoiceForUpdate;
 import io.dsco.stream.domain.Order;
@@ -162,6 +164,7 @@ implements StreamCreator
         );
 
         String streamId = getConsoleInput("\nstreamId > ");
+        int numPartitions = Integer.parseInt(getConsoleInput("\nnumPartitions > "));
 
         Map<String, Object> query = new HashMap<>();
         switch (streamType)
@@ -193,14 +196,27 @@ implements StreamCreator
 
         //see if the stream has been created. if not, create it.
         if (!doesStreamExist(streamId, streamV3ApiRetailer, logger)) {
-            createStream(streamId, streamV3ApiRetailer, logger, query);
+            createStream(streamId, numPartitions, streamV3ApiRetailer, logger, query);
 
             //it can sometimes take a bit of time before the stream becomes available; wait for it
             while (!doesStreamExist(streamId, streamV3ApiRetailer, logger)) {
                 logger.info("stream not yet created. waiting a bit and checking again...");
-                Thread.sleep(500);
+                Thread.sleep(2_000L);
             }
         }
+
+        begin();
+    }
+
+    private void doUpdateStreamPartitionSize()
+    throws Exception
+    {
+        String streamId = getConsoleInput("\nstreamId > ");
+        int numPartitions = Integer.parseInt(getConsoleInput("\nnumPartitions > "));
+        boolean incrementVersionNumber = false; //non-demo you'd want to ask about this
+
+        new UpdateStreamPartitionSize(streamV3ApiRetailer, streamId).execute(
+                new UpdateStreamPartitionSize.Data(numPartitions, incrementVersionNumber));
 
         begin();
     }
@@ -294,6 +310,7 @@ implements StreamCreator
                     "2) View Cancelled Stream\n" +
                     "3) View Undeliverable Shipment Stream\n" +
                     "4) View Shipped Stream\n" +
+                    "5) View Partitioned Stream\n" +
                     " > "
         );
 
@@ -316,6 +333,10 @@ implements StreamCreator
             case "4":
                 new AnyStreamBasic(GetAnyEventsFromPosition.Type.Shipped, streamV3ApiRetailer, streamId).begin();
                 break;
+
+            case "5":
+                new PartitionConsumer(streamV3ApiRetailer, streamId).begin();
+                break;
         }
 
         begin();
@@ -327,30 +348,49 @@ implements StreamCreator
         //display the top level menu
         String selection = getConsoleInput(
     "\n1) Create Stream\n" +
-            "2) Cause activity on Stream\n" +
-            "3) Inventory Stream Processing\n" +
-            "4) View Streams\n" +
+            "2) Update Stream Partition Size\n" +
+            "3) Cause activity on Stream\n" +
+            "4) Inventory Stream Processing\n" +
+            "5) View Streams\n" +
+            "6) Create Stream Operation\n" +
             " > "
         );
         switch (selection)
         {
             case "1":
                 doCreateStream();
-                break;
 
             case "2":
-                doCauseActivityOnStream();
+                doUpdateStreamPartitionSize();
                 break;
 
             case "3":
-                doInventoryStreamProcessing();
+                doCauseActivityOnStream();
                 break;
 
             case "4":
+                doInventoryStreamProcessing();
+                break;
+
+            case "5":
                 doViewStreams();
                 break;
 
+            case "6": {
+                String streamId = getConsoleInput("\nstreamId > ");
+                StreamV3Api.OperationType operationType = StreamV3Api.OperationType.valueOf(getConsoleInput("\noperationType [sync, setpartitionowner] > "));
+                int partitionId = Integer.parseInt(getConsoleInput("\npartitionId > "));
+                String ownerId = null;//getConsoleInput("\nownerId > ");
+
+                CreateStreamOperation createStreamOperationCmd = new CreateStreamOperation(
+                        streamV3ApiRetailer, streamId, operationType, partitionId, ownerId);
+                String operationUuid = createStreamOperationCmd.execute(null);
+                logger.info("operationUuid: " + operationUuid);
+            }
+            break;
+
         }
+
     }
 
     public static void main(String[] args)

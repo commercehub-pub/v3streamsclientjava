@@ -1,11 +1,12 @@
 package io.dsco.stream.domain;
 
-public class StreamItemInventory
-extends StreamItem
+//TODO: this should move into the StreamEvent class like the others
+public class StreamEventInventory
+extends StreamEvent
 {
     private ItemInventory itemInventory;
 
-    public StreamItemInventory(String id, Source source, ItemInventory itemInventory)
+    public StreamEventInventory(String id, Source source, ItemInventory itemInventory)
     {
         super(id, source);
         this.itemInventory = itemInventory;

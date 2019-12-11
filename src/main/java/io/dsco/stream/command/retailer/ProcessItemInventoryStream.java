@@ -2,7 +2,7 @@ package io.dsco.stream.command.retailer;
 
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.Command;
-import io.dsco.stream.domain.StreamItemInventory;
+import io.dsco.stream.domain.StreamEventInventory;
 import io.dsco.stream.shared.CommonStreamMethods;
 import io.dsco.stream.shared.ItemInventoryProcessor;
 import io.dsco.stream.shared.StreamItemInventoryBase;
@@ -34,24 +34,24 @@ implements Command<String, Void>, CommonStreamMethods, ItemInventoryProcessor
     @Override
     public Void execute(String position) throws Exception
     {
-        List<StreamItemInventory> items = itemRetrieverCmd.execute(Collections.singletonList(position));
-        StreamItemInventory lastItem = null;
+        List<StreamEventInventory> items = itemRetrieverCmd.execute(Collections.singletonList(position));
+        StreamEventInventory lastItem = null;
 
         while (items.size() > 0) {
             //process each item
-            for (StreamItemInventory item : items) {
+            for (StreamEventInventory item : items) {
                 processItem(item, logger);
                 lastItem = item;
 
                 //per the best practices suggestion, only update the stream position periodically.
                 if (System.currentTimeMillis() > lastStreamPositionUpdate + STREAM_UPDATE_INTERVAL) {
-                    updateStreamPosition(streamV3Api, streamId, item.getId(), logger);
+                    updateStreamPosition(streamV3Api, streamId, 0, item.getId(), logger);
                     lastStreamPositionUpdate = System.currentTimeMillis();
                 }
             }
 
             //do a final position update for this batch of items
-            updateStreamPosition(streamV3Api, streamId, lastItem.getId(), logger);
+            updateStreamPosition(streamV3Api, streamId, 0, lastItem.getId(), logger);
 
             //get the next batch of items
             items = itemRetrieverCmd.execute(Collections.singletonList(lastItem.getId()));
