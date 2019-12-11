@@ -48,8 +48,8 @@ implements Command<String, StreamEventsResult<?>>
             return streamV3Api.getStreamEventsFromPosition(streamId, partitionId, position);
         }, streamV3Api, logger, "getAnyEventsFromPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
-        String ownerId = future.get().getBody().getObject().getString("ownerId");
-        int partitionId = future.get().getBody().getObject().getInt("partitionId");
+        String ownerId = future.get().getBody().getObject().optString("ownerId");
+        int partitionId = future.get().getBody().getObject().optInt("partitionId", 0);
 logger.info(MessageFormat.format("ownerId: {0}, partitionId: {1}", ownerId, partitionId));
 
         JSONArray resultsJsonArray = future.get().getBody().getObject().getJSONArray("events");

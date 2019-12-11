@@ -380,7 +380,7 @@ implements StreamCreator
                 String streamId = getConsoleInput("\nstreamId > ");
                 StreamV3Api.OperationType operationType = StreamV3Api.OperationType.valueOf(getConsoleInput("\noperationType [sync, setpartitionowner] > "));
                 int partitionId = Integer.parseInt(getConsoleInput("\npartitionId > "));
-                String ownerId = null;//getConsoleInput("\nownerId > ");
+                String ownerId = getConsoleInput("\nownerId > ");
 
                 CreateStreamOperation createStreamOperationCmd = new CreateStreamOperation(
                         streamV3ApiRetailer, streamId, operationType, partitionId, ownerId);
