@@ -5,6 +5,7 @@ import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.domain.ItemInventory;
 import io.dsco.stream.domain.Stream;
 import io.dsco.stream.domain.StreamEvent;
+import io.dsco.stream.domain.StreamEventsResult;
 import io.dsco.stream.shared.AnyProcessor;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
@@ -93,16 +94,18 @@ implements CommonStreamMethods, AnyProcessor
     private void processAllItemsInStream(String streamPosition)
     throws Exception
     {
-        List<StreamEvent<?>> items = getAnyEventsFromPositionCmd.execute(streamPosition);
+        StreamEventsResult<?> streamEventsResult = getAnyEventsFromPositionCmd.execute(streamPosition);
+        List<? extends StreamEvent<?>> items = streamEventsResult.getEvents();
 
         while (items.size() > 0) {
             //pass the data off to the consumers for processing
             logger.info("sending items to consumer queues...");
-            addItemsToQueue(items);
+            addItemsToQueue((List<StreamEvent<?>>) items);
 
             //do it again, from the last known position
             streamPosition = items.get(items.size()-1).getId();
-            items = getAnyEventsFromPositionCmd.execute(streamPosition);
+            streamEventsResult = getAnyEventsFromPositionCmd.execute(streamPosition);
+            items = streamEventsResult.getEvents();
         }
 
         //now that the stream is drained, let each consumer know it can shut down when processing is finished

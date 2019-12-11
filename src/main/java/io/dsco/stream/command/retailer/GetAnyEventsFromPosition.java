@@ -3,6 +3,7 @@ package io.dsco.stream.command.retailer;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.StreamEvent;
+import io.dsco.stream.domain.StreamEventsResult;
 import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class GetAnyEventsFromPosition
-implements Command<String, List<StreamEvent<?>>>
+implements Command<String, StreamEventsResult<?>>
 {
 
     public enum Type { UndeliverableShipment, Invoice, Cancelled, Shipped, Inventory } //, Order, OrderItemChange
@@ -37,7 +38,7 @@ implements Command<String, List<StreamEvent<?>>>
     }
 
     @Override
-    public List<StreamEvent<?>> execute(String position) throws Exception
+    public StreamEventsResult<?> execute(String position) throws Exception
     {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("getting events in stream {0} from position {1}", streamId, position));
@@ -47,7 +48,12 @@ implements Command<String, List<StreamEvent<?>>>
             return streamV3Api.getStreamEventsFromPosition(streamId, partitionId, position);
         }, streamV3Api, logger, "getAnyEventsFromPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
-        JSONArray resultsJsonArray = future.get().getBody().getArray();
+        String ownerId = future.get().getBody().getObject().getString("ownerId");
+        int partitionId = future.get().getBody().getObject().getInt("partitionId");
+logger.info(MessageFormat.format("ownerId: {0}, partitionId: {1}", ownerId, partitionId));
+
+        JSONArray resultsJsonArray = future.get().getBody().getObject().getJSONArray("events");
+
         List<StreamEvent<?>> results = new ArrayList<>(resultsJsonArray.length());
         for (int i=0; i<resultsJsonArray.length(); i++) {
             JSONObject jsonObject = resultsJsonArray.getJSONObject(i);
@@ -95,6 +101,6 @@ implements Command<String, List<StreamEvent<?>>>
             }
         }
 
-        return results;
+        return new StreamEventsResult(ownerId, partitionId, results);
     }
 }

@@ -3,6 +3,7 @@ package io.dsco.stream.command.retailer;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.StreamEvent;
+import io.dsco.stream.domain.StreamEventsResult;
 import io.dsco.stream.shared.AnyProcessor;
 import io.dsco.stream.shared.CommonStreamMethods;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +37,8 @@ implements Command<String, Void>, CommonStreamMethods, AnyProcessor
     @Override
     public Void execute(String position) throws Exception
     {
-        List<StreamEvent<?>> items = getAnyEventsFromPositionCmd.execute(position);
+        StreamEventsResult<?> streamEventsResult = getAnyEventsFromPositionCmd.execute(position);
+        List<? extends StreamEvent<?>> items = streamEventsResult.getEvents();
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("there are {0} items in the stream", items.size()));
         }
@@ -60,7 +62,8 @@ implements Command<String, Void>, CommonStreamMethods, AnyProcessor
             updateStreamPosition(streamV3Api, streamId, partitionId, lastItem.getId(), logger);
 
             //get the next batch of items
-            items = getAnyEventsFromPositionCmd.execute(lastItem.getId());
+            streamEventsResult = getAnyEventsFromPositionCmd.execute(lastItem.getId());
+            items = streamEventsResult.getEvents();
         }
 
         return null;

@@ -3,6 +3,7 @@ package io.dsco.demo;
 import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
+import io.dsco.stream.command.retailer.CreateStreamOperation;
 import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.command.retailer.UpdateStreamPartitionSize;
 import io.dsco.stream.command.supplier.UpdateInventory;
@@ -351,6 +352,7 @@ implements StreamCreator
             "3) Cause activity on Stream\n" +
             "4) Inventory Stream Processing\n" +
             "5) View Streams\n" +
+            "6) Create Stream Operation\n" +
             " > "
         );
         switch (selection)
@@ -373,6 +375,19 @@ implements StreamCreator
             case "5":
                 doViewStreams();
                 break;
+
+            case "6": {
+                String streamId = getConsoleInput("\nstreamId > ");
+                StreamV3Api.OperationType operationType = StreamV3Api.OperationType.valueOf(getConsoleInput("\noperationType [sync, setpartitionowner] > "));
+                int partitionId = Integer.parseInt(getConsoleInput("\npartitionId > "));
+                String ownerId = null;//getConsoleInput("\nownerId > ");
+
+                CreateStreamOperation createStreamOperationCmd = new CreateStreamOperation(
+                        streamV3ApiRetailer, streamId, operationType, partitionId, ownerId);
+                String operationUuid = createStreamOperationCmd.execute(null);
+                logger.info("operationUuid: " + operationUuid);
+            }
+            break;
 
         }
 

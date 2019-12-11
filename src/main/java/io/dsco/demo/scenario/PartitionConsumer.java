@@ -42,11 +42,13 @@ implements CommonStreamMethods
             countDownLatch = new CountDownLatch(stream.getPartitions().size());
 
             //create a consumer for each partition
+            int count = 0;
             for (StreamPartition streamPartition : stream.getPartitions()) {
                 int partitionId = streamPartition.getPartitionId();
                 String streamPosition = streamPartition.getPosition();
 
-                new Thread(new Consumer(countDownLatch, streamV3Api, streamId, partitionId, streamPosition)).start();
+                new Thread(new Consumer(count, countDownLatch, streamV3Api, streamId, partitionId, streamPosition)).start();
+                count++;
             }
 
             //wait for everything to finish
@@ -64,15 +66,17 @@ implements CommonStreamMethods
     private static final class Consumer
     implements Runnable
     {
+        private final int consumerId;
         private CountDownLatch countDownLatch;
         private String streamPosition;
 
         private final ProcessAnyStream processAnyStreamCmd;
 
         public Consumer(
-                CountDownLatch countDownLatch, StreamV3Api streamV3Api,
+                int consumerId, CountDownLatch countDownLatch, StreamV3Api streamV3Api,
                 String streamId, int partitionId, String streamPosition)
         {
+            this.consumerId = consumerId;
             this.countDownLatch = countDownLatch;
             this.streamPosition = streamPosition;
 
