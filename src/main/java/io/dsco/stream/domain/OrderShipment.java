@@ -9,8 +9,13 @@ public class OrderShipment
     private List<ShipmentForUpdate> shipments;
     private String supplierOrderNumber;
 
-    public OrderShipment(String dscoOrderId, String poNumber, List<ShipmentForUpdate> shipments, String supplierOrderNumber)
+    public OrderShipment(
+        String dscoOrderId, String poNumber, List<ShipmentForUpdate> shipments, String supplierOrderNumber)
     {
+        if (dscoOrderId == null && poNumber == null && supplierOrderNumber == null) {
+            throw new IllegalArgumentException("one of dscoOrderId, poNumber, or supplierOrderNumber is required");
+        }
+
         this.dscoOrderId = dscoOrderId;
         this.poNumber = poNumber;
         this.shipments = shipments;
@@ -56,4 +61,5 @@ public class OrderShipment
     {
         this.supplierOrderNumber = supplierOrderNumber;
     }
+
 }

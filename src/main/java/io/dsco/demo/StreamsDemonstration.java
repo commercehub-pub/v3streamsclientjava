@@ -160,6 +160,7 @@ implements StreamCreator
                 "3) Cancelled Stream\n" +
                 "4) Undeliverable Shipment Stream\n" +
                 "5) Shipped Stream\n" +
+                "6) Order Stream\n" +
                 " > "
         );
 
@@ -191,6 +192,10 @@ implements StreamCreator
             case "5":
                 query.put("queryType", StreamV3Api.ObjectType.orderitemchange);
                 query.put("statuses", Collections.singletonList("shipped"));
+                break;
+
+            case "6":
+                query.put("queryType", StreamV3Api.ObjectType.order);
                 break;
         }
 
@@ -224,15 +229,13 @@ implements StreamCreator
     private void doCauseActivityOnStream()
     throws Exception
     {
-        //String streamId = getConsoleInput("\nstreamId > ");
-
         String streamType = getConsoleInput(
                 "\n1) Update ItemInventory\n" +
                         "2) Create and acknowledge Order\n" +
                         "3) Create Invoice and Shipment\n" +
                         "4) Cancel order line item\n" +
                         "5) Do Inventory Sync\n" +
-                        //"6) Add shipment\n" +
+                        "6) Add shipment\n" +
                         //"7) Mark shipment undeliverable\n" +
                         " > "
         );
@@ -279,15 +282,15 @@ implements StreamCreator
             }
             break;
 
-//            case "6": {
-//                if (order == null) {
-//                    System.out.println("\nyou must first create an order");
-//                } else {
-//                    System.out.println("\nNOT YET IMPLEMENTED");
-//                }
-//            }
-//            break;
-//
+            case "6": {
+                if (order == null) {
+                    System.out.println("\nyou must first create an order");
+                } else {
+                    new OrderCreateShipment(orderV3ApiSupplier).begin(order);
+                }
+            }
+            break;
+
 //            case "7": {
 //                if (order == null) {
 //                    System.out.println("\nyou must first create an order");
@@ -311,6 +314,7 @@ implements StreamCreator
                     "3) View Undeliverable Shipment Stream\n" +
                     "4) View Shipped Stream\n" +
                     "5) View Partitioned Stream\n" +
+                    "6) View Order Stream\n" +
                     " > "
         );
 
@@ -337,6 +341,11 @@ implements StreamCreator
             case "5":
                 new PartitionConsumer(streamV3ApiRetailer, streamId).begin();
                 break;
+
+            case "6":
+                new AnyStreamBasic(GetAnyEventsFromPosition.Type.Order, streamV3ApiRetailer, streamId).begin();
+                break;
+
         }
 
         begin();
@@ -359,6 +368,7 @@ implements StreamCreator
         {
             case "1":
                 doCreateStream();
+                break;
 
             case "2":
                 doUpdateStreamPartitionSize();

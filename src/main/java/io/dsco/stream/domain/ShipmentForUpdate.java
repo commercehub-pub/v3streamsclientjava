@@ -21,11 +21,11 @@ public class ShipmentForUpdate
     private String warehouseDscoId;
     private String warehouseRetailerCode;
 
-//TODO
-//    public ShipmentForUpdate(lineItems, trackingNumber, shippingServiceLevelCode, )
-//    {
-//
-//    }
+    public ShipmentForUpdate(@NotNull List<ShipmentLineItemForUpdate> lineItems, @NotNull String trackingNumber)
+    {
+        this.lineItems = lineItems;
+        this.trackingNumber = trackingNumber;
+    }
 
     public ShipmentForUpdate(
             @NotNull List<ShipmentLineItemForUpdate> lineItems, @NotNull String trackingNumber,

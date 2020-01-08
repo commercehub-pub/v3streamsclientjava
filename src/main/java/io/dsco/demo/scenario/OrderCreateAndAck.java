@@ -114,15 +114,21 @@ implements GetInventoryItems
         for (ItemInventory item : items) {
             lineNumber++;
 
-            //use the partnerSkuMap to get the appropriate partnerSku
-            List<PartnerSkuMap> partnerSkus = item.getPartnerSkuMap();
             String partnerSku = null;
-            for (PartnerSkuMap skuItem : partnerSkus) {
-                if (skuItem.getDscoRetailerId().equals(retailerAccountId)) {
-                    partnerSku = skuItem.getPartnerSku();
-                    break;
+            List<PartnerSkuMap> partnerSkus = item.getPartnerSkuMap();
+            if (partnerSkus != null) {
+                //use the partnerSkuMap to get the appropriate partnerSku
+                for (PartnerSkuMap skuItem : partnerSkus) {
+                    if (skuItem.getDscoRetailerId().equals(retailerAccountId)) {
+                        partnerSku = skuItem.getPartnerSku();
+                        break;
+                    }
                 }
+            } else {
+                //assume the item sku is the partner sku
+                partnerSku = item.getSku();
             }
+
             if (partnerSku == null) {
                 throw new IllegalStateException(MessageFormat.format(
                         "no partnerSku found for item {0}, retailerAccountId: {1}", item.getDscoItemId(), retailerAccountId));

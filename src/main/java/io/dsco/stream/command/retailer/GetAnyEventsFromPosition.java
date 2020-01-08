@@ -21,7 +21,7 @@ public class GetAnyEventsFromPosition
 implements Command<String, StreamEventsResult<?>>
 {
 
-    public enum Type { UndeliverableShipment, Invoice, Cancelled, Shipped, Inventory } //, Order, OrderItemChange
+    public enum Type { UndeliverableShipment, Invoice, Cancelled, Shipped, Inventory, Order } //, OrderItemChange
 
     private static final Logger logger = LogManager.getLogger(GetAnyEventsFromPosition.class);
     private final Type type;
@@ -88,13 +88,13 @@ logger.info(MessageFormat.format("ownerId: {0}, partitionId: {1}", ownerId, part
                     //BUT hold off - API response and docs don't (yet) match
                     results.add(new StreamEvent.PayloadGeneric(id, source));
 
+                case Order:
+                    results.add(new StreamEvent.PayloadOrderStreamEvent(id, source, null, jsonPayload));
+                    break;
+
                 default:
                     logger.info(jsonPayload);
 
-//                case Order:
-//                    results.add(new StreamItem.PayloadOrderStreamItem(id, source, jsonPayload));
-//                    break;
-//
 //                case OrderItemChange:
 //                    break;
 //
