@@ -72,15 +72,31 @@ implements Command<Integer, Void>, GetInventoryItems
                 count++;
                 if (count >= numberItemsToUpdate) break;
 
-            } else {
-                //remove from the list; it doesn't have a warehouse. safe to do since we're looping backwards
-                itemInventoryList.remove(i);
+            //} else {
+            //    //remove from the list; it doesn't have a warehouse. safe to do since we're looping backwards
+            //    itemInventoryList.remove(i);
             }
         }
 
         //have the supplier update the items (which will cause them to show up in the retailer stream)
-        itemInventoryList = changedItems;
-        String requestId = updateInventorySmallBatch(inventoryV3Api, itemInventoryList);
+        //itemInventoryList = changedItems;
+        if (changedItems.size() == 0) {
+            logger.warn("there are no items that can be updated via warehouse quantity updates. falling back to quantity available updates");
+
+            for (int i = itemInventoryList.size() - 1; i >= 0; i--) {
+                ItemInventory itemInventory = itemInventoryList.get(i);
+
+                itemInventory.setQuantityAvailable(itemInventory.getQuantityAvailable()+1);
+
+                changedItems.add(itemInventory);
+
+                //break out early based on the limit set for demo purposes
+                count++;
+                if (count >= numberItemsToUpdate) break;
+            }
+        }
+
+        String requestId = updateInventorySmallBatch(inventoryV3Api, changedItems);
 
         //check the result of the small batch; wait for it to complete
         //TODO: this could also be accomplished via reading from an update stream
@@ -96,10 +112,7 @@ implements Command<Integer, Void>, GetInventoryItems
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-
 //logger.info(MessageFormat.format("\n{0}\n", new Gson().toJson(items)));
-
-
             return inventoryApi.updateInventorySmallBatch(items);
         }, inventoryApi, logger, "updateInventorySmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 
