@@ -124,6 +124,9 @@ implements GetInventoryItems
                         break;
                     }
                 }
+                if (partnerSku == null) {
+                    partnerSku = item.getSku();
+                }
             } else {
                 //assume the item sku is the partner sku
                 partnerSku = item.getSku();

@@ -31,8 +31,10 @@ public interface CommonStreamMethods
     default void updateStreamPosition(StreamV3Api streamV3Api, String streamId, int partitionId, String streamPosition, Logger logger)
     throws Exception
     {
-        /*CompletableFuture<HttpResponse<JsonNode>> future =*/ NetworkExecutor.getInstance().execute((x) -> {
+        CompletableFuture<HttpResponse<JsonNode>> future = NetworkExecutor.getInstance().execute((x) -> {
             return streamV3Api.updateStreamPosition(streamId, partitionId, streamPosition);
         }, streamV3Api, logger, "updateStreamPosition", NetworkExecutor.HTTP_RESPONSE_200);
+
+        logger.debug(future.get().getBody());
     }
 }
