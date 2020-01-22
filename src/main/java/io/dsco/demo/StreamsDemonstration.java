@@ -389,11 +389,23 @@ implements StreamCreator
             case "6": {
                 String streamId = getConsoleInput("\nstreamId > ");
                 StreamV3Api.OperationType operationType = StreamV3Api.OperationType.valueOf(getConsoleInput("\noperationType [sync, setpartitionowner] > "));
-                int partitionId = Integer.parseInt(getConsoleInput("\npartitionId > "));
-                String ownerId = getConsoleInput("\nownerId > ");
 
-                CreateStreamOperation createStreamOperationCmd = new CreateStreamOperation(
-                        streamV3ApiRetailer, streamId, operationType, partitionId, ownerId);
+                CreateStreamOperation createStreamOperationCmd;
+                if (operationType == StreamV3Api.OperationType.sync) {
+
+                    createStreamOperationCmd = new CreateStreamOperation(streamV3ApiRetailer, streamId, operationType, null, null);
+
+                } else if (operationType == StreamV3Api.OperationType.setpartitionowner) {
+                    int partitionId = Integer.parseInt(getConsoleInput("\npartitionId > "));
+                    String ownerId = getConsoleInput("\nownerId > ");
+
+                    createStreamOperationCmd = new CreateStreamOperation(streamV3ApiRetailer, streamId, operationType, partitionId, ownerId);
+
+                } else {
+                    throw new IllegalStateException("invalid operationType");
+                }
+
+
                 String operationUuid = createStreamOperationCmd.execute(null);
                 logger.info("operationUuid: " + operationUuid);
             }
@@ -405,9 +417,10 @@ implements StreamCreator
 
     public static void main(String[] args)
     {
-//        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
-//        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
+        //System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
+        //System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
         try {
+            //Unirest.config().verifySsl(false);
             new StreamsDemonstration().begin();
 
         } catch (Throwable e) {

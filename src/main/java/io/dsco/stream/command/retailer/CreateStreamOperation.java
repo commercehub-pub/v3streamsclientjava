@@ -17,10 +17,10 @@ implements Command<Void, String>
     private final StreamV3Api streamV3Api;
     private final String streamId;
     public final StreamV3Api.OperationType operationType;
-    public final int partitionId;
+    public final Integer partitionId;
     public final String ownerId;
 
-    public CreateStreamOperation(StreamV3Api streamV3Api, String streamId, StreamV3Api.OperationType operationType, int partitionId, String ownerId)
+    public CreateStreamOperation(StreamV3Api streamV3Api, String streamId, StreamV3Api.OperationType operationType, Integer partitionId, String ownerId)
     {
         this.streamId = streamId;
         this.streamV3Api = streamV3Api;
