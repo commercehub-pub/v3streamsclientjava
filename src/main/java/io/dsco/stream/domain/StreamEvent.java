@@ -152,13 +152,13 @@ public abstract class StreamEvent<T>
     {
         public PayloadGeneric(String id, Source source)
         {
-            super(id, source, null, "Not yet implemented");
+            super(id, source, null, "{\"payload\": \"Test Payload\"}");
         }
 
         @Override
         public String getKey()
         {
-            return "not yet implemented";
+            return "abc-123";
         }
     }
 
