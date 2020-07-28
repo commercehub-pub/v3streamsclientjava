@@ -83,15 +83,27 @@ logger.info(future.get().getBody());
     private InvoiceChangeLog getInvoiceChangeLog(String requestId, Iso8601DateTime eventDate)
     throws Exception
     {
-        //due to propagation delay issues, recommended best practice is to shift everything back by 10 seconds and begin searching from then
-        ZonedDateTime from = ZonedDateTime.parse(eventDate.getDate()).minusSeconds(10L);
-        String fromDateMinus10Seconds = Util.dateToIso8601(Date.from(from.toInstant()));
+        CompletableFuture<HttpResponse<JsonNode>> future;
 
-        String nowMinus10Seconds = Util.dateToIso8601(new Date(System.currentTimeMillis()-10_000L));
+        if (eventDate != null) {
+            logger.debug("about to get invoice change log based on eventDate: " + eventDate.getDate());
 
-        CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return invoiceV3Api.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
-        }, invoiceV3Api, logger, "getInvoiceChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
+            //due to propagation delay issues, recommended best practice is to shift everything back by 10 seconds and begin searching from then
+            ZonedDateTime from = ZonedDateTime.parse(eventDate.getDate()).minusSeconds(10L);
+            String fromDateMinus10Seconds = Util.dateToIso8601(Date.from(from.toInstant()));
+
+            String nowMinus10Seconds = Util.dateToIso8601(new Date(System.currentTimeMillis() - 10_000L));
+
+            future = NetworkExecutor.getInstance().execute((x) -> {
+                return invoiceV3Api.getInvoiceChangeLog(fromDateMinus10Seconds, nowMinus10Seconds, null, null);
+            }, invoiceV3Api, logger, "getInvoiceChangeLog", NetworkExecutor.HTTP_RESPONSE_200);
+
+        } else if (requestId != null) {
+            throw new IllegalStateException("passing requestId not supported in the demo");
+
+        } else {
+            throw new IllegalStateException("Either requestId or eventDate is required");
+        }
 
 logger.info(future.get().getBody());
 
