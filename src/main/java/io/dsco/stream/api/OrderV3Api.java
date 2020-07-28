@@ -13,11 +13,11 @@ extends OAuthSupport
 {
     CompletableFuture<HttpResponse<JsonNode>> createOrder(@NotNull Order order);
 
-    CompletableFuture<HttpResponse<JsonNode>> acknowledgeOrders(@NotNull List<OrderAcknowledge> ordersToAcknowledge);
+    CompletableFuture<HttpResponse<JsonNode>> acknowledgeOrders(@NotNull List<OrderId> ordersToAcknowledge);
 
-    CompletableFuture<HttpResponse<JsonNode>> cancelOrderItemsSmallBatch(@NotNull List<OrderCancelItem> orderItemsToCancel);
+    CompletableFuture<HttpResponse<JsonNode>> cancelOrderItemsSmallBatch(@NotNull List<OrderForCancel> orderItemsToCancel);
 
-    CompletableFuture<HttpResponse<JsonNode>> createShipmentSmallBatch(@NotNull List<OrderShipment> orderShipments);
+    CompletableFuture<HttpResponse<JsonNode>> createShipmentSmallBatch(@NotNull List<ShipmentsForUpdate> orderShipments);
 
     CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderRequest getOrderRequest);
 }

@@ -1,104 +1,42 @@
 package io.dsco.stream.domain;
 
-public class InvoiceTerms
-{
-    private String basisDate; //iso8601
-    private Integer dayOfMonth;
-    private Float discountAmount;
-    private Integer discountDaysDue;
-    private String discountDueDate; //iso8601
-    private Integer netDays;
-    private String netDueDate; //iso8601
-    private Float totalAmountSubjectToDiscount;
-    private String type;
 
-    public String getBasisDate()
-    {
-        return basisDate;
-    }
+@SuppressWarnings("unused")
+public class InvoiceTerms {
+	//MEMBERS
+	private String type;
+	private Iso8601DateTime basisDate;
+	private Float discountPercent;
+	private Iso8601DateTime discountDueDate;
+	private Integer discountDaysDue;
+	private Iso8601DateTime netDueDate;
+	private Integer netDays;
+	private Float discountAmount;
+	private Integer dayOfMonth;
+	private Float totalAmountSubjectToDiscount;
 
-    public void setBasisDate(String basisDate)
-    {
-        this.basisDate = basisDate;
-    }
+	//CONSTRUCTORS
+	public InvoiceTerms() {}
 
-    public Integer getDayOfMonth()
-    {
-        return dayOfMonth;
-    }
-
-    public void setDayOfMonth(Integer dayOfMonth)
-    {
-        this.dayOfMonth = dayOfMonth;
-    }
-
-    public Float getDiscountAmount()
-    {
-        return discountAmount;
-    }
-
-    public void setDiscountAmount(Float discountAmount)
-    {
-        this.discountAmount = discountAmount;
-    }
-
-    public Integer getDiscountDaysDue()
-    {
-        return discountDaysDue;
-    }
-
-    public void setDiscountDaysDue(Integer discountDaysDue)
-    {
-        this.discountDaysDue = discountDaysDue;
-    }
-
-    public String getDiscountDueDate()
-    {
-        return discountDueDate;
-    }
-
-    public void setDiscountDueDate(String discountDueDate)
-    {
-        this.discountDueDate = discountDueDate;
-    }
-
-    public Integer getNetDays()
-    {
-        return netDays;
-    }
-
-    public void setNetDays(Integer netDays)
-    {
-        this.netDays = netDays;
-    }
-
-    public String getNetDueDate()
-    {
-        return netDueDate;
-    }
-
-    public void setNetDueDate(String netDueDate)
-    {
-        this.netDueDate = netDueDate;
-    }
-
-    public Float getTotalAmountSubjectToDiscount()
-    {
-        return totalAmountSubjectToDiscount;
-    }
-
-    public void setTotalAmountSubjectToDiscount(Float totalAmountSubjectToDiscount)
-    {
-        this.totalAmountSubjectToDiscount = totalAmountSubjectToDiscount;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
-    }
+	//ACCESSORS / MUTATORS
+	public String getType() { return type; }
+	public void setType(String val) { type = val; }
+	public Iso8601DateTime getBasisDate() { return basisDate; }
+	public void setBasisDate(Iso8601DateTime val) { basisDate = val; }
+	public Float getDiscountPercent() { return discountPercent; }
+	public void setDiscountPercent(Float val) { discountPercent = val; }
+	public Iso8601DateTime getDiscountDueDate() { return discountDueDate; }
+	public void setDiscountDueDate(Iso8601DateTime val) { discountDueDate = val; }
+	public Integer getDiscountDaysDue() { return discountDaysDue; }
+	public void setDiscountDaysDue(Integer val) { discountDaysDue = val; }
+	public Iso8601DateTime getNetDueDate() { return netDueDate; }
+	public void setNetDueDate(Iso8601DateTime val) { netDueDate = val; }
+	public Integer getNetDays() { return netDays; }
+	public void setNetDays(Integer val) { netDays = val; }
+	public Float getDiscountAmount() { return discountAmount; }
+	public void setDiscountAmount(Float val) { discountAmount = val; }
+	public Integer getDayOfMonth() { return dayOfMonth; }
+	public void setDayOfMonth(Integer val) { dayOfMonth = val; }
+	public Float getTotalAmountSubjectToDiscount() { return totalAmountSubjectToDiscount; }
+	public void setTotalAmountSubjectToDiscount(Float val) { totalAmountSubjectToDiscount = val; }
 }

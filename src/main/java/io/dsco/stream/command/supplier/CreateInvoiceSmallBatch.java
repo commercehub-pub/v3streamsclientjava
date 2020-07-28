@@ -5,9 +5,9 @@ import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.InvoiceChangeLog;
-import io.dsco.stream.domain.InvoiceForUpdate;
-import io.dsco.stream.domain.ResponseInvoiceChangeLog;
-import io.dsco.stream.domain.ResponseInvoiceCreate;
+import io.dsco.stream.domain.Invoice;
+import io.dsco.stream.domain.InvoiceChangeLogResponse;
+import io.dsco.stream.domain.SyncUpdateResponse;
 import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class CreateInvoiceSmallBatch
-implements Command<List<InvoiceForUpdate>, Void>
+implements Command<List<Invoice>, Void>
 {
     private static final Logger logger = LogManager.getLogger(CreateInvoiceSmallBatch.class);
 
@@ -33,7 +33,7 @@ implements Command<List<InvoiceForUpdate>, Void>
     }
 
     @Override
-    public Void execute(List<InvoiceForUpdate> invoices)
+    public Void execute(List<Invoice> invoices)
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
@@ -41,13 +41,13 @@ implements Command<List<InvoiceForUpdate>, Void>
         }, invoiceV3Api, logger, "createInvoiceSmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 logger.info(future.get().getBody());
 
-        ResponseInvoiceCreate createResponse = new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceCreate.class);
-        if (createResponse.getStatus() == ResponseInvoiceCreate.Status.failure) {
+        SyncUpdateResponse createResponse = Util.gson().fromJson(future.get().getBody().toString(), SyncUpdateResponse.class);
+        if (createResponse.getStatus() == SyncUpdateResponse.STATUS.FAILURE) {
             throw new IllegalStateException("unable to create invoice\n" + future.get().getBody());
         }
 
         String requestId = createResponse.getRequestId();
-        String eventDate = createResponse.getEventDate();
+        String eventDate = createResponse.getEventDate().toString();
 
         logger.info("*** requestId: " + requestId);
 
@@ -61,13 +61,13 @@ logger.info(future.get().getBody());
             if (changeLog != null) {
                 switch (changeLog.getStatus())
                 {
-                    case failure:
+                    case FAILURE:
                         throw new IllegalStateException(MessageFormat.format(
                                 "unable to create invoice: {0}: {1}",
                                 changeLog.getResults().get(0).getCode(), changeLog.getResults().get(0).getDescription()));
-                    case success:
+                    case SUCCESS:
                         break;
-                    case pending:
+                    case PENDING:
                         logger.info("invoice state pending. trying again...");
                         changeLog = null;
                         break;
@@ -100,7 +100,7 @@ logger.info(future.get().getBody());
 
         //convert to java and look for the given requestId
         InvoiceChangeLog requestedResponseRecord = null;
-        ResponseInvoiceChangeLog response = new Gson().fromJson(future.get().getBody().toString(), ResponseInvoiceChangeLog.class);
+        InvoiceChangeLogResponse response = Util.gson().fromJson(future.get().getBody().toString(), InvoiceChangeLogResponse.class);
 
         //TODO: server bug causing the requestId's not to match up, so for now, take the first row and just use it, since
         // on stage, it's 99% likely it's the one we're looking for

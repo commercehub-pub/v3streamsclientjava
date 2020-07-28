@@ -1,47 +1,29 @@
 package io.dsco.stream.domain;
 
-import org.jetbrains.annotations.NotNull;
 
-public class PartnerSkuMap
-{
-    private String partnerSku;
-    private String dscoRetailerId;
-    private String dscoTradingPartnerId;
+@SuppressWarnings("unused")
+public class PartnerSkuMap {
+	//MEMBERS
+	/* The retailer-specific sku that needs to be mapped to the retailer
+who wants this sku */
+	private String partnerSku;
+	/* Designate which retailer to use this sku for by either specifying
+this value, Dsco's unique account ID for the retailer, or dscoTradingPartnerId;
+one of the A attributes must be present */
+	private String dscoRetailerId;
+	/* Designate which retailer to use this sku for by either specifying
+this value, the partner's unique ID for the retailer, or dscoRetailerId;
+one of the A attributes must be present */
+	private String dscoTradingPartnerId;
 
-    public PartnerSkuMap(@NotNull String partnerSku, String dscoRetailerId, String dscoTradingPartnerId)
-    {
-        this.partnerSku = partnerSku;
-        this.dscoRetailerId = dscoRetailerId;
-        this.dscoTradingPartnerId = dscoTradingPartnerId;
-    }
+	//CONSTRUCTORS
+	public PartnerSkuMap() {}
 
-    public String getPartnerSku()
-    {
-        return partnerSku;
-    }
-
-    public void setPartnerSku(String partnerSku)
-    {
-        this.partnerSku = partnerSku;
-    }
-
-    public String getDscoRetailerId()
-    {
-        return dscoRetailerId;
-    }
-
-    public void setDscoRetailerId(String dscoRetailerId)
-    {
-        this.dscoRetailerId = dscoRetailerId;
-    }
-
-    public String getDscoTradingPartnerId()
-    {
-        return dscoTradingPartnerId;
-    }
-
-    public void setDscoTradingPartnerId(String dscoTradingPartnerId)
-    {
-        this.dscoTradingPartnerId = dscoTradingPartnerId;
-    }
+	//ACCESSORS / MUTATORS
+	public String getPartnerSku() { return partnerSku; }
+	public void setPartnerSku(String val) { partnerSku = val; }
+	public String getDscoRetailerId() { return dscoRetailerId; }
+	public void setDscoRetailerId(String val) { dscoRetailerId = val; }
+	public String getDscoTradingPartnerId() { return dscoTradingPartnerId; }
+	public void setDscoTradingPartnerId(String val) { dscoTradingPartnerId = val; }
 }

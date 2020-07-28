@@ -1,186 +1,61 @@
 package io.dsco.stream.domain;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
-public class PackageLineItem
-{
-    private int quantity;
-    private String departmentId;
-    private String departmentName;
-    private String dscoItemId;
-    private String ean;
-    private Integer lineNumber;
-    private String merchandisingAccountId;
-    private String merchandisingAccountName;
-    private Integer originalLineNumber;
-    private Integer originalOrderQuantity;
-    private String partnerSku;
-    private List<String> retailerItemIds;
-    private String sku;
-    private String upc;
+@SuppressWarnings("unused")
+public class PackageLineItem {
+	//MEMBERS
+	/* The number of this item in the package */
+	private int quantity;
+	/* The DSCO unique ID of the item, one of dscoItemId, sku, partnerSku, upc or ean is required */
+	private String dscoItemId;
+	/* The SKU of the item, one of dscoItemId, sku, partnerSku, upc or ean is required */
+	private String sku;
+	/* The partner SKU of the item, one of dscoItemId, sku, partnerSku, upc or ean is required */
+	private String partnerSku;
+	/* The UPC of the item, one of dscoItemId, sku, partnerSku, upc or ean is required */
+	private String upc;
+	/* The ean of te item, one of dscoItemId, sku, partnerSku, upc or ean is required */
+	private String ean;
+	private Integer lineNumber;
+	private Integer originalLineNumber;
+	private Integer originalOrderQuantity;
+	private List<String> retailerItemIds;
+	private String departmentId;
+	private String departmentName;
+	private String merchandisingAccountId;
+	private String merchandisingAccountName;
 
-    public PackageLineItem() {}
+	//CONSTRUCTORS
+	public PackageLineItem() {}
 
-    public PackageLineItem(
-            int quantity, String departmentId, String departmentName, @NotNull String dscoItemId, String ean,
-            Integer lineNumber, String merchandisingAccountId, String merchandisingAccountName, Integer originalLineNumber,
-            Integer originalOrderQuantity, String partnerSku, List<String> retailerItemIds, String sku, String upc)
-    {
-        this.quantity = quantity;
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
-        this.dscoItemId = dscoItemId;
-        this.ean = ean;
-        this.lineNumber = lineNumber;
-        this.merchandisingAccountId = merchandisingAccountId;
-        this.merchandisingAccountName = merchandisingAccountName;
-        this.originalLineNumber = originalLineNumber;
-        this.originalOrderQuantity = originalOrderQuantity;
-        this.partnerSku = partnerSku;
-        this.retailerItemIds = retailerItemIds;
-        this.sku = sku;
-        this.upc = upc;
-    }
-
-    public int getQuantity()
-    {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity)
-    {
-        this.quantity = quantity;
-    }
-
-    public String getDepartmentId()
-    {
-        return departmentId;
-    }
-
-    public void setDepartmentId(String departmentId)
-    {
-        this.departmentId = departmentId;
-    }
-
-    public String getDepartmentName()
-    {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName)
-    {
-        this.departmentName = departmentName;
-    }
-
-    public String getDscoItemId()
-    {
-        return dscoItemId;
-    }
-
-    public void setDscoItemId(String dscoItemId)
-    {
-        this.dscoItemId = dscoItemId;
-    }
-
-    public String getEan()
-    {
-        return ean;
-    }
-
-    public void setEan(String ean)
-    {
-        this.ean = ean;
-    }
-
-    public Integer getLineNumber()
-    {
-        return lineNumber;
-    }
-
-    public void setLineNumber(Integer lineNumber)
-    {
-        this.lineNumber = lineNumber;
-    }
-
-    public String getMerchandisingAccountId()
-    {
-        return merchandisingAccountId;
-    }
-
-    public void setMerchandisingAccountId(String merchandisingAccountId)
-    {
-        this.merchandisingAccountId = merchandisingAccountId;
-    }
-
-    public String getMerchandisingAccountName()
-    {
-        return merchandisingAccountName;
-    }
-
-    public void setMerchandisingAccountName(String merchandisingAccountName)
-    {
-        this.merchandisingAccountName = merchandisingAccountName;
-    }
-
-    public Integer getOriginalLineNumber()
-    {
-        return originalLineNumber;
-    }
-
-    public void setOriginalLineNumber(Integer originalLineNumber)
-    {
-        this.originalLineNumber = originalLineNumber;
-    }
-
-    public Integer getOriginalOrderQuantity()
-    {
-        return originalOrderQuantity;
-    }
-
-    public void setOriginalOrderQuantity(Integer originalOrderQuantity)
-    {
-        this.originalOrderQuantity = originalOrderQuantity;
-    }
-
-    public String getPartnerSku()
-    {
-        return partnerSku;
-    }
-
-    public void setPartnerSku(String partnerSku)
-    {
-        this.partnerSku = partnerSku;
-    }
-
-    public List<String> getRetailerItemIds()
-    {
-        return retailerItemIds;
-    }
-
-    public void setRetailerItemIds(List<String> retailerItemIds)
-    {
-        this.retailerItemIds = retailerItemIds;
-    }
-
-    public String getSku()
-    {
-        return sku;
-    }
-
-    public void setSku(String sku)
-    {
-        this.sku = sku;
-    }
-
-    public String getUpc()
-    {
-        return upc;
-    }
-
-    public void setUpc(String upc)
-    {
-        this.upc = upc;
-    }
+	//ACCESSORS / MUTATORS
+	public int getQuantity() { return quantity; }
+	public void setQuantity(int val) { quantity = val; }
+	public String getDscoItemId() { return dscoItemId; }
+	public void setDscoItemId(String val) { dscoItemId = val; }
+	public String getSku() { return sku; }
+	public void setSku(String val) { sku = val; }
+	public String getPartnerSku() { return partnerSku; }
+	public void setPartnerSku(String val) { partnerSku = val; }
+	public String getUpc() { return upc; }
+	public void setUpc(String val) { upc = val; }
+	public String getEan() { return ean; }
+	public void setEan(String val) { ean = val; }
+	public Integer getLineNumber() { return lineNumber; }
+	public void setLineNumber(Integer val) { lineNumber = val; }
+	public Integer getOriginalLineNumber() { return originalLineNumber; }
+	public void setOriginalLineNumber(Integer val) { originalLineNumber = val; }
+	public Integer getOriginalOrderQuantity() { return originalOrderQuantity; }
+	public void setOriginalOrderQuantity(Integer val) { originalOrderQuantity = val; }
+	public List<String> getRetailerItemIds() { return retailerItemIds; }
+	public void setRetailerItemIds(List<String> val) { retailerItemIds = val; }
+	public String getDepartmentId() { return departmentId; }
+	public void setDepartmentId(String val) { departmentId = val; }
+	public String getDepartmentName() { return departmentName; }
+	public void setDepartmentName(String val) { departmentName = val; }
+	public String getMerchandisingAccountId() { return merchandisingAccountId; }
+	public void setMerchandisingAccountId(String val) { merchandisingAccountId = val; }
+	public String getMerchandisingAccountName() { return merchandisingAccountName; }
+	public void setMerchandisingAccountName(String val) { merchandisingAccountName = val; }
 }

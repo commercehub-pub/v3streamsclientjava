@@ -1,6 +1,5 @@
 package io.dsco.stream.api;
 
-import io.dsco.stream.domain.StreamPartition;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.jetbrains.annotations.NotNull;

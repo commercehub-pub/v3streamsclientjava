@@ -1,39 +1,20 @@
 package io.dsco.stream.domain;
 
-public class OrderPayment
-{
-    private String cardLastFour;
-    private String cardType;
 
-    public OrderPayment() {}
+@SuppressWarnings("unused")
+public class OrderPayment {
+	//MEMBERS
+	/* The type of card. */
+	private String cardType;
+	/* The payment card last four (this or cardType required) */
+	private String cardLastFour;
 
-    public OrderPayment(String cardLastFour, String cardType)
-    {
-        if (cardLastFour == null && cardType == null) {
-            throw new IllegalArgumentException("one of cardLastFour or cardType is required");
-        }
+	//CONSTRUCTORS
+	public OrderPayment() {}
 
-        this.cardLastFour = cardLastFour;
-        this.cardType = cardType;
-    }
-
-    public String getCardLastFour()
-    {
-        return cardLastFour;
-    }
-
-    public void setCardLastFour(String cardLastFour)
-    {
-        this.cardLastFour = cardLastFour;
-    }
-
-    public String getCardType()
-    {
-        return cardType;
-    }
-
-    public void setCardType(String cardType)
-    {
-        this.cardType = cardType;
-    }
+	//ACCESSORS / MUTATORS
+	public String getCardType() { return cardType; }
+	public void setCardType(String val) { cardType = val; }
+	public String getCardLastFour() { return cardLastFour; }
+	public void setCardLastFour(String val) { cardLastFour = val; }
 }

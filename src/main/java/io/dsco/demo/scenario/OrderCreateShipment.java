@@ -1,5 +1,6 @@
 package io.dsco.demo.scenario;
 
+import io.dsco.demo.DomainFactory;
 import io.dsco.stream.api.OrderV3Api;
 import io.dsco.stream.command.supplier.CreateShipmentSmallBatch;
 import io.dsco.stream.domain.*;
@@ -30,13 +31,13 @@ public class OrderCreateShipment
         long b = System.currentTimeMillis();
         logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
-        List<OrderShipment> shipments = getOrderShipments(order);
+        List<ShipmentsForUpdate> shipments = getOrderShipments(order);
 
         //make the call
-        ResponseSmallBatch response = createShipmentSmallBatchCmd.execute(shipments);
+        SyncUpdateResponse response = createShipmentSmallBatchCmd.execute(shipments);
 
         //make sure the async response was a success
-        if (response.getStatus() == ResponseSmallBatch.Status.failure) {
+        if (response.getStatus() == SyncUpdateResponse.STATUS.FAILURE) {
             //for non-demo, you'd want to check the messages array to find what went wrong
             throw new IllegalStateException("unable to create shipment");
         }
@@ -46,20 +47,20 @@ public class OrderCreateShipment
         logger.info(MessageFormat.format("***** {0} scenario complete *****", SCENARIO_NAME));
     }
 
-    private List<OrderShipment> getOrderShipments(Order order)
+    private List<ShipmentsForUpdate> getOrderShipments(Order order)
     {
         //for demo purposes, assume all line items in the order were shipped in the same shipment.
 
         List<ShipmentLineItemForUpdate> lineItems = order.getLineItems().stream()
             .map(li -> {
-                return new ShipmentLineItemForUpdate(li.getQuantity(), li.getDscoItemId(), li.getEan(), li.getLineNumber(), li.getPartnerSku(), li.getSku(), li.getUpc());
+                return DomainFactory.shipmentLineItemForUpdate(li.getQuantity(), li.getDscoItemId(), li.getEan(), li.getLineNumber(), li.getPartnerSku(), li.getSku(), li.getUpc());
             })
             .collect(Collectors.toList());
 
         String trackingNumber = UUID.randomUUID().toString();
-        List<ShipmentForUpdate> shipments = Collections.singletonList(new ShipmentForUpdate(lineItems, trackingNumber));
+        List<ShipmentForUpdate> shipments = Collections.singletonList(DomainFactory.shipmentForUpdate(lineItems, trackingNumber));
 
-        OrderShipment shipment = new OrderShipment(
+        ShipmentsForUpdate shipment = DomainFactory.shipmentsForUpdate(
                 order.getDscoOrderId(), order.getPoNumber(), shipments, order.getSupplierOrderNumber());
 
         return Collections.singletonList(shipment);

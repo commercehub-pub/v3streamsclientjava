@@ -18,7 +18,7 @@ implements InventoryV3Api
     {
         super(clientId, secret, baseUrl);
 
-//        setTokenAndExpiration("478468df-019d-40d9-a9b4-d0b2503ec35b", 999_999_999L);
+//        setTokenAndExpiration("xxx", 999_999_999L);
     }
 
     @Override

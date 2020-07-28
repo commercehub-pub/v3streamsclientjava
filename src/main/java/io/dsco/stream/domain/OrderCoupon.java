@@ -1,39 +1,20 @@
 package io.dsco.stream.domain;
 
-public class OrderCoupon
-{
-    private Float amount;
-    private Float percentage;
 
-    public OrderCoupon() {}
+@SuppressWarnings("unused")
+public class OrderCoupon {
+	//MEMBERS
+	/* The amount of the coupon (this or percentage required) */
+	private Float amount;
+	/* The percentage of the coupon (this or amount required) */
+	private Float percentage;
 
-    public OrderCoupon(Float amount, Float percentage)
-    {
-        if (amount == null && percentage == null) {
-            throw new IllegalArgumentException("amount or percentage is required");
-        }
+	//CONSTRUCTORS
+	public OrderCoupon() {}
 
-        this.amount = amount;
-        this.percentage = percentage;
-    }
-
-    public Float getAmount()
-    {
-        return amount;
-    }
-
-    public void setAmount(Float amount)
-    {
-        this.amount = amount;
-    }
-
-    public Float getPercentage()
-    {
-        return percentage;
-    }
-
-    public void setPercentage(Float percentage)
-    {
-        this.percentage = percentage;
-    }
+	//ACCESSORS / MUTATORS
+	public Float getAmount() { return amount; }
+	public void setAmount(Float val) { amount = val; }
+	public Float getPercentage() { return percentage; }
+	public void setPercentage(Float val) { percentage = val; }
 }

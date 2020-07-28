@@ -31,7 +31,7 @@ implements OrderV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> acknowledgeOrders(@NotNull List<OrderAcknowledge> ordersToAcknowledge)
+    public CompletableFuture<HttpResponse<JsonNode>> acknowledgeOrders(@NotNull List<OrderId> ordersToAcknowledge)
     {
         return Unirest.post(baseUrl + "order/acknowledge")
                 .headers(defaultHeaders)
@@ -40,7 +40,7 @@ implements OrderV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> cancelOrderItemsSmallBatch(@NotNull List<OrderCancelItem> orderItemsToCancel)
+    public CompletableFuture<HttpResponse<JsonNode>> cancelOrderItemsSmallBatch(@NotNull List<OrderForCancel> orderItemsToCancel)
     {
         return Unirest.post(baseUrl + "order/item/cancel/batch/small")
                 .headers(defaultHeaders)
@@ -49,7 +49,7 @@ implements OrderV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> createShipmentSmallBatch(@NotNull List<OrderShipment> orderShipments)
+    public CompletableFuture<HttpResponse<JsonNode>> createShipmentSmallBatch(@NotNull List<ShipmentsForUpdate> orderShipments)
     {
         return Unirest.post(baseUrl + "order/shipment/batch/small")
                 .headers(defaultHeaders)

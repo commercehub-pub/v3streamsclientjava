@@ -1,357 +1,103 @@
 package io.dsco.stream.domain;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
-public class Package
-{
-    private List<PackageLineItem> items;
-    private String trackingNumber;
-    private String currencyCode;
-    private String dscoActualDeliveryDate; //iso8601
-    private String dscoActualPickupDate; //iso8601
-    private String dscoActualShipCarrier;
-    private Float dscoActualShipCost;
-    private String dscoActualShipMethod;
-    private String dscoActualShippingServiceLevelCode;
-    private Integer dscoPackageId;
-    private Integer numberOfLineItems;
-    private PackageShipFrom packageShipFrom;
-    private PackageShipTo packageShipTo;
-    private String returnDate; //iso8601
-    private Boolean returnedFlag;
-    private String returnNumber;
-    private String returnReason;
-    private String shipCarrier;
-    private Float shipCost;
-    private String shipDate; //iso8601
-    private String shipMethod;
-    private String shippingServiceLevelCode;
-    private Float shipWeight;
-    private String shipWeightUnits;
-    private String ssccBarcode;
-    private String warehouseCode;
-    private String warehouseDscoId;
-    private String warehouseRetailerCode;
+@SuppressWarnings("unused")
+public class Package {
+	//MEMBERS
+	private String trackingNumber;
+	private Float shipCost;
+	/* When the retailer created the order */
+	private Iso8601DateTime shipDate;
+	private String shipCarrier;
+	private String shipMethod;
+	private List<PackageLineItem> items;
+	private String currencyCode;
+	private String shippingServiceLevelCode;
+	private String dscoActualShipMethod;
+	private String dscoActualShipCarrier;
+	private String dscoActualShippingServiceLevelCode;
+	private Float dscoActualShipCost;
+	private Iso8601DateTime dscoActualDeliveryDate;
+	private Iso8601DateTime dscoActualPickupDate;
+	private Boolean returnedFlag;
+	private Iso8601DateTime returnDate;
+	private String returnNumber;
+	private String returnReason;
+	private Integer numberOfLineItems;
+	/* The PackageShipFrom JSON object defines the ship to for a Package in the DSCO system. */
+	private PackageShipFrom packageShipFrom;
+	/* The PackageShipTo JSON object defines the ship to for a Package in the DSCO system. */
+	private PackageShipTo packageShipTo;
+	private Integer dscoPackageId;
+	private Float shipWeight;
+	private String shipWeightUnits;
+	/* the supplier ID for warehouse */
+	private String warehouseCode;
+	/* the retailer ID for warehouse */
+	private String warehouseRetailerCode;
+	/* Dsco's ID for warehouse */
+	private String warehouseDscoId;
+	private String ssccBarcode;
 
-    public Package(
-            @NotNull List<PackageLineItem> items, @NotNull String trackingNumber, String currencyCode,
-            @NotNull String dscoActualDeliveryDate, @NotNull String dscoActualPickupDate, String dscoActualShipCarrier,
-            Float dscoActualShipCost, String dscoActualShipMethod, String dscoActualShippingServiceLevelCode,
-            Integer dscoPackageId, Integer numberOfLineItems, @NotNull PackageShipFrom packageShipFrom,
-            @NotNull PackageShipTo packageShipTo, String returnDate, Boolean returnedFlag, String returnNumber,
-            String returnReason, String shipCarrier, Float shipCost, String shipDate, String shipMethod,
-            String shippingServiceLevelCode, Float shipWeight, String shipWeightUnits, String ssccBarcode,
-            String warehouseCode, String warehouseDscoId, String warehouseRetailerCode)
-    {
-        this.items = items;
-        this.trackingNumber = trackingNumber;
-        this.currencyCode = currencyCode;
-        this.dscoActualDeliveryDate = dscoActualDeliveryDate;
-        this.dscoActualPickupDate = dscoActualPickupDate;
-        this.dscoActualShipCarrier = dscoActualShipCarrier;
-        this.dscoActualShipCost = dscoActualShipCost;
-        this.dscoActualShipMethod = dscoActualShipMethod;
-        this.dscoActualShippingServiceLevelCode = dscoActualShippingServiceLevelCode;
-        this.dscoPackageId = dscoPackageId;
-        this.numberOfLineItems = numberOfLineItems;
-        this.packageShipFrom = packageShipFrom;
-        this.packageShipTo = packageShipTo;
-        this.returnDate = returnDate;
-        this.returnedFlag = returnedFlag;
-        this.returnNumber = returnNumber;
-        this.returnReason = returnReason;
-        this.shipCarrier = shipCarrier;
-        this.shipCost = shipCost;
-        this.shipDate = shipDate;
-        this.shipMethod = shipMethod;
-        this.shippingServiceLevelCode = shippingServiceLevelCode;
-        this.shipWeight = shipWeight;
-        this.shipWeightUnits = shipWeightUnits;
-        this.ssccBarcode = ssccBarcode;
-        this.warehouseCode = warehouseCode;
-        this.warehouseDscoId = warehouseDscoId;
-        this.warehouseRetailerCode = warehouseRetailerCode;
-    }
+	//CONSTRUCTORS
+	public Package() {}
 
-    public List<PackageLineItem> getItems()
-    {
-        return items;
-    }
-
-    public void setItems(List<PackageLineItem> items)
-    {
-        this.items = items;
-    }
-
-    public String getTrackingNumber()
-    {
-        return trackingNumber;
-    }
-
-    public void setTrackingNumber(String trackingNumber)
-    {
-        this.trackingNumber = trackingNumber;
-    }
-
-    public String getCurrencyCode()
-    {
-        return currencyCode;
-    }
-
-    public void setCurrencyCode(String currencyCode)
-    {
-        this.currencyCode = currencyCode;
-    }
-
-    public String getDscoActualDeliveryDate()
-    {
-        return dscoActualDeliveryDate;
-    }
-
-    public void setDscoActualDeliveryDate(String dscoActualDeliveryDate)
-    {
-        this.dscoActualDeliveryDate = dscoActualDeliveryDate;
-    }
-
-    public String getDscoActualPickupDate()
-    {
-        return dscoActualPickupDate;
-    }
-
-    public void setDscoActualPickupDate(String dscoActualPickupDate)
-    {
-        this.dscoActualPickupDate = dscoActualPickupDate;
-    }
-
-    public String getDscoActualShipCarrier()
-    {
-        return dscoActualShipCarrier;
-    }
-
-    public void setDscoActualShipCarrier(String dscoActualShipCarrier)
-    {
-        this.dscoActualShipCarrier = dscoActualShipCarrier;
-    }
-
-    public Float getDscoActualShipCost()
-    {
-        return dscoActualShipCost;
-    }
-
-    public void setDscoActualShipCost(Float dscoActualShipCost)
-    {
-        this.dscoActualShipCost = dscoActualShipCost;
-    }
-
-    public String getDscoActualShipMethod()
-    {
-        return dscoActualShipMethod;
-    }
-
-    public void setDscoActualShipMethod(String dscoActualShipMethod)
-    {
-        this.dscoActualShipMethod = dscoActualShipMethod;
-    }
-
-    public String getDscoActualShippingServiceLevelCode()
-    {
-        return dscoActualShippingServiceLevelCode;
-    }
-
-    public void setDscoActualShippingServiceLevelCode(String dscoActualShippingServiceLevelCode)
-    {
-        this.dscoActualShippingServiceLevelCode = dscoActualShippingServiceLevelCode;
-    }
-
-    public Integer getDscoPackageId()
-    {
-        return dscoPackageId;
-    }
-
-    public void setDscoPackageId(Integer dscoPackageId)
-    {
-        this.dscoPackageId = dscoPackageId;
-    }
-
-    public Integer getNumberOfLineItems()
-    {
-        return numberOfLineItems;
-    }
-
-    public void setNumberOfLineItems(Integer numberOfLineItems)
-    {
-        this.numberOfLineItems = numberOfLineItems;
-    }
-
-    public PackageShipFrom getPackageShipFrom()
-    {
-        return packageShipFrom;
-    }
-
-    public void setPackageShipFrom(PackageShipFrom packageShipFrom)
-    {
-        this.packageShipFrom = packageShipFrom;
-    }
-
-    public PackageShipTo getPackageShipTo()
-    {
-        return packageShipTo;
-    }
-
-    public void setPackageShipTo(PackageShipTo packageShipTo)
-    {
-        this.packageShipTo = packageShipTo;
-    }
-
-    public String getReturnDate()
-    {
-        return returnDate;
-    }
-
-    public void setReturnDate(String returnDate)
-    {
-        this.returnDate = returnDate;
-    }
-
-    public Boolean getReturnedFlag()
-    {
-        return returnedFlag;
-    }
-
-    public void setReturnedFlag(Boolean returnedFlag)
-    {
-        this.returnedFlag = returnedFlag;
-    }
-
-    public String getReturnNumber()
-    {
-        return returnNumber;
-    }
-
-    public void setReturnNumber(String returnNumber)
-    {
-        this.returnNumber = returnNumber;
-    }
-
-    public String getReturnReason()
-    {
-        return returnReason;
-    }
-
-    public void setReturnReason(String returnReason)
-    {
-        this.returnReason = returnReason;
-    }
-
-    public String getShipCarrier()
-    {
-        return shipCarrier;
-    }
-
-    public void setShipCarrier(String shipCarrier)
-    {
-        this.shipCarrier = shipCarrier;
-    }
-
-    public Float getShipCost()
-    {
-        return shipCost;
-    }
-
-    public void setShipCost(Float shipCost)
-    {
-        this.shipCost = shipCost;
-    }
-
-    public String getShipDate()
-    {
-        return shipDate;
-    }
-
-    public void setShipDate(String shipDate)
-    {
-        this.shipDate = shipDate;
-    }
-
-    public String getShipMethod()
-    {
-        return shipMethod;
-    }
-
-    public void setShipMethod(String shipMethod)
-    {
-        this.shipMethod = shipMethod;
-    }
-
-    public String getShippingServiceLevelCode()
-    {
-        return shippingServiceLevelCode;
-    }
-
-    public void setShippingServiceLevelCode(String shippingServiceLevelCode)
-    {
-        this.shippingServiceLevelCode = shippingServiceLevelCode;
-    }
-
-    public Float getShipWeight()
-    {
-        return shipWeight;
-    }
-
-    public void setShipWeight(Float shipWeight)
-    {
-        this.shipWeight = shipWeight;
-    }
-
-    public String getShipWeightUnits()
-    {
-        return shipWeightUnits;
-    }
-
-    public void setShipWeightUnits(String shipWeightUnits)
-    {
-        this.shipWeightUnits = shipWeightUnits;
-    }
-
-    public String getSsccBarcode()
-    {
-        return ssccBarcode;
-    }
-
-    public void setSsccBarcode(String ssccBarcode)
-    {
-        this.ssccBarcode = ssccBarcode;
-    }
-
-    public String getWarehouseCode()
-    {
-        return warehouseCode;
-    }
-
-    public void setWarehouseCode(String warehouseCode)
-    {
-        this.warehouseCode = warehouseCode;
-    }
-
-    public String getWarehouseDscoId()
-    {
-        return warehouseDscoId;
-    }
-
-    public void setWarehouseDscoId(String warehouseDscoId)
-    {
-        this.warehouseDscoId = warehouseDscoId;
-    }
-
-    public String getWarehouseRetailerCode()
-    {
-        return warehouseRetailerCode;
-    }
-
-    public void setWarehouseRetailerCode(String warehouseRetailerCode)
-    {
-        this.warehouseRetailerCode = warehouseRetailerCode;
-    }
+	//ACCESSORS / MUTATORS
+	public String getTrackingNumber() { return trackingNumber; }
+	public void setTrackingNumber(String val) { trackingNumber = val; }
+	public Float getShipCost() { return shipCost; }
+	public void setShipCost(Float val) { shipCost = val; }
+	public Iso8601DateTime getShipDate() { return shipDate; }
+	public void setShipDate(Iso8601DateTime val) { shipDate = val; }
+	public String getShipCarrier() { return shipCarrier; }
+	public void setShipCarrier(String val) { shipCarrier = val; }
+	public String getShipMethod() { return shipMethod; }
+	public void setShipMethod(String val) { shipMethod = val; }
+	public List<PackageLineItem> getItems() { return items; }
+	public void setItems(List<PackageLineItem> val) { items = val; }
+	public String getCurrencyCode() { return currencyCode; }
+	public void setCurrencyCode(String val) { currencyCode = val; }
+	public String getShippingServiceLevelCode() { return shippingServiceLevelCode; }
+	public void setShippingServiceLevelCode(String val) { shippingServiceLevelCode = val; }
+	public String getDscoActualShipMethod() { return dscoActualShipMethod; }
+	public void setDscoActualShipMethod(String val) { dscoActualShipMethod = val; }
+	public String getDscoActualShipCarrier() { return dscoActualShipCarrier; }
+	public void setDscoActualShipCarrier(String val) { dscoActualShipCarrier = val; }
+	public String getDscoActualShippingServiceLevelCode() { return dscoActualShippingServiceLevelCode; }
+	public void setDscoActualShippingServiceLevelCode(String val) { dscoActualShippingServiceLevelCode = val; }
+	public Float getDscoActualShipCost() { return dscoActualShipCost; }
+	public void setDscoActualShipCost(Float val) { dscoActualShipCost = val; }
+	public Iso8601DateTime getDscoActualDeliveryDate() { return dscoActualDeliveryDate; }
+	public void setDscoActualDeliveryDate(Iso8601DateTime val) { dscoActualDeliveryDate = val; }
+	public Iso8601DateTime getDscoActualPickupDate() { return dscoActualPickupDate; }
+	public void setDscoActualPickupDate(Iso8601DateTime val) { dscoActualPickupDate = val; }
+	public Boolean getReturnedFlag() { return returnedFlag; }
+	public void setReturnedFlag(Boolean val) { returnedFlag = val; }
+	public Iso8601DateTime getReturnDate() { return returnDate; }
+	public void setReturnDate(Iso8601DateTime val) { returnDate = val; }
+	public String getReturnNumber() { return returnNumber; }
+	public void setReturnNumber(String val) { returnNumber = val; }
+	public String getReturnReason() { return returnReason; }
+	public void setReturnReason(String val) { returnReason = val; }
+	public Integer getNumberOfLineItems() { return numberOfLineItems; }
+	public void setNumberOfLineItems(Integer val) { numberOfLineItems = val; }
+	public PackageShipFrom getPackageShipFrom() { return packageShipFrom; }
+	public void setPackageShipFrom(PackageShipFrom val) { packageShipFrom = val; }
+	public PackageShipTo getPackageShipTo() { return packageShipTo; }
+	public void setPackageShipTo(PackageShipTo val) { packageShipTo = val; }
+	public Integer getDscoPackageId() { return dscoPackageId; }
+	public void setDscoPackageId(Integer val) { dscoPackageId = val; }
+	public Float getShipWeight() { return shipWeight; }
+	public void setShipWeight(Float val) { shipWeight = val; }
+	public String getShipWeightUnits() { return shipWeightUnits; }
+	public void setShipWeightUnits(String val) { shipWeightUnits = val; }
+	public String getWarehouseCode() { return warehouseCode; }
+	public void setWarehouseCode(String val) { warehouseCode = val; }
+	public String getWarehouseRetailerCode() { return warehouseRetailerCode; }
+	public void setWarehouseRetailerCode(String val) { warehouseRetailerCode = val; }
+	public String getWarehouseDscoId() { return warehouseDscoId; }
+	public void setWarehouseDscoId(String val) { warehouseDscoId = val; }
+	public String getSsccBarcode() { return ssccBarcode; }
+	public void setSsccBarcode(String val) { ssccBarcode = val; }
 }

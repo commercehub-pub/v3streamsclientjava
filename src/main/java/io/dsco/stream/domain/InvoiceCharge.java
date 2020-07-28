@@ -1,35 +1,18 @@
 package io.dsco.stream.domain;
 
-import org.jetbrains.annotations.NotNull;
 
-public class InvoiceCharge
-{
-    private float amount;
-    private String title;
+@SuppressWarnings("unused")
+public class InvoiceCharge {
+	//MEMBERS
+	private String title;
+	private float amount;
 
-    public InvoiceCharge(float amount, @NotNull String title)
-    {
-        this.amount = amount;
-        this.title = title;
-    }
+	//CONSTRUCTORS
+	public InvoiceCharge() {}
 
-    public float getAmount()
-    {
-        return amount;
-    }
-
-    public void setAmount(float amount)
-    {
-        this.amount = amount;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
+	//ACCESSORS / MUTATORS
+	public String getTitle() { return title; }
+	public void setTitle(String val) { title = val; }
+	public float getAmount() { return amount; }
+	public void setAmount(float val) { amount = val; }
 }

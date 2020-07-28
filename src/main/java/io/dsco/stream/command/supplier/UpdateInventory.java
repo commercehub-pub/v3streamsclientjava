@@ -112,7 +112,7 @@ implements Command<Integer, Void>, GetInventoryItems
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-//logger.info(MessageFormat.format("\n{0}\n", new Gson().toJson(items)));
+//logger.info(MessageFormat.format("\n{0}\n", Util.gson().toJson(items)));
             return inventoryApi.updateInventorySmallBatch(items);
         }, inventoryApi, logger, "updateInventorySmallBatch", NetworkExecutor.HTTP_RESPONSE_202);
 

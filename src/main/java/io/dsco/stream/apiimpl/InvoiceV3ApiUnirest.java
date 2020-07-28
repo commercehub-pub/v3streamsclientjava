@@ -1,7 +1,7 @@
 package io.dsco.stream.apiimpl;
 
 import io.dsco.stream.api.InvoiceV3Api;
-import io.dsco.stream.domain.InvoiceForUpdate;
+import io.dsco.stream.domain.Invoice;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -22,7 +22,7 @@ implements InvoiceV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> createInvoiceSmallBatch(@NotNull List<InvoiceForUpdate> invoices)
+    public CompletableFuture<HttpResponse<JsonNode>> createInvoiceSmallBatch(@NotNull List<Invoice> invoices)
     {
         return Unirest.post(baseUrl + "invoice/batch/small")
                 .headers(defaultHeaders)

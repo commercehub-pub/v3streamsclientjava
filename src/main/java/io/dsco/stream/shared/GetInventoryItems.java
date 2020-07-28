@@ -1,6 +1,7 @@
 package io.dsco.stream.shared;
 
 import com.google.gson.Gson;
+import io.dsco.demo.Util;
 import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.domain.ItemInventory;
 import kong.unirest.HttpResponse;
@@ -37,7 +38,7 @@ public interface GetInventoryItems
         for (int i=0; i<itemInventoryJson.length(); i++) {
             JSONObject itemJson = itemInventoryJson.getJSONObject(i);
             String jsonStr = itemJson.toString();
-            items.add(new Gson().fromJson(jsonStr, ItemInventory.class));
+            items.add(Util.gson().fromJson(jsonStr, ItemInventory.class));
         }
         return items;
     }

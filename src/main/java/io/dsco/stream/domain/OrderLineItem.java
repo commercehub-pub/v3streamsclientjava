@@ -1,570 +1,231 @@
 package io.dsco.stream.domain;
 
 import java.util.List;
-
-public class OrderLineItem
-{
-    public enum Status {accepted, rejected, cancelled}
-
-    private int quantity;
-    private Integer acceptedQuantity;
-    private String acceptedReason;
-    private List<OrderLineItemActivity> activity;
-    private Integer cancelledQuantity;
-    private String cancelledReason;
-    private String color;
-    private Float consumerPrice;
-    private String departmentId;
-    private String departmentName;
-    private String dscoItemId;
-    private String dscoSupplierId;
-    private String dscoTradingPartnerId;
-    private String ean;
-    private Float expectedCost;
-    private Boolean giftFlag;
-    private String giftFromName;
-    private String giftMessage;
-    private String giftReceiptId;
-    private String giftToName;
-    private Integer lineNumber;
-    private String merchandisingAccountId;
-    private String merchandisingAccountName;
-    private String message;
-    private String packingInstructions;
-    private String partnerSku;
-    private String personalization;
-    private String receiptId;
-    private Integer rejectedQuantity;
-    private String rejectedReason;
-    private List<String> retailerItemIds;
-    private Float retailerPrice;
-    private String shipInstructions;
-    private Float shippingSurcharge;
-    private Integer size;
-    private String sku;
-    private Status status;
-    private String statusReason;
-    private List<OrderTax> taxes;
-    private String title;
-    private String upc;
-    private String warehouseCode;
-    private String warehouseDscoId;
-    private String warehouseRetailerCode;
-
-    public OrderLineItem() {}
-
-    public OrderLineItem(int quantity, int lineNumber, String dscoItemId, String ean, String partnerSku, String sku, String upc)
-    {
-        if (dscoItemId == null && ean == null && partnerSku == null && sku == null && upc == null) {
-            throw new IllegalArgumentException("at least one of the unique id fields must be present");
-        }
-
-        this.quantity = quantity;
-        this.lineNumber = lineNumber;
-        this.dscoItemId = dscoItemId;
-        this.ean = ean;
-        this.partnerSku = partnerSku;
-        this.sku = sku;
-        this.upc = upc;
-    }
-
-    public OrderLineItem(
-            int quantity, Integer acceptedQuantity, String acceptedReason, List<OrderLineItemActivity> activity, Integer cancelledQuantity,
-            String cancelledReason, String color, Float consumerPrice, String departmentId, String departmentName, String dscoItemId,
-            String dscoSupplierId, String dscoTradingPartnerId, String ean, Float expectedCost, Boolean giftFlag, String giftFromName,
-            String giftMessage, String giftReceiptId, String giftToName, Integer lineNumber, String merchandisingAccountId,
-            String merchandisingAccountName, String message, String packingInstructions, String partnerSku, String personalization,
-            String receiptId, Integer rejectedQuantity, String rejectedReason, List<String> retailerItemIds, Float retailerPrice,
-            String shipInstructions, Float shippingSurcharge, Integer size, String sku, Status status, String statusReason,
-            List<OrderTax> taxes, String title, String upc, String warehouseCode, String warehouseDscoId, String warehouseRetailerCode)
-    {
-        if (dscoItemId == null && /*dscoSupplierId == null && dscoTradingPartnerId == null &&*/ ean == null && partnerSku == null && sku == null && upc == null) {
-            throw new IllegalArgumentException("at least one of the unique id fields must be present");
-        }
-
-        this.quantity = quantity;
-        this.acceptedQuantity = acceptedQuantity;
-        this.acceptedReason = acceptedReason;
-        this.activity = activity;
-        this.cancelledQuantity = cancelledQuantity;
-        this.cancelledReason = cancelledReason;
-        this.color = color;
-        this.consumerPrice = consumerPrice;
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
-        this.dscoItemId = dscoItemId;
-        this.dscoSupplierId = dscoSupplierId;
-        this.dscoTradingPartnerId = dscoTradingPartnerId;
-        this.ean = ean;
-        this.expectedCost = expectedCost;
-        this.giftFlag = giftFlag;
-        this.giftFromName = giftFromName;
-        this.giftMessage = giftMessage;
-        this.giftReceiptId = giftReceiptId;
-        this.giftToName = giftToName;
-        this.lineNumber = lineNumber;
-        this.merchandisingAccountId = merchandisingAccountId;
-        this.merchandisingAccountName = merchandisingAccountName;
-        this.message = message;
-        this.packingInstructions = packingInstructions;
-        this.partnerSku = partnerSku;
-        this.personalization = personalization;
-        this.receiptId = receiptId;
-        this.rejectedQuantity = rejectedQuantity;
-        this.rejectedReason = rejectedReason;
-        this.retailerItemIds = retailerItemIds;
-        this.retailerPrice = retailerPrice;
-        this.shipInstructions = shipInstructions;
-        this.shippingSurcharge = shippingSurcharge;
-        this.size = size;
-        this.sku = sku;
-        this.status = status;
-        this.statusReason = statusReason;
-        this.taxes = taxes;
-        this.title = title;
-        this.upc = upc;
-        this.warehouseCode = warehouseCode;
-        this.warehouseDscoId = warehouseDscoId;
-        this.warehouseRetailerCode = warehouseRetailerCode;
-    }
-
-    public int getQuantity()
-    {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity)
-    {
-        this.quantity = quantity;
-    }
-
-    public Integer getAcceptedQuantity()
-    {
-        return acceptedQuantity;
-    }
-
-    public void setAcceptedQuantity(Integer acceptedQuantity)
-    {
-        this.acceptedQuantity = acceptedQuantity;
-    }
-
-    public String getAcceptedReason()
-    {
-        return acceptedReason;
-    }
-
-    public void setAcceptedReason(String acceptedReason)
-    {
-        this.acceptedReason = acceptedReason;
-    }
-
-    public List<OrderLineItemActivity> getActivity()
-    {
-        return activity;
-    }
-
-    public void setActivity(List<OrderLineItemActivity> activity)
-    {
-        this.activity = activity;
-    }
-
-    public Integer getCancelledQuantity()
-    {
-        return cancelledQuantity;
-    }
-
-    public void setCancelledQuantity(Integer cancelledQuantity)
-    {
-        this.cancelledQuantity = cancelledQuantity;
-    }
-
-    public String getCancelledReason()
-    {
-        return cancelledReason;
-    }
-
-    public void setCancelledReason(String cancelledReason)
-    {
-        this.cancelledReason = cancelledReason;
-    }
-
-    public String getColor()
-    {
-        return color;
-    }
-
-    public void setColor(String color)
-    {
-        this.color = color;
-    }
-
-    public Float getConsumerPrice()
-    {
-        return consumerPrice;
-    }
-
-    public void setConsumerPrice(Float consumerPrice)
-    {
-        this.consumerPrice = consumerPrice;
-    }
-
-    public String getDepartmentId()
-    {
-        return departmentId;
-    }
-
-    public void setDepartmentId(String departmentId)
-    {
-        this.departmentId = departmentId;
-    }
-
-    public String getDepartmentName()
-    {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName)
-    {
-        this.departmentName = departmentName;
-    }
-
-    public String getDscoItemId()
-    {
-        return dscoItemId;
-    }
-
-    public void setDscoItemId(String dscoItemId)
-    {
-        this.dscoItemId = dscoItemId;
-    }
-
-    public String getDscoSupplierId()
-    {
-        return dscoSupplierId;
-    }
-
-    public void setDscoSupplierId(String dscoSupplierId)
-    {
-        this.dscoSupplierId = dscoSupplierId;
-    }
-
-    public String getDscoTradingPartnerId()
-    {
-        return dscoTradingPartnerId;
-    }
-
-    public void setDscoTradingPartnerId(String dscoTradingPartnerId)
-    {
-        this.dscoTradingPartnerId = dscoTradingPartnerId;
-    }
-
-    public String getEan()
-    {
-        return ean;
-    }
-
-    public void setEan(String ean)
-    {
-        this.ean = ean;
-    }
-
-    public Float getExpectedCost()
-    {
-        return expectedCost;
-    }
-
-    public void setExpectedCost(Float expectedCost)
-    {
-        this.expectedCost = expectedCost;
-    }
-
-    public Boolean getGiftFlag()
-    {
-        return giftFlag;
-    }
-
-    public void setGiftFlag(Boolean giftFlag)
-    {
-        this.giftFlag = giftFlag;
-    }
-
-    public String getGiftFromName()
-    {
-        return giftFromName;
-    }
-
-    public void setGiftFromName(String giftFromName)
-    {
-        this.giftFromName = giftFromName;
-    }
-
-    public String getGiftMessage()
-    {
-        return giftMessage;
-    }
-
-    public void setGiftMessage(String giftMessage)
-    {
-        this.giftMessage = giftMessage;
-    }
-
-    public String getGiftReceiptId()
-    {
-        return giftReceiptId;
-    }
-
-    public void setGiftReceiptId(String giftReceiptId)
-    {
-        this.giftReceiptId = giftReceiptId;
-    }
-
-    public String getGiftToName()
-    {
-        return giftToName;
-    }
-
-    public void setGiftToName(String giftToName)
-    {
-        this.giftToName = giftToName;
-    }
-
-    public Integer getLineNumber()
-    {
-        return lineNumber;
-    }
-
-    public void setLineNumber(Integer lineNumber)
-    {
-        this.lineNumber = lineNumber;
-    }
-
-    public String getMerchandisingAccountId()
-    {
-        return merchandisingAccountId;
-    }
-
-    public void setMerchandisingAccountId(String merchandisingAccountId)
-    {
-        this.merchandisingAccountId = merchandisingAccountId;
-    }
-
-    public String getMerchandisingAccountName()
-    {
-        return merchandisingAccountName;
-    }
-
-    public void setMerchandisingAccountName(String merchandisingAccountName)
-    {
-        this.merchandisingAccountName = merchandisingAccountName;
-    }
-
-    public String getMessage()
-    {
-        return message;
-    }
-
-    public void setMessage(String message)
-    {
-        this.message = message;
-    }
-
-    public String getPackingInstructions()
-    {
-        return packingInstructions;
-    }
-
-    public void setPackingInstructions(String packingInstructions)
-    {
-        this.packingInstructions = packingInstructions;
-    }
-
-    public String getPartnerSku()
-    {
-        return partnerSku;
-    }
-
-    public void setPartnerSku(String partnerSku)
-    {
-        this.partnerSku = partnerSku;
-    }
-
-    public String getPersonalization()
-    {
-        return personalization;
-    }
-
-    public void setPersonalization(String personalization)
-    {
-        this.personalization = personalization;
-    }
-
-    public String getReceiptId()
-    {
-        return receiptId;
-    }
-
-    public void setReceiptId(String receiptId)
-    {
-        this.receiptId = receiptId;
-    }
-
-    public Integer getRejectedQuantity()
-    {
-        return rejectedQuantity;
-    }
-
-    public void setRejectedQuantity(Integer rejectedQuantity)
-    {
-        this.rejectedQuantity = rejectedQuantity;
-    }
-
-    public String getRejectedReason()
-    {
-        return rejectedReason;
-    }
-
-    public void setRejectedReason(String rejectedReason)
-    {
-        this.rejectedReason = rejectedReason;
-    }
-
-    public List<String> getRetailerItemIds()
-    {
-        return retailerItemIds;
-    }
-
-    public void setRetailerItemIds(List<String> retailerItemIds)
-    {
-        this.retailerItemIds = retailerItemIds;
-    }
-
-    public Float getRetailerPrice()
-    {
-        return retailerPrice;
-    }
-
-    public void setRetailerPrice(Float retailerPrice)
-    {
-        this.retailerPrice = retailerPrice;
-    }
-
-    public String getShipInstructions()
-    {
-        return shipInstructions;
-    }
-
-    public void setShipInstructions(String shipInstructions)
-    {
-        this.shipInstructions = shipInstructions;
-    }
-
-    public Float getShippingSurcharge()
-    {
-        return shippingSurcharge;
-    }
-
-    public void setShippingSurcharge(Float shippingSurcharge)
-    {
-        this.shippingSurcharge = shippingSurcharge;
-    }
-
-    public Integer getSize()
-    {
-        return size;
-    }
-
-    public void setSize(Integer size)
-    {
-        this.size = size;
-    }
-
-    public String getSku()
-    {
-        return sku;
-    }
-
-    public void setSku(String sku)
-    {
-        this.sku = sku;
-    }
-
-    public Status getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(Status status)
-    {
-        this.status = status;
-    }
-
-    public String getStatusReason()
-    {
-        return statusReason;
-    }
-
-    public void setStatusReason(String statusReason)
-    {
-        this.statusReason = statusReason;
-    }
-
-    public List<OrderTax> getTaxes()
-    {
-        return taxes;
-    }
-
-    public void setTaxes(List<OrderTax> taxes)
-    {
-        this.taxes = taxes;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-
-    public String getUpc()
-    {
-        return upc;
-    }
-
-    public void setUpc(String upc)
-    {
-        this.upc = upc;
-    }
-
-    public String getWarehouseCode()
-    {
-        return warehouseCode;
-    }
-
-    public void setWarehouseCode(String warehouseCode)
-    {
-        this.warehouseCode = warehouseCode;
-    }
-
-    public String getWarehouseDscoId()
-    {
-        return warehouseDscoId;
-    }
-
-    public void setWarehouseDscoId(String warehouseDscoId)
-    {
-        this.warehouseDscoId = warehouseDscoId;
-    }
-
-    public String getWarehouseRetailerCode()
-    {
-        return warehouseRetailerCode;
-    }
-
-    public void setWarehouseRetailerCode(String warehouseRetailerCode)
-    {
-        this.warehouseRetailerCode = warehouseRetailerCode;
-    }
+import com.google.gson.annotations.SerializedName;
+
+@SuppressWarnings("unused")
+public class OrderLineItem {
+	//ENUMS
+	public enum STATUS {
+		@SerializedName("accepted") ACCEPTED,
+		@SerializedName("rejected") REJECTED,
+		@SerializedName("cancelled") CANCELLED
+	}
+
+	//MEMBERS
+	/* The number of this item on the order */
+	private int quantity;
+	/* The supplier of this item, Dsco's ID for it - one of the ID's must be present */
+	private String dscoSupplierId;
+	/* The supplier of this item, The trading partner's ID for it  - one of the ID's must be present */
+	private String dscoTradingPartnerId;
+	/* Dsco's unique ID for this item - one of the ID's must be present */
+	private String dscoItemId;
+	/* A unique ID for this item - one of the ID's must be present */
+	private String sku;
+	/* A unique ID for this item - one of the ID's must be present */
+	private String upc;
+	/* A unique ID for this item - one of the ID's must be present */
+	private String ean;
+	/* Optional unique ID for this item */
+	private String mpn;
+	/* Optional unique ID for this item */
+	private String isbn;
+	/* Optional unique ID for this item */
+	private String gtin;
+	/* When the shipment is expected to arrive. Can be set by a supplier when updating an order. */
+	private Iso8601DateTime estimatedShipDate;
+	/* A reason why estimatedShipDate was set. Can be set by a supplier when updating an order. */
+	private String estimatedShipReason;
+	/* If set, the value will be passed along to the supplier. It is a returns message to be included with the line item. */
+	private String returnsMessage;
+	/* A unique ID for this item - one of the ID's must be present */
+	private String partnerSku;
+	private String title;
+	private Float expectedCost;
+	private Float consumerPrice;
+	private String personalization;
+	/* The supplier's ID for the warehouse to use */
+	private String warehouseCode;
+	/* The retailer's ID for the warehouse to use */
+	private String warehouseRetailerCode;
+	/* Dsco's ID for the warehouse to use */
+	private String warehouseDscoId;
+	/* If some of the quantity of the order but not all has been cancelled or rejected
+then the order may continue to be shipped; however, if all of the quantity of the 
+order has been cancelled or rejected then the status will be cancelled; if this 
+status has a value but cancelledQuantity, acceptedQuantity and rejectedQuantity 
+are not set then this status applies to the entire quantity of the line item or 
+to the portion of the quantity not expressly cancelled, rejected or accepted via 
+cancelledQuantity, rejectedQuantity and acceptedQuantity respectively compared to 
+overall quantity to determine line item status */
+	private STATUS status;
+	private String statusReason;
+	/* If present and non-zero then
+this is the quantity of the item that has
+been cancelled by the supplier; if this 
+quantity is less than the total quantity of
+the item then look to acceptedQuantity and
+rejectedQuantity to know the status of the
+remainder of the quantity */
+	private Integer cancelledQuantity;
+	private String cancelledReason;
+	private String cancelCode;
+	/* If present and non-zero then
+this is the quantity of the item that has 
+been accepted; if this quantity is less than
+the total quantity of the item then look to
+cancelledQuantity and rejectedQuantity to 
+know the status of the remainder of the 
+quantity */
+	private Integer acceptedQuantity;
+	private String acceptedReason;
+	/* If present and non-zero then
+this is the quantity of the item that has
+been rejected by the retailer; if this 
+quantity is less than the total quantity of 
+the item then look to cancelledQuantity and 
+rejectedQuantity to know the status of the 
+remainder of the quantity */
+	private Integer rejectedQuantity;
+	private String rejectedReason;
+	/* Uniquely identifies a line item for the order */
+	private Integer lineNumber;
+	private String message;
+	private String packingInstructions;
+	private String shipInstructions;
+	private String receiptId;
+	private Boolean giftFlag;
+	private String giftReceiptId;
+	private String giftToName;
+	private String giftFromName;
+	private String giftMessage;
+	private String color;
+	private String size;
+	private Float retailPrice;
+	private Float shippingSurcharge;
+	private List<OrderTax> taxes;
+	private List<OrderLineItemActivity> activity;
+	private List<String> retailerItemIds;
+	private String departmentId;
+	private String departmentName;
+	private String merchandisingAccountId;
+	private String merchandisingAccountName;
+	private Boolean bogoFlag;
+	private String bogoInstructions;
+	/* The date of the change; this attribute is deprecated, please use activityDate */
+	private Iso8601DateTime updateDate;
+
+	//CONSTRUCTORS
+	public OrderLineItem() {}
+
+	//ACCESSORS / MUTATORS
+	public int getQuantity() { return quantity; }
+	public void setQuantity(int val) { quantity = val; }
+	public String getDscoSupplierId() { return dscoSupplierId; }
+	public void setDscoSupplierId(String val) { dscoSupplierId = val; }
+	public String getDscoTradingPartnerId() { return dscoTradingPartnerId; }
+	public void setDscoTradingPartnerId(String val) { dscoTradingPartnerId = val; }
+	public String getDscoItemId() { return dscoItemId; }
+	public void setDscoItemId(String val) { dscoItemId = val; }
+	public String getSku() { return sku; }
+	public void setSku(String val) { sku = val; }
+	public String getUpc() { return upc; }
+	public void setUpc(String val) { upc = val; }
+	public String getEan() { return ean; }
+	public void setEan(String val) { ean = val; }
+	public String getMpn() { return mpn; }
+	public void setMpn(String val) { mpn = val; }
+	public String getIsbn() { return isbn; }
+	public void setIsbn(String val) { isbn = val; }
+	public String getGtin() { return gtin; }
+	public void setGtin(String val) { gtin = val; }
+	public Iso8601DateTime getEstimatedShipDate() { return estimatedShipDate; }
+	public void setEstimatedShipDate(Iso8601DateTime val) { estimatedShipDate = val; }
+	public String getEstimatedShipReason() { return estimatedShipReason; }
+	public void setEstimatedShipReason(String val) { estimatedShipReason = val; }
+	public String getReturnsMessage() { return returnsMessage; }
+	public void setReturnsMessage(String val) { returnsMessage = val; }
+	public String getPartnerSku() { return partnerSku; }
+	public void setPartnerSku(String val) { partnerSku = val; }
+	public String getTitle() { return title; }
+	public void setTitle(String val) { title = val; }
+	public Float getExpectedCost() { return expectedCost; }
+	public void setExpectedCost(Float val) { expectedCost = val; }
+	public Float getConsumerPrice() { return consumerPrice; }
+	public void setConsumerPrice(Float val) { consumerPrice = val; }
+	public String getPersonalization() { return personalization; }
+	public void setPersonalization(String val) { personalization = val; }
+	public String getWarehouseCode() { return warehouseCode; }
+	public void setWarehouseCode(String val) { warehouseCode = val; }
+	public String getWarehouseRetailerCode() { return warehouseRetailerCode; }
+	public void setWarehouseRetailerCode(String val) { warehouseRetailerCode = val; }
+	public String getWarehouseDscoId() { return warehouseDscoId; }
+	public void setWarehouseDscoId(String val) { warehouseDscoId = val; }
+	public STATUS getStatus() { return status; }
+	public void setStatus(STATUS val) { status = val; }
+	public String getStatusReason() { return statusReason; }
+	public void setStatusReason(String val) { statusReason = val; }
+	public Integer getCancelledQuantity() { return cancelledQuantity; }
+	public void setCancelledQuantity(Integer val) { cancelledQuantity = val; }
+	public String getCancelledReason() { return cancelledReason; }
+	public void setCancelledReason(String val) { cancelledReason = val; }
+	public String getCancelCode() { return cancelCode; }
+	public void setCancelCode(String val) { cancelCode = val; }
+	public Integer getAcceptedQuantity() { return acceptedQuantity; }
+	public void setAcceptedQuantity(Integer val) { acceptedQuantity = val; }
+	public String getAcceptedReason() { return acceptedReason; }
+	public void setAcceptedReason(String val) { acceptedReason = val; }
+	public Integer getRejectedQuantity() { return rejectedQuantity; }
+	public void setRejectedQuantity(Integer val) { rejectedQuantity = val; }
+	public String getRejectedReason() { return rejectedReason; }
+	public void setRejectedReason(String val) { rejectedReason = val; }
+	public Integer getLineNumber() { return lineNumber; }
+	public void setLineNumber(Integer val) { lineNumber = val; }
+	public String getMessage() { return message; }
+	public void setMessage(String val) { message = val; }
+	public String getPackingInstructions() { return packingInstructions; }
+	public void setPackingInstructions(String val) { packingInstructions = val; }
+	public String getShipInstructions() { return shipInstructions; }
+	public void setShipInstructions(String val) { shipInstructions = val; }
+	public String getReceiptId() { return receiptId; }
+	public void setReceiptId(String val) { receiptId = val; }
+	public Boolean getGiftFlag() { return giftFlag; }
+	public void setGiftFlag(Boolean val) { giftFlag = val; }
+	public String getGiftReceiptId() { return giftReceiptId; }
+	public void setGiftReceiptId(String val) { giftReceiptId = val; }
+	public String getGiftToName() { return giftToName; }
+	public void setGiftToName(String val) { giftToName = val; }
+	public String getGiftFromName() { return giftFromName; }
+	public void setGiftFromName(String val) { giftFromName = val; }
+	public String getGiftMessage() { return giftMessage; }
+	public void setGiftMessage(String val) { giftMessage = val; }
+	public String getColor() { return color; }
+	public void setColor(String val) { color = val; }
+	public String getSize() { return size; }
+	public void setSize(String val) { size = val; }
+	public Float getRetailPrice() { return retailPrice; }
+	public void setRetailPrice(Float val) { retailPrice = val; }
+	public Float getShippingSurcharge() { return shippingSurcharge; }
+	public void setShippingSurcharge(Float val) { shippingSurcharge = val; }
+	public List<OrderTax> getTaxes() { return taxes; }
+	public void setTaxes(List<OrderTax> val) { taxes = val; }
+	public List<OrderLineItemActivity> getActivity() { return activity; }
+	public void setActivity(List<OrderLineItemActivity> val) { activity = val; }
+	public List<String> getRetailerItemIds() { return retailerItemIds; }
+	public void setRetailerItemIds(List<String> val) { retailerItemIds = val; }
+	public String getDepartmentId() { return departmentId; }
+	public void setDepartmentId(String val) { departmentId = val; }
+	public String getDepartmentName() { return departmentName; }
+	public void setDepartmentName(String val) { departmentName = val; }
+	public String getMerchandisingAccountId() { return merchandisingAccountId; }
+	public void setMerchandisingAccountId(String val) { merchandisingAccountId = val; }
+	public String getMerchandisingAccountName() { return merchandisingAccountName; }
+	public void setMerchandisingAccountName(String val) { merchandisingAccountName = val; }
+	public Boolean getBogoFlag() { return bogoFlag; }
+	public void setBogoFlag(Boolean val) { bogoFlag = val; }
+	public String getBogoInstructions() { return bogoInstructions; }
+	public void setBogoInstructions(String val) { bogoInstructions = val; }
+	public Iso8601DateTime getUpdateDate() { return updateDate; }
+	public void setUpdateDate(Iso8601DateTime val) { updateDate = val; }
 }

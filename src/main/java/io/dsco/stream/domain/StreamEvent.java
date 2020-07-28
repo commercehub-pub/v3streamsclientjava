@@ -1,6 +1,7 @@
 package io.dsco.stream.domain;
 
 import com.google.gson.Gson;
+import io.dsco.demo.Util;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public abstract class StreamEvent<T>
     {
         public PayloadUndeliverableStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, ownerId, new Gson().fromJson(payloadJson, PayloadUndeliverableShipment.class));
+            super(id, source, ownerId, Util.gson().fromJson(payloadJson, PayloadUndeliverableShipment.class));
         }
 
         @Override
@@ -87,7 +88,7 @@ public abstract class StreamEvent<T>
         public Float freightAmount;
         public Float handlingAmount;
         public String invoiceDate; //iso8601
-        public List<InvoiceLineItemForUpdate> lineItems;
+        public List<InvoiceLineItem> lineItems;
         public Float lineItemsSubtotal;
         public Integer numberOfLineItems;
         public String poNumber;
@@ -107,7 +108,7 @@ public abstract class StreamEvent<T>
     {
         public PayloadInvoiceForUpdateStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, ownerId, new Gson().fromJson(payloadJson, PayloadInvoiceForUpdate.class));
+            super(id, source, ownerId, Util.gson().fromJson(payloadJson, PayloadInvoiceForUpdate.class));
         }
 
         @Override
@@ -122,7 +123,7 @@ public abstract class StreamEvent<T>
     {
         public PayloadOrderStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, ownerId, new Gson().fromJson(payloadJson, Order.class));
+            super(id, source, ownerId, Util.gson().fromJson(payloadJson, Order.class));
         }
 
         @Override
@@ -137,7 +138,7 @@ public abstract class StreamEvent<T>
     {
         public PayloadItemInventoryStreamEvent(String id, Source source, String ownerId, String payloadJson)
         {
-            super(id, source, ownerId, new Gson().fromJson(payloadJson, ItemInventory.class));
+            super(id, source, ownerId, Util.gson().fromJson(payloadJson, ItemInventory.class));
         }
 
         @Override

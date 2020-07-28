@@ -1,6 +1,6 @@
 package io.dsco.stream.api;
 
-import io.dsco.stream.domain.InvoiceForUpdate;
+import io.dsco.stream.domain.Invoice;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ extends OAuthSupport
 {
     public enum ChangeLogStatus {pending, success, failure, success_or_failure}
 
-    CompletableFuture<HttpResponse<JsonNode>> createInvoiceSmallBatch(@NotNull List<InvoiceForUpdate> invoices);
+    CompletableFuture<HttpResponse<JsonNode>> createInvoiceSmallBatch(@NotNull List<Invoice> invoices);
 
     //none are required. whatever is passed it will be passed along to the API call
     CompletableFuture<HttpResponse<JsonNode>> getInvoiceChangeLog(

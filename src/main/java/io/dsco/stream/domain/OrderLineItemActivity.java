@@ -1,77 +1,55 @@
 package io.dsco.stream.domain;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.google.gson.annotations.SerializedName;
 
-public class OrderLineItemActivity
-{
-    public enum Activity {accept, add, cancel, invoice, reason_update, reject, remove_status, ship}
+@SuppressWarnings("unused")
+public class OrderLineItemActivity {
+	//ENUMS
+	public enum ACTION {
+		@SerializedName("accept") ACCEPT,
+		@SerializedName("add") ADD,
+		@SerializedName("cancel") CANCEL,
+		@SerializedName("invoice") INVOICE,
+		@SerializedName("reason_update") REASON_UPDATE,
+		@SerializedName("reject") REJECT,
+		@SerializedName("remove_status") REMOVE_STATUS,
+		@SerializedName("ship") SHIP
+	}
+	public enum FORMER_STATUS {
+		@SerializedName("accept") ACCEPT,
+		@SerializedName("add") ADD,
+		@SerializedName("cancel") CANCEL,
+		@SerializedName("invoice") INVOICE,
+		@SerializedName("reason_update") REASON_UPDATE,
+		@SerializedName("reject") REJECT,
+		@SerializedName("remove_status") REMOVE_STATUS,
+		@SerializedName("ship") SHIP
+	}
 
-    private Activity activity;
-    private String activityDate; //iso8601
-    private Activity formerStatus;
-    private Integer quantity;
-    private String reason;
+	//MEMBERS
+	/* The type of activity that occurred */
+	private ACTION action;
+	/* Quantity involved in change if any */
+	private Integer quantity;
+	/* The previous status before this change */
+	private FORMER_STATUS formerStatus;
+	/* The reason for the change */
+	private String reason;
+	/* The date of the change */
+	private Iso8601DateTime activityDate;
 
-    public OrderLineItemActivity() {}
+	//CONSTRUCTORS
+	public OrderLineItemActivity() {}
 
-    public OrderLineItemActivity(
-            @NotNull Activity activity, @NotNull String activityDate, @Nullable Activity formerStatus, @Nullable Integer quantity, @NotNull String reason)
-    {
-        this.activity = activity;
-        this.activityDate = activityDate;
-        this.formerStatus = formerStatus;
-        this.quantity = quantity;
-        this.reason = reason;
-    }
-
-    public Activity getActivity()
-    {
-        return activity;
-    }
-
-    public void setActivity(Activity activity)
-    {
-        this.activity = activity;
-    }
-
-    public String getActivityDate()
-    {
-        return activityDate;
-    }
-
-    public void setActivityDate(String activityDate)
-    {
-        this.activityDate = activityDate;
-    }
-
-    public Activity getFormerStatus()
-    {
-        return formerStatus;
-    }
-
-    public void setFormerStatus(Activity formerStatus)
-    {
-        this.formerStatus = formerStatus;
-    }
-
-    public Integer getQuantity()
-    {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity)
-    {
-        this.quantity = quantity;
-    }
-
-    public String getReason()
-    {
-        return reason;
-    }
-
-    public void setReason(String reason)
-    {
-        this.reason = reason;
-    }
+	//ACCESSORS / MUTATORS
+	public ACTION getAction() { return action; }
+	public void setAction(ACTION val) { action = val; }
+	public Integer getQuantity() { return quantity; }
+	public void setQuantity(Integer val) { quantity = val; }
+	public FORMER_STATUS getFormerStatus() { return formerStatus; }
+	public void setFormerStatus(FORMER_STATUS val) { formerStatus = val; }
+	public String getReason() { return reason; }
+	public void setReason(String val) { reason = val; }
+	public Iso8601DateTime getActivityDate() { return activityDate; }
+	public void setActivityDate(Iso8601DateTime val) { activityDate = val; }
 }

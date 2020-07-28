@@ -1,5 +1,6 @@
 package io.dsco.demo.scenario;
 
+import io.dsco.demo.DomainFactory;
 import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.command.supplier.CreateInvoiceSmallBatch;
@@ -22,14 +23,14 @@ public class OrderInvoice
         createInvoiceSmallBatchCmd = new CreateInvoiceSmallBatch(invoiceV3ApiSupplier);
     }
 
-    public InvoiceForUpdate begin(Order order)
+    public Invoice begin(Order order)
     throws Exception
     {
         long b = System.currentTimeMillis();
         logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
         //create an invoice for the order (supplier)
-        InvoiceForUpdate invoice = createInvoiceObject(order);
+        Invoice invoice = createInvoiceObject(order);
         createInvoiceSmallBatchCmd.execute(Collections.singletonList(invoice));
 
         long e = System.currentTimeMillis();
@@ -39,29 +40,29 @@ public class OrderInvoice
         return invoice;
     }
 
-    private InvoiceForUpdate createInvoiceObject(Order order)
+    private Invoice createInvoiceObject(Order order)
     {
         String invoiceId = order.getPoNumber(); //match the po# unless there's a specific reason not to
         float totalAmount = 0.0F;
 
-        List<InvoiceLineItemForUpdate> lineItems = new ArrayList<>(order.getLineItems().size());
+        List<InvoiceLineItem> lineItems = new ArrayList<>(order.getLineItems().size());
         for (OrderLineItem lineItem : order.getLineItems()) {
 
             float retailerPrice;
-            if (lineItem.getRetailerPrice() == null) {
+            if (lineItem.getRetailPrice() == null) {
                 retailerPrice = 1.0F;
             } else {
-                retailerPrice = lineItem.getRetailerPrice();
+                retailerPrice = lineItem.getRetailPrice();
             }
             totalAmount += retailerPrice;
 
-            lineItems.add(new InvoiceLineItemForUpdate(
+            lineItems.add(DomainFactory.invoiceLineItem(
                     lineItem.getQuantity(), lineItem.getDscoItemId(), lineItem.getEan(), lineItem.getPartnerSku(), lineItem.getSku(), lineItem.getUpc(), retailerPrice)
             );
         }
 
-        InvoiceShipInfo invoiceShipInfo = new InvoiceShipInfo(Util.dateToIso8601(new Date()), "1234567891234", order.getShippingServiceLevelCode());
+        InvoiceShipInfo invoiceShipInfo = DomainFactory.invoiceShipInfo(Util.dateToIso8601(new Date()), "1234567891234", order.getShippingServiceLevelCode());
 
-        return new InvoiceForUpdate(order.getPoNumber(), invoiceId, totalAmount, lineItems, invoiceShipInfo);
+        return DomainFactory.invoice(order.getPoNumber(), invoiceId, totalAmount, lineItems, invoiceShipInfo);
     }
 }

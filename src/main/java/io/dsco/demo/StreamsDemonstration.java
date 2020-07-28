@@ -1,5 +1,6 @@
 package io.dsco.demo;
 
+import com.google.gson.Gson;
 import io.dsco.demo.scenario.*;
 import io.dsco.stream.api.*;
 import io.dsco.stream.apiimpl.ApiBuilder;
@@ -7,10 +8,12 @@ import io.dsco.stream.command.retailer.CreateStreamOperation;
 import io.dsco.stream.command.retailer.GetAnyEventsFromPosition;
 import io.dsco.stream.command.retailer.UpdateStreamPartitionSize;
 import io.dsco.stream.command.supplier.UpdateInventory;
-import io.dsco.stream.domain.InvoiceForUpdate;
+import io.dsco.stream.domain.Invoice;
 import io.dsco.stream.domain.Order;
 import io.dsco.stream.shared.NetworkExecutor;
 import io.dsco.stream.shared.StreamCreator;
+import kong.unirest.GenericType;
+import kong.unirest.ObjectMapper;
 import kong.unirest.Unirest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +45,7 @@ implements StreamCreator
 
     //objects creating during the app run
     private Order order;
-    private InvoiceForUpdate invoice;
+    private Invoice invoice;
 
     private StreamsDemonstration()
     {
@@ -52,8 +55,7 @@ implements StreamCreator
 
             if (is == null) {
                 //if this project was just checked out from source, there will be no properties file.
-                // in that case, load the log4j2.xml file (which WILL exist) and use its directory location
-                // to know where to save a default properties file.
+                // in that case, use the current working directory to know where to save a default properties file.
                 String currentWorkingDir = new File("x").getAbsolutePath();
                 currentWorkingDir = currentWorkingDir.substring(0, currentWorkingDir.lastIndexOf(File.separator));
                 String outputPath = currentWorkingDir + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dsco.properties";
@@ -196,6 +198,7 @@ implements StreamCreator
 
             case "6":
                 query.put("queryType", StreamV3Api.ObjectType.order);
+                query.put("statuses", Arrays.asList("created", "shipment_pending", "shipped", "cancelled"));
                 break;
         }
 
@@ -415,12 +418,45 @@ implements StreamCreator
 
     }
 
+    //https://github.com/OpenUnirest/object-mappers-gson/blob/master/src/main/java/unirest/GsonObjectMapper.java
+    static class GsonObjectMapper implements ObjectMapper
+    {
+        private Gson om;
+
+        public GsonObjectMapper() {
+            this(new Gson());
+        }
+
+        public GsonObjectMapper(Gson om) {
+            this.om = om;
+        }
+
+        @Override
+        public <T> T readValue(String value, Class<T> valueType) {
+            return om.fromJson(value, valueType);
+        }
+
+        @Override
+        public <T> T readValue(String value, GenericType<T> genericType) {
+            return om.fromJson(value, genericType.getType());
+        }
+
+        @Override
+        public String writeValue(Object value) {
+            return om.toJson(value);
+        }
+    }
+
     public static void main(String[] args)
     {
         //System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
         //System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
         try {
             //Unirest.config().verifySsl(false);
+
+            //this will let unirest use our custom gson mapper that knows how to deal with Iso8601DateTime objects
+            Unirest.config().setObjectMapper(new GsonObjectMapper(Util.gson()));
+
             new StreamsDemonstration().begin();
 
         } catch (Throwable e) {

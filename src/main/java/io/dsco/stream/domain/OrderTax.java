@@ -1,41 +1,20 @@
 package io.dsco.stream.domain;
 
-import org.jetbrains.annotations.Nullable;
 
-public class OrderTax
-{
-    private Float percentage;
-    private String typeCode;
+@SuppressWarnings("unused")
+public class OrderTax {
+	//MEMBERS
+	/* The percentage of tax (this or typeCode is required) */
+	private Float percentage;
+	/* The type of tax (this or percentage is required) */
+	private String typeCode;
 
-    public OrderTax() {}
+	//CONSTRUCTORS
+	public OrderTax() {}
 
-    public OrderTax(@Nullable Float percentage, @Nullable String typeCode)
-    {
-        if (percentage == null && typeCode == null) {
-            throw new IllegalArgumentException("typeCode or percentage is required");
-        }
-
-        this.percentage = percentage;
-        this.typeCode = typeCode;
-    }
-
-    public Float getPercentage()
-    {
-        return percentage;
-    }
-
-    public void setPercentage(Float percentage)
-    {
-        this.percentage = percentage;
-    }
-
-    public String getTypeCode()
-    {
-        return typeCode;
-    }
-
-    public void setTypeCode(String typeCode)
-    {
-        this.typeCode = typeCode;
-    }
+	//ACCESSORS / MUTATORS
+	public Float getPercentage() { return percentage; }
+	public void setPercentage(Float val) { percentage = val; }
+	public String getTypeCode() { return typeCode; }
+	public void setTypeCode(String val) { typeCode = val; }
 }

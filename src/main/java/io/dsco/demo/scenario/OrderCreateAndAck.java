@@ -1,5 +1,6 @@
 package io.dsco.demo.scenario;
 
+import io.dsco.demo.DomainFactory;
 import io.dsco.demo.Util;
 import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.api.OrderV3Api;
@@ -66,7 +67,7 @@ implements GetInventoryItems
 
         //create an order (retailer)
         Order order = createOrderObject(Arrays.asList(item1, item2, item3), retailerAccountId);
-        CreateOrderResponse createOrderResponse = createOrderCmd.execute(order);
+        OrderCreatedResult createOrderResponse = createOrderCmd.execute(order);
 
         //for the demo we'll assume just the one order
         String orderId = createOrderResponse.getDscoOrderIds().get(0);
@@ -88,8 +89,8 @@ implements GetInventoryItems
         }
 
         //acknowledge the order (supplier)
-        List<OrderAcknowledge> ordersToAcknowledge = Collections.singletonList(
-                new OrderAcknowledge(order.getPoNumber(), OrderAcknowledge.Type.PO_NUMBER, null)
+        List<OrderId> ordersToAcknowledge = Collections.singletonList(
+                DomainFactory.orderId(order.getPoNumber(), OrderId.TYPE.PO_NUMBER, null)
         );
         acknowledgeOrderCmd.execute(ordersToAcknowledge);
 
@@ -137,17 +138,17 @@ implements GetInventoryItems
                         "no partnerSku found for item {0}, retailerAccountId: {1}", item.getDscoItemId(), retailerAccountId));
             }
 
-            lineItems.add(new OrderLineItem(1, lineNumber, item.getDscoItemId(), item.getEan(), partnerSku, item.getSku(), item.getUpc()));
+            lineItems.add(DomainFactory.orderLineItem(1, lineNumber, item.getDscoItemId(), item.getEan(), partnerSku, item.getSku(), item.getUpc()));
         }
 
-        OrderShipping shipping = new OrderShipping(
+        OrderShipping shipping = DomainFactory.orderShipping(
                 "3900 Traverse Mountain Blvd",
                 "Lehi",
                 "Dsco", "the Company",
                 "84043", "UT"
         );
 
-        OrderBillTo billTo = new OrderBillTo(
+        OrderBillTo billTo = DomainFactory.orderBillTo(
                 "3900 Traverse Mountain Blvd",
                 "Lehi",
                 "Dsco", "the Company",
@@ -156,7 +157,7 @@ implements GetInventoryItems
 
         String shippingServiceLevelCode = "UPCG";
 
-        return new Order(lineItems, poNumber, shipping, billTo, expectedDeliveryDate, shippingServiceLevelCode);
+        return DomainFactory.order(lineItems, poNumber, shipping, billTo, expectedDeliveryDate, shippingServiceLevelCode);
     }
 
 }
