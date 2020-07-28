@@ -30,6 +30,7 @@ implements InvoiceV3Api
                 .asJsonAsync();
     }
 
+    //TODO: allow passing of requestId
     @Override
     public CompletableFuture<HttpResponse<JsonNode>> getInvoiceChangeLog(
             String startDate, String endDate, ChangeLogStatus status, String scrollId)

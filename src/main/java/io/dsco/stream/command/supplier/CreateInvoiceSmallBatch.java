@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import io.dsco.demo.Util;
 import io.dsco.stream.api.InvoiceV3Api;
 import io.dsco.stream.command.Command;
-import io.dsco.stream.domain.InvoiceChangeLog;
-import io.dsco.stream.domain.Invoice;
-import io.dsco.stream.domain.InvoiceChangeLogResponse;
-import io.dsco.stream.domain.SyncUpdateResponse;
+import io.dsco.stream.domain.*;
 import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -47,7 +44,7 @@ logger.info(future.get().getBody());
         }
 
         String requestId = createResponse.getRequestId();
-        String eventDate = createResponse.getEventDate().toString();
+        Iso8601DateTime eventDate = createResponse.getEventDate();
 
         logger.info("*** requestId: " + requestId);
 
@@ -83,11 +80,11 @@ logger.info(future.get().getBody());
         return null;
     }
 
-    private InvoiceChangeLog getInvoiceChangeLog(String requestId, String eventDate)
+    private InvoiceChangeLog getInvoiceChangeLog(String requestId, Iso8601DateTime eventDate)
     throws Exception
     {
         //due to propagation delay issues, recommended best practice is to shift everything back by 10 seconds and begin searching from then
-        ZonedDateTime from = ZonedDateTime.parse(eventDate).minusSeconds(10L);
+        ZonedDateTime from = ZonedDateTime.parse(eventDate.getDate()).minusSeconds(10L);
         String fromDateMinus10Seconds = Util.dateToIso8601(Date.from(from.toInstant()));
 
         String nowMinus10Seconds = Util.dateToIso8601(new Date(System.currentTimeMillis()-10_000L));
