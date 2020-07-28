@@ -2,7 +2,7 @@ package io.dsco.stream.command.supplier;
 
 import io.dsco.stream.api.OrderV3Api;
 import io.dsco.stream.command.Command;
-import io.dsco.stream.domain.GetOrderRequest;
+import io.dsco.stream.domain.GetOrderById;
 import io.dsco.stream.shared.NetworkExecutor;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.concurrent.CompletableFuture;
 
 public class GetOrder
-implements Command<GetOrderRequest, Integer>
+implements Command<GetOrderById, Integer>
 {
     private static final Logger logger = LogManager.getLogger(GetOrder.class);
 
@@ -24,7 +24,7 @@ implements Command<GetOrderRequest, Integer>
     }
 
     @Override
-    public Integer execute(GetOrderRequest orderRequest)
+    public Integer execute(GetOrderById orderRequest)
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {

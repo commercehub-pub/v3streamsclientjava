@@ -206,4 +206,14 @@ public class DomainFactory
         o.setType(type);
         return o;
     }
+
+    public static GetOrderById getOrderById(GetOrderById.ORDER_KEY orderKey, String value, String dscoAccountId, String dscoTradingPartnerId)
+    {
+        GetOrderById g = new GetOrderById();
+        g.setOrderKey(orderKey);
+        g.setValue(value);
+        g.setDscoAccountId(dscoAccountId);
+        g.setDscoTradingPartnerId(dscoTradingPartnerId);
+        return g;
+    }
 }

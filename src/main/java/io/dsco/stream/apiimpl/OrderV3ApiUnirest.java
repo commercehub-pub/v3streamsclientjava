@@ -1,5 +1,7 @@
 package io.dsco.stream.apiimpl;
 
+import com.google.gson.JsonObject;
+import io.dsco.demo.Util;
 import io.dsco.stream.api.OrderV3Api;
 import io.dsco.stream.domain.*;
 import kong.unirest.HttpResponse;
@@ -58,10 +60,17 @@ implements OrderV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderRequest getOrderRequest)
+    public CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderById getOrderRequest)
     {
+        //the order key is an enum value that differs (potentially) from the actual enum name; we must be the actual value
+        // that should be passed. there are 2 ways (i can think of) to do this: use reflection, or use the gson serialization
+
+        //convert from a java object to a json string and then into a json dom and then grab the serialized version of the orderKey
+        JsonObject jsonObject = Util.gson().fromJson(Util.gson().toJson(getOrderRequest), JsonObject.class);
+        String orderKeySerializedName = jsonObject.get("orderKey").getAsString();
+
         Map<String, Object> params = new HashMap<>();
-        params.put("orderKey", getOrderRequest.getOrderKey());
+        params.put("orderKey", orderKeySerializedName);
         params.put("value", getOrderRequest.getValue());
         if (getOrderRequest.getDscoAccountId() != null) {
             params.put("dscoAccountId", getOrderRequest.getDscoAccountId());

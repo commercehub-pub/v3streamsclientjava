@@ -79,8 +79,8 @@ implements GetInventoryItems
         //wait until the order exists (call getOrder)
         int httpResponse = -1;
         while (httpResponse != 200) {
-            httpResponse = getOrderCmd.execute(new GetOrderRequest(
-                    GetOrderRequest.OrderKey.dscoOrderId, order.getDscoOrderId(), null, null)
+            httpResponse = getOrderCmd.execute(DomainFactory.getOrderById(
+                    GetOrderById.ORDER_KEY.DSCO_ORDER_ID, order.getDscoOrderId(), null, null)
             );
 
             if (httpResponse != 200) {

@@ -19,5 +19,5 @@ extends OAuthSupport
 
     CompletableFuture<HttpResponse<JsonNode>> createShipmentSmallBatch(@NotNull List<ShipmentsForUpdate> orderShipments);
 
-    CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderRequest getOrderRequest);
+    CompletableFuture<HttpResponse<JsonNode>> getOrder(@NotNull GetOrderById getOrderRequest);
 }
