@@ -46,7 +46,7 @@ implements Command<List<String>, List<StreamEventInventory>>
 
          */
 logger.debug(future.get().getBody());
-logger.debug("ownerId: " + future.get().getBody().getObject().getString("ownerId"));
+logger.debug("ownerId: " + future.get().getBody().getObject().optString("ownerId", null));
 logger.debug("partitionId: " + future.get().getBody().getObject().getInt("partitionId"));
 
         JSONArray list = future.get().getBody().getObject().getJSONArray("events");
