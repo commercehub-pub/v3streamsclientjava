@@ -1,7 +1,6 @@
 package io.dsco.stream.command.supplier;
 
 import com.google.gson.Gson;
-import io.dsco.stream.api.InventoryV2Api;
 import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.command.Command;
 import io.dsco.stream.domain.ItemInventory;
@@ -25,13 +24,13 @@ implements Command<Integer, Void>, GetInventoryItems
 {
     private static final Logger logger = LogManager.getLogger(UpdateInventory.class);
 
-    private final InventoryV2Api inventoryV2Api;
     private final InventoryV3Api inventoryV3Api;
+    private final String[] skus;
 
-    public UpdateInventory(InventoryV2Api inventoryV2Api, InventoryV3Api inventoryV3Api)
+    public UpdateInventory(InventoryV3Api inventoryV3Api, String[] skus)
     {
-        this.inventoryV2Api = inventoryV2Api;
         this.inventoryV3Api = inventoryV3Api;
+        this.skus = skus;
     }
 
     @Override
@@ -41,12 +40,8 @@ implements Command<Integer, Void>, GetInventoryItems
             numberItemsToUpdate = 5;
         }
 
-        //TODO: don't hardcode
-        //arbitrary date to limit stream to a smaller subset for demo purposes
-        String updatedSince = "2019-08-15T18:26:00Z";
-
         //grab a list of recently updated inventory items
-        List<ItemInventory> itemInventoryList = getInventoryItems(inventoryV2Api, null, updatedSince, logger);
+        List<ItemInventory> itemInventoryList = getInventoryItems(inventoryV3Api, skus, logger);
 
         if (logger.isDebugEnabled()) {
             logger.debug("updating warehouse quantities on items to cause items to populate into the stream...");
@@ -99,7 +94,7 @@ implements Command<Integer, Void>, GetInventoryItems
         String requestId = updateInventorySmallBatch(inventoryV3Api, changedItems);
 
         //check the result of the small batch; wait for it to complete
-        //TODO: this could also be accomplished via reading from an update stream
+        //NOTE: this could also be accomplished via reading from an update stream
         while (!isUpdateComplete(inventoryV3Api, requestId)) {
             //some stuff is still pending; wait a bit and try again
             Thread.sleep(500);

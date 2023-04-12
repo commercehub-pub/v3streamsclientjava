@@ -19,9 +19,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static io.dsco.demo.Util.getConsoleInput;
@@ -33,10 +34,11 @@ implements StreamCreator
 
     private final StreamV3Api streamV3ApiRetailer;
 //    private final StreamV3Api streamV3ApiSupplier;
-    private final InventoryV2Api inventoryV2ApiSupplier;
     private final InvoiceV3Api invoiceV3ApiSupplier;
     private final OrderV3Api orderV3ApiRetailer;
+    private final InventoryV3Api inventoryV3ApiSupplier;
     private final OrderV3Api orderV3ApiSupplier;
+    private final String[] skus;
 
 //    private final String supplierAccountId;
     private final String retailerAccountId;
@@ -62,7 +64,6 @@ implements StreamCreator
                 //logger.info("saving file: " + outputPath);
 
                 //create the properties, but with placeholder values that must be filled in
-                props.setProperty("base.v2.url", "xxxxxx");
                 props.setProperty("base.v3.url", "xxxxxx");
                 props.setProperty("v3.oauth.url", "xxxxxx");
 
@@ -70,12 +71,12 @@ implements StreamCreator
                 props.setProperty("retailer.v3.secret", "xxxxxx");
                 props.setProperty("retailer.accountId", "xxxxxx");
 
-                props.setProperty("supplier.v2.token", "xxxxxx");
                 props.setProperty("supplier.v3.clientId", "xxxxxx");
                 props.setProperty("supplier.v3.secret", "xxxxxx");
                 props.setProperty("supplier.accountId", "xxxxxx");
+                props.setProperty("supplier.skus", "SKU1,SKU2,SKU3,...");
 
-                try (OutputStream os = new FileOutputStream(outputPath)) {
+                try (OutputStream os = Files.newOutputStream(Paths.get(outputPath))) {
                     props.store(os, null);
                 }
 
@@ -91,29 +92,28 @@ implements StreamCreator
             System.exit(1);
         }
 
-        String baseV2Url = props.getProperty("base.v2.url");
         String baseV3Url = props.getProperty("base.v3.url");
         String v3oAuthUrl = props.getProperty("v3.oauth.url");
 
-        String supplierV2Token = props.getProperty("supplier.v2.token");
         String supplierV3ClientId = props.getProperty("supplier.v3.clientId");
         String supplierV3Secret = props.getProperty("supplier.v3.secret");
 
         String retailerV3ClientId = props.getProperty("retailer.v3.clientId");
         String retailerV3Secret = props.getProperty("retailer.v3.secret");
+        
+        skus = props.getProperty("supplier.skus").split(",");
 
         streamV3ApiRetailer = ApiBuilder.getStreamV3Api(retailerV3ClientId, retailerV3Secret, baseV3Url);
 //        streamV3ApiSupplier = ApiBuilder.getStreamV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
-        inventoryV2ApiSupplier = ApiBuilder.getInventoryV2Api(supplierV2Token, baseV2Url);
-        InventoryV3Api inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
         invoiceV3ApiSupplier = ApiBuilder.getInvoiceV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
         orderV3ApiRetailer = ApiBuilder.getOrderV3Api(retailerV3ClientId, retailerV3Secret, baseV3Url);
         orderV3ApiSupplier = ApiBuilder.getOrderV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
+        inventoryV3ApiSupplier = ApiBuilder.getInventoryV3Api(supplierV3ClientId, supplierV3Secret, baseV3Url);
 
 //        supplierAccountId = props.getProperty("supplier.accountId");
         retailerAccountId = props.getProperty("retailer.accountId");
 
-        updateInventoryCmd = new UpdateInventory(inventoryV2ApiSupplier, inventoryV3ApiSupplier);
+        updateInventoryCmd = new UpdateInventory(inventoryV3ApiSupplier, skus);
 
         //let the network executor know where to go for auth token refreshes
         NetworkExecutor.getInstance().setAuthEndpoint(v3oAuthUrl);
@@ -255,7 +255,7 @@ implements StreamCreator
                 order = null;
                 invoice = null;
                 order = new OrderCreateAndAck(
-                        retailerAccountId, inventoryV2ApiSupplier, orderV3ApiRetailer, orderV3ApiSupplier
+                        retailerAccountId, inventoryV3ApiSupplier, orderV3ApiRetailer, orderV3ApiSupplier, skus
                 ).begin();
             }
             break;

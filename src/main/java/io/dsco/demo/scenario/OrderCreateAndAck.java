@@ -2,7 +2,7 @@ package io.dsco.demo.scenario;
 
 import io.dsco.demo.DomainFactory;
 import io.dsco.demo.Util;
-import io.dsco.stream.api.InventoryV2Api;
+import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.api.OrderV3Api;
 import io.dsco.stream.command.retailer.CreateOrder;
 import io.dsco.stream.command.supplier.AcknowledgeOrder;
@@ -24,18 +24,20 @@ implements GetInventoryItems
     private static final Logger logger = LogManager.getLogger(OrderCreateAndAck.class);
     private static final String SCENARIO_NAME = "Order Creation";
 
-    private final InventoryV2Api inventoryApiSupplier;
     private final String retailerAccountId;
     private final CreateOrder createOrderCmd;
     private final AcknowledgeOrder acknowledgeOrderCmd;
     private final GetOrder getOrderCmd;
+    private final InventoryV3Api inventoryApiSupplier;
+    private final String[] skus;
 
     public OrderCreateAndAck(
-            String retailerAccountId, InventoryV2Api inventoryApiSupplier, OrderV3Api orderV3ApiRetailer,
-            OrderV3Api orderV3ApiSupplier)
+            String retailerAccountId, InventoryV3Api inventoryApiSupplier, OrderV3Api orderV3ApiRetailer,
+            OrderV3Api orderV3ApiSupplier, String[] skus)
     {
         this.retailerAccountId = retailerAccountId;
         this.inventoryApiSupplier = inventoryApiSupplier;
+        this.skus = skus;
         createOrderCmd = new CreateOrder(orderV3ApiRetailer);
         acknowledgeOrderCmd = new AcknowledgeOrder(orderV3ApiSupplier);
         getOrderCmd = new GetOrder(orderV3ApiSupplier);
@@ -47,11 +49,8 @@ implements GetInventoryItems
         long b = System.currentTimeMillis();
         logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
-        //arbitrary date to limit stream to a smaller subset for demo purposes
-        String updatedSince = "2019-08-15T18:26:00Z";
-
         //grab an item from the suppliers inventory to use (pick one at random)
-        List<ItemInventory> itemInventoryList = getInventoryItems(inventoryApiSupplier, null, updatedSince, logger);
+        List<ItemInventory> itemInventoryList = getInventoryItems(inventoryApiSupplier, skus, logger);
         if (itemInventoryList.isEmpty()) {
             throw new IllegalStateException("no items from supplier");
         }
