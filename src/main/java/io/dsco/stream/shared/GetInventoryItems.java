@@ -5,7 +5,6 @@ import io.dsco.stream.api.InventoryV3Api;
 import io.dsco.stream.domain.ItemInventory;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
-import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.apache.logging.log4j.Logger;
 
@@ -28,11 +27,7 @@ public interface GetInventoryItems
                     NetworkExecutor.HTTP_RESPONSE_200);
             
             JSONObject responseJson = future.get().getBody().getObject();
-            JSONArray itemInventoryJson = responseJson.getJSONArray("itemInventory");
-
-            // convert the items from json to java for easy manipulation
-            JSONObject itemJson = itemInventoryJson.getJSONObject(0);
-            String jsonStr = itemJson.toString();
+            String jsonStr = responseJson.toString();
             items.add(Util.gson().fromJson(jsonStr, ItemInventory.class));
         }
         

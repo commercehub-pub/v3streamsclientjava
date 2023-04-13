@@ -24,7 +24,7 @@ extends OAuthSupport
     //TODO: this should be modified to take a Stream object
     CompletableFuture<HttpResponse<JsonNode>> updateStream(
             @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber,
-            @Nullable Map<String, Object> query);
+            @NotNull String objectType, @NotNull Map<String, Object> query);
 
     CompletableFuture<HttpResponse<JsonNode>> createStreamOperation(
             @NotNull String id, @NotNull OperationType operationType, Integer partitionId, String ownerId);

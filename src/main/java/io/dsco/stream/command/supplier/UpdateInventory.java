@@ -133,6 +133,11 @@ implements Command<Integer, Void>, GetInventoryItems
 //logger.info(future.get().getBody());
         //see if each item is successful, pending, or failed
         JSONArray jsonList = future.get().getBody().getObject().getJSONArray("logs");
+        
+        if (jsonList.length() == 0) {
+            // not yet complete; wait a bit and try again
+            return false;
+        }
 
         int numSuccess = 0;
         int numPending = 0;

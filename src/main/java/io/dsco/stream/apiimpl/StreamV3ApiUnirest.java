@@ -1,6 +1,5 @@
 package io.dsco.stream.apiimpl;
 
-import com.google.gson.Gson;
 import io.dsco.stream.api.StreamV3Api;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -8,7 +7,6 @@ import kong.unirest.Unirest;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -71,7 +69,8 @@ implements StreamV3Api
 
     @Override
     public CompletableFuture<HttpResponse<JsonNode>> updateStream(
-            @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber, Map<String, Object> query)
+            @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber, 
+            String objectType,  Map<String, Object> query)
     {
         Map<String, Object> body = new HashMap<>();
         body.put("id", id);
@@ -79,7 +78,7 @@ implements StreamV3Api
             body.put("description", description);
         }
         if (query != null) {
-            body.put("objectType", query.get("queryType"));
+            body.put("objectType", objectType);
             body.put("query", query);
         }
         body.put("numPartitions", numPartitions);
