@@ -64,8 +64,8 @@ implements StreamCreator
                 //logger.info("saving file: " + outputPath);
 
                 //create the properties, but with placeholder values that must be filled in
-                props.setProperty("base.v3.url", "xxxxxx");
-                props.setProperty("v3.oauth.url", "xxxxxx");
+                props.setProperty("base.v3.url", "xxxxxx (example: https://api.dsco.io/api/v3/oauth2/token)");
+                props.setProperty("v3.oauth.url", "xxxxxx (must end with a \"/\". example: https://api.dsco.io/api/v3/");
 
                 props.setProperty("retailer.v3.clientId", "xxxxxx");
                 props.setProperty("retailer.v3.secret", "xxxxxx");
