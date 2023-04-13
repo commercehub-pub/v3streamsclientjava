@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -39,8 +38,8 @@ implements CommonStreamMethods, AnyProcessor
     private List<BlockingQueue<StreamEvent<?>>> queues;
     private List<Consumer> consumers;
     private CountDownLatch countDownLatch;
-    private List<QueuePositionOrganizer> processedPositionList = new ArrayList<>();
-    private Lock listLock = new ReentrantLock();
+    private final List<QueuePositionOrganizer> processedPositionList = new ArrayList<>();
+    private final Lock listLock = new ReentrantLock();
 
     private final GetAnyEventsFromPosition getAnyEventsFromPositionCmd;
 
@@ -73,7 +72,7 @@ implements CommonStreamMethods, AnyProcessor
             }
 
             //get the initial stream position
-            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, null, logger);
             String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
             processAllItemsInStream(streamPosition);
@@ -198,8 +197,8 @@ implements CommonStreamMethods, AnyProcessor
     private static final class Consumer
     implements Runnable
     {
-        private InventoryFanout tester;
-        private BlockingQueue<StreamEvent<?>> queue;
+        private final InventoryFanout tester;
+        private final BlockingQueue<StreamEvent<?>> queue;
         private boolean running = true;
 
         Consumer(InventoryFanout tester, BlockingQueue<StreamEvent<?>> queue)

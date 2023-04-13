@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 
 public class InventorySync
 implements CommonStreamMethods
@@ -47,7 +46,7 @@ implements CommonStreamMethods
             /*String operationUuid =*/ createItemInventoryStreamSyncCmd.execute(null);
 
             //get the initial stream position
-            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, null, logger);
             String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
 

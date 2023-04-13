@@ -46,7 +46,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, List<Integer> partitionIds)
+    public CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, Integer partitionId)
     {
         //note: i am adding the _ts param because if this is first called and gets a 404
         // that value seems to be cached inside of Unirest, and even if later on the url
@@ -57,9 +57,10 @@ implements StreamV3Api
         queryParams.put("_ts", System.currentTimeMillis());
         if (id != null) {
             queryParams.put("id", id);
-        }
-        if (partitionIds != null && partitionIds.size() > 0) {
-            queryParams.put("partitionIds", partitionIds);
+            
+            if (partitionId != null) {
+                queryParams.put("partitionId", partitionId);
+            }
         }
 
         return Unirest.get(baseUrl + "stream")

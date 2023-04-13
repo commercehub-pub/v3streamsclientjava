@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 
 public class InventoryBasic
 implements CommonStreamMethods
@@ -37,7 +36,7 @@ implements CommonStreamMethods
             logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
             //get the initial stream position
-            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, null, logger);
             String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
 

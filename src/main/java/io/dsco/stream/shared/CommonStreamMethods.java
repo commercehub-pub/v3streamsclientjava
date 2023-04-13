@@ -1,6 +1,5 @@
 package io.dsco.stream.shared;
 
-import com.google.gson.Gson;
 import io.dsco.demo.Util;
 import io.dsco.stream.api.StreamV3Api;
 import io.dsco.stream.domain.Stream;
@@ -9,16 +8,15 @@ import kong.unirest.JsonNode;
 import kong.unirest.json.JSONObject;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface CommonStreamMethods
 {
-    default Stream getStreamPosition(StreamV3Api streamV3Api, String streamId, List<Integer> partitionsIds, Logger logger)
+    default Stream getStreamPosition(StreamV3Api streamV3Api, String streamId, Integer partitionsId, Logger logger)
     throws Exception
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
-            return streamV3Api.listStreams(streamId, partitionsIds);
+            return streamV3Api.listStreams(streamId, partitionsId);
         }, streamV3Api, logger, "getStreamPosition", NetworkExecutor.HTTP_RESPONSE_200);
 
         //since we're calling listStreams, there will be an array of streams, even though it's just one stream

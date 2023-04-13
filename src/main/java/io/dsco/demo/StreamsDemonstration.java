@@ -359,12 +359,13 @@ implements StreamCreator
     {
         //display the top level menu
         String selection = getConsoleInput(
-    "\n1) Create Stream\n" +
-            "2) Update Stream Partition Size\n" +
+    "\n" +
+            "1) Create Stream                   (as retailer)\n" +
+            "2) Update Stream Partition Size    (as retailer)\n" +
             "3) Cause activity on Stream\n" +
-            "4) Inventory Stream Processing\n" +
-            "5) View Streams\n" +
-            "6) Create Stream Operation\n" +
+            "4) Inventory Stream Processing     (as retailer)\n" +
+            "5) View Streams                    (as retailer)\n" +
+            "6) Create Stream Operation         (as retailer)\n" +
             " > "
         );
         switch (selection)

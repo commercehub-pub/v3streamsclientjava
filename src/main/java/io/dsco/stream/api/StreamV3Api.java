@@ -5,7 +5,6 @@ import kong.unirest.JsonNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,7 +19,7 @@ extends OAuthSupport
             @NotNull String id, @NotNull String description, int numPartitions,
             @NotNull ObjectType objectType, @Nullable Map<String, Object> query);
 
-    CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, List<Integer> partitionIds);
+    CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, Integer partitionId);
 
     //TODO: this should be modified to take a Stream object
     CompletableFuture<HttpResponse<JsonNode>> updateStream(
