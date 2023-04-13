@@ -1,6 +1,5 @@
 package io.dsco.stream.apiimpl;
 
-import com.google.gson.Gson;
 import io.dsco.stream.api.StreamV3Api;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
@@ -8,7 +7,6 @@ import kong.unirest.Unirest;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,7 +44,7 @@ implements StreamV3Api
     }
 
     @Override
-    public CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, List<Integer> partitionIds)
+    public CompletableFuture<HttpResponse<JsonNode>> listStreams(String id, Integer partitionId)
     {
         //note: i am adding the _ts param because if this is first called and gets a 404
         // that value seems to be cached inside of Unirest, and even if later on the url
@@ -57,9 +55,10 @@ implements StreamV3Api
         queryParams.put("_ts", System.currentTimeMillis());
         if (id != null) {
             queryParams.put("id", id);
-        }
-        if (partitionIds != null && partitionIds.size() > 0) {
-            queryParams.put("partitionIds", partitionIds);
+            
+            if (partitionId != null) {
+                queryParams.put("partitionId", partitionId);
+            }
         }
 
         return Unirest.get(baseUrl + "stream")
@@ -70,7 +69,8 @@ implements StreamV3Api
 
     @Override
     public CompletableFuture<HttpResponse<JsonNode>> updateStream(
-            @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber, Map<String, Object> query)
+            @NotNull String id, String description, int numPartitions, boolean incrementVersionNumber, 
+            String objectType,  Map<String, Object> query)
     {
         Map<String, Object> body = new HashMap<>();
         body.put("id", id);
@@ -78,7 +78,7 @@ implements StreamV3Api
             body.put("description", description);
         }
         if (query != null) {
-            body.put("objectType", query.get("queryType"));
+            body.put("objectType", objectType);
             body.put("query", query);
         }
         body.put("numPartitions", numPartitions);

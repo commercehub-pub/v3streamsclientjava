@@ -14,4 +14,6 @@ extends OAuthSupport
     CompletableFuture<HttpResponse<JsonNode>> updateInventorySmallBatch(@NotNull List<ItemInventory> items);
 
     CompletableFuture<HttpResponse<JsonNode>> getInventoryChangeLog(@NotNull String requestId);
+
+    CompletableFuture<HttpResponse<JsonNode>> getInventoryObject(@NotNull String sku);
 }

@@ -38,4 +38,14 @@ implements InventoryV3Api
                 .queryString("requestId", requestId)
                 .asJsonAsync();
     }
+
+    @Override
+    public CompletableFuture<HttpResponse<JsonNode>> getInventoryObject(@NotNull String sku)
+    {
+        return Unirest.get(baseUrl + "inventory")
+                .headers(defaultHeaders)
+                .queryString("itemKey", "sku")
+                .queryString("value", sku)
+                .asJsonAsync();
+    }
 }

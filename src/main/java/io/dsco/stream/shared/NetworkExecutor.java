@@ -121,12 +121,12 @@ public class NetworkExecutor
 
         int httpStatus = future.get().getStatus();
         if (httpStatus == 200) {
-logger.info(future.get().getBody());
+//logger.info(future.get().getBody());
             OAuth2Response oAuth2Response = Util.gson().fromJson(future.get().getBody().toString(), OAuth2Response.class);
             //long expiresAt = Util.iso8601ToDate(oAuth2Response.expiration).getTime();
 
             String decodedAccesesToken = URLDecoder.decode(oAuth2Response.access_token, "UTF-8");
-//logger.info("ACCESS TOKEN (url decoded):\n\n" + decodedAccesesToken + "\n\n");
+logger.info("ACCESS TOKEN (url decoded):\n" + decodedAccesesToken + "\n");
             oAuthSupport.setTokenAndExpiration(decodedAccesesToken, oAuth2Response.expires_in);
 
         } else {

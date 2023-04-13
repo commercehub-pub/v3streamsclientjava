@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 
 //show any type of stream. don't convert the result, just display the # of items in the stream and the position being processed.
 public class AnyStreamBasic
@@ -36,7 +35,7 @@ implements CommonStreamMethods
             logger.info(MessageFormat.format("***** running scenario: {0} *****", SCENARIO_NAME));
 
             //get the initial stream position
-            Stream stream = getStreamPosition(streamV3Api, streamId, Collections.singletonList(0), logger);
+            Stream stream = getStreamPosition(streamV3Api, streamId, null, logger);
             String streamPosition = stream.getPartitions().get(0).getPosition();
             logger.info("initial stream position: " + streamPosition);
 

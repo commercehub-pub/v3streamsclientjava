@@ -34,7 +34,7 @@ implements Command<Void, String>
     {
         CompletableFuture<HttpResponse<JsonNode>> future  = NetworkExecutor.getInstance().execute((x) -> {
             return streamV3Api.createStreamOperation(streamId, operationType, partitionId, ownerId);
-        }, streamV3Api, logger, "createStreamOperation", NetworkExecutor.HTTP_RESPONSE_200);
+        }, streamV3Api, logger, "createStreamOperation", NetworkExecutor.HTTP_RESPONSE_202);
 
         //return the operationUuid
 //logger.info(future.get().getBody());

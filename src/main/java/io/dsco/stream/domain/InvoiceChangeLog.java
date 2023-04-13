@@ -33,7 +33,7 @@ public class InvoiceChangeLog {
 	private String requestId;
 	/* The ID of the file process that  included the request to make this change if done via file process */
 	private String processId;
-	private List<ApiResponseMessage> results;
+	private List<ChangelogResponseMessage> results;
 	/* **Note that this attribute has not yet been implemented but is planned to come online
 by February 1, 2020.  It is being included now so developers can be aware it is coming and plan accordingly.**
 
@@ -58,8 +58,8 @@ since no change was actually made. */
 	public void setRequestId(String val) { requestId = val; }
 	public String getProcessId() { return processId; }
 	public void setProcessId(String val) { processId = val; }
-	public List<ApiResponseMessage> getResults() { return results; }
-	public void setResults(List<ApiResponseMessage> val) { results = val; }
+	public List<ChangelogResponseMessage> getResults() { return results; }
+	public void setResults(List<ChangelogResponseMessage> val) { results = val; }
 	public ChangeLogDiff getDiff() { return diff; }
 	public void setDiff(ChangeLogDiff val) { diff = val; }
 }
