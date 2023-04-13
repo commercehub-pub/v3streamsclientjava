@@ -74,7 +74,7 @@ implements StreamCreator
                 props.setProperty("supplier.v3.clientId", "xxxxxx");
                 props.setProperty("supplier.v3.secret", "xxxxxx");
                 props.setProperty("supplier.accountId", "xxxxxx");
-                props.setProperty("supplier.skus", "SKU1,SKU2,SKU3,...");
+                props.setProperty("supplier.skus", "SKU1,SKU2,SKU3,... (you must list AT LEAST 3 skus)");
 
                 try (OutputStream os = Files.newOutputStream(Paths.get(outputPath))) {
                     props.store(os, null);
@@ -233,12 +233,13 @@ implements StreamCreator
     throws Exception
     {
         String streamType = getConsoleInput(
-                "\n1) Update ItemInventory\n" +
-                        "2) Create and acknowledge Order\n" +
-                        "3) Create Invoice and Shipment\n" +
-                        "4) Cancel order line item\n" +
-                        "5) Do Inventory Sync\n" +
-                        "6) Add shipment\n" +
+                "\n" +
+                        "1) Update ItemInventory            (as supplier)\n" +
+                        "2) Create and acknowledge Order    (as retailer & supplier)\n" +
+                        "3) Create Invoice and Shipment     (as supplier)\n" +
+                        "4) Cancel order line item          (as supplier)\n" +
+                        "5) Do Inventory Sync               (as retailer)\n" +
+                        "6) Add shipment                    (as supplier)\n" +
                         //"7) Mark shipment undeliverable\n" +
                         " > "
         );
@@ -246,7 +247,10 @@ implements StreamCreator
         switch (streamType)
         {
             case "1": {
-                int numItemsToUpdate = Integer.parseInt(getConsoleInput("\nnumber of items to update > "));
+                int numItemsToUpdate = Integer.parseInt(getConsoleInput("\nnumber of items to update (must be less than or equal to how many skus are listed in the properties file) > "));
+                if (numItemsToUpdate > skus.length) {
+                    numItemsToUpdate = skus.length;
+                }
                 updateInventoryCmd.execute(numItemsToUpdate);
             }
             break;

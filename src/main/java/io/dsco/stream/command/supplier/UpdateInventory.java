@@ -37,7 +37,7 @@ implements Command<Integer, Void>, GetInventoryItems
     public Void execute(Integer numberItemsToUpdate) throws Exception
     {
         if (numberItemsToUpdate == null) {
-            numberItemsToUpdate = 5;
+            numberItemsToUpdate = skus.length;
         }
 
         //grab a list of recently updated inventory items
