@@ -41,16 +41,18 @@ The app will create a properties file for you to provide credentials within afte
 Open that file and populate the placeholders…
 
 ```
-base.v3.url=xxxxxx
 v3.oauth.url=xxxxxx
-supplier.v3.clientId=xxxxxx
-supplier.v3.secret=xxxxxx
-supplier.accountId=xxxxxx
+base.v3.url=xxxxxx
+
+retailer.accountId=xxxxxx
 retailer.v3.clientId=xxxxxx
 retailer.v3.secret=xxxxxx
-retailer.accountId=xxxxxx
-```
 
+supplier.accountId=xxxxxx
+supplier.v3.clientId=xxxxxx
+supplier.v3.secret=xxxxxx
+supplier.skus=xxxxxx,xxxxxx,xxxxxx
+```
 * * *
 
 You will need to provide your Dsco account ID and that of one of your suppliers. Also, this demonstration is designed from the retailer’s perspective for now, so if you're not a retailer this won't work.
