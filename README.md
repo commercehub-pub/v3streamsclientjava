@@ -3,7 +3,7 @@ Welcome to the Dsco V3 Streams Demo App! This repository contains sample code th
 # Disclaimer & Limited Liability
 PLEASE READ THE FOLLOWING DISCLAIMER CAREFULLY:
 
-This code is provided "as is" and without any express or implied warranties. By using the sample code in this repository, you agree to use it at your own risk. [Your Company Name] and its employees, affiliates, and contributors shall not be liable for any damages or losses, including, but not limited to, direct, indirect, incidental, consequential, or other damages, arising out of or in connection with your use or inability to use the sample code provided herein.
+This code is provided "as is" and without any express or implied warranties. By using the sample code in this repository, you agree to use it at your own risk. CommerceHub, Inc. and its employees, affiliates, and contributors shall not be liable for any damages or losses, including, but not limited to, direct, indirect, incidental, consequential, or other damages, arising out of or in connection with your use or inability to use the sample code provided herein.
 
 # License
 This sample code is released under the MIT License.  Please see the MIT license located in [license.txt](license.txt) in
